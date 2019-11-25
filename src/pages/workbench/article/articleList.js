@@ -52,7 +52,6 @@ class ArticleList extends Component {
             this.getArticleTypes();
         }
         this.props.sendPoint.add({target: '页面', page: '工作台-资讯干货', action: 'view'})
-    //    const viewUrl = this.props.config.api + '/api/article/addviewcount?id=' + infoId;
     }
 
     getArticleTypes = () => {
@@ -62,7 +61,7 @@ class ArticleList extends Component {
 
     consultationDetail = (item) => {
         const id = extractIdFromUrl(item.url);
-        this.props.navigation.navigate('articleDetail', {url: item.url, id, source: CONSTANT.SOURCE.ARTICLE_LIST});
+        this.props.navigation.navigate('xkjWebView', {url: item.url, id, source: CONSTANT.SOURCE.ARTICLE_LIST});
         this.props.sendPoint.add({
             target: '资讯跳转详情_button',
             page: '工作台-资讯干货',

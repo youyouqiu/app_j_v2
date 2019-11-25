@@ -1,4 +1,4 @@
-import React,{Component} from 'react';
+import React, {Component} from 'react';
 import {View, StyleSheet, TouchableOpacity, Image, Text, ActivityIndicator, Platform} from 'react-native';
 import {scaleSize} from '../../../utils/screenUtil'
 import Button from '../../../components/Button'
@@ -11,16 +11,17 @@ import DeviceInfo from 'react-native-device-info'
 
 const EYE_OPEN = require('../../../images/icons/login_eye_open.png')
 const EYE_CLOSE = require('../../../images/icons/login_eye_close.png')
-class AccountLogin extends Component{
+
+class AccountLogin extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             isPassword: true,
             password: '',
             username: '',
-            // password: '12345678',
-            // username: 'zal',
+            // password: '123456',
+            // username: 'xyy',
         }
     }
 
@@ -83,10 +84,10 @@ class AccountLogin extends Component{
             this.hideLoading()
             if (succes) { // 在请求成功之后 对用户信息扩展字段的保存
                 let extendeds = [
-                    { 'parName': 'APP_PUSH_ID', 'parValue': this.props.user.jpushID },
-                    { 'parName': 'APP_OS', 'parValue': Platform.OS },
-                    { 'parName': 'APP_OS_VERSION', 'parValue': Platform.Version },
-                    { 'parName': 'APP_VERSION', 'parValue': DeviceInfo.getReadableVersion() || '' }
+                    {'parName': 'APP_PUSH_ID', 'parValue': this.props.user.jpushID},
+                    {'parName': 'APP_OS', 'parValue': Platform.OS},
+                    {'parName': 'APP_OS_VERSION', 'parValue': Platform.Version},
+                    {'parName': 'APP_VERSION', 'parValue': DeviceInfo.getReadableVersion() || ''}
                 ]
                 await setUserExtension(extendeds, res.access_token)
             }
@@ -109,9 +110,9 @@ class AccountLogin extends Component{
         this.props.navigation.navigate('forgetPwd', 'hasdias')
     }
 
-    render(){
+    render() {
         let {isPassword, password, username} = this.state
-        return(
+        return (
             <View style={styles.content}>
                 <View style={styles.loginContent}>
                     <Input
@@ -195,7 +196,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapStateToProps = ({config, user})=> {
+const mapStateToProps = ({config, user}) => {
     return {config, user}
 }
 export default connect(mapStateToProps)(AccountLogin)

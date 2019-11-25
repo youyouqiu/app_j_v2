@@ -2,18 +2,33 @@
  * Created by Kary on 2019/09/06 15:07.
  */
 import { View, ActivityIndicator, ScrollView, StyleSheet } from 'react-native'
-import {scaleSize} from "../../../utils/screenUtil";
+import { scaleSize } from "../../../utils/screenUtil";
 export default StyleSheet.create({
+    btnBgColor: {
+        backgroundColor: '#4B6AC5'
+    },
     flex: {
         display: 'flex'
     },
+    bold: {
+        fontWeight: '500'
+    },
     flexRow: {
+        display: 'flex',
         flexDirection: 'row'
+    },
+    flexColumn: {
+        display: 'flex',
+        flexDirection: 'column'
     },
     alignCenter: {
         alignItems: 'center'
     },
     justifyCenter: {
+        justifyContent: 'center'
+    },
+    center: {
+        alignItems: 'center',
         justifyContent: 'center'
     },
     color_fff: {
@@ -43,8 +58,8 @@ export default StyleSheet.create({
         justifyContent: 'flex-end'
     },
     back: {
-       width: scaleSize(45),
-       height: scaleSize(45),
+        width: scaleSize(45),
+        height: scaleSize(45),
         backgroundColor: 'transparent',
     },
     _project: {
@@ -95,14 +110,19 @@ export default StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         alignItems: 'flex-end',
+        flexWrap: 'nowrap',
         flexDirection: 'row',
+        paddingLeft: scaleSize(20),
+        paddingRight: scaleSize(20),
         marginTop: scaleSize(50),
         marginBottom: scaleSize(40)
     },
     dataViewItem: {
         display: 'flex',
         justifyContent: 'center',
-        width: scaleSize(130)
+        width: '100%',
+        paddingLeft: scaleSize(30),
+        flex: 1
     },
     dataViewItem_text: {
         fontSize: scaleSize(32),
@@ -120,7 +140,7 @@ export default StyleSheet.create({
         width: scaleSize(1),
         height: scaleSize(33),
         backgroundColor: '#EAEAEA',
-        marginRight: scaleSize(34),
+        // marginRight: scaleSize(34),
         marginLeft: 'auto',
 
     },
@@ -184,7 +204,7 @@ export default StyleSheet.create({
     projectName: {
         fontSize: scaleSize(32),
         color: '#000',
-        flex: 1
+        fontWeight: '500'
     },
     times: {
         display: 'flex',
@@ -220,15 +240,6 @@ export default StyleSheet.create({
         top: 0,
         zIndex: 15
     },
-    bubble: {
-        width: 'auto',
-        height: scaleSize(30),
-        position: 'absolute',
-        zIndex: 100,
-        // top: scaleSize(-30),
-        backgroundColor: 'red',
-        borderRadius: scaleSize(20),
-    },
     bubble_after: {
         width: 0,
         height: 0,
@@ -260,10 +271,10 @@ export default StyleSheet.create({
         fontSize: scaleSize(24)
     },
     btn: {
-        width: scaleSize(354),
+        width: scaleSize(290),
         height: scaleSize(80),
         backgroundColor: '#3AD047',
-        borderRadius: scaleSize(50),
+        borderRadius: scaleSize(8),
         marginRight: 'auto',
         marginLeft: 'auto',
     },
@@ -275,5 +286,88 @@ export default StyleSheet.create({
     btn_text: {
         fontSize: scaleSize(28),
         color: '#fff'
-    }
+    },
+    footer: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    projectMain: {
+        padding: scaleSize(32),
+        width: 'auto',
+        backgroundColor: '#fff'
+    },
+    projectMainImage: {
+        width: scaleSize(240),
+        height: scaleSize(186)
+    },
+    stationPage: {
+        borderBottomColor: '#EAEAEA',
+        borderBottomWidth: scaleSize(1)
+    },
+    projectRight: {
+        marginLeft: scaleSize(24),
+        justifyContent: 'space-between'
+    },
+    projectAddress: {
+        fontSize: scaleSize(24),
+        color: '#CBCBCB'
+    },
+    projectFooter: {
+        flex: 1,
+        marginTop: scaleSize(50),
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    projectFooterItem: {
+        justifyContent: 'space-between',
+        height: scaleSize(108),
+        alignItems: 'center',
+        // backgroundColor: 'red',
+        flex: 1,
+        width: '33%'
+    },
+    projectLabel: {
+        fontSize: scaleSize(24),
+        color: '#CBCBCB'
+    },
+    stationContent: {
+        padding: scaleSize(32)
+    },
+    block: {
+        marginTop: scaleSize(24)
+    },
+    'container': {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#4c4c4c',
+    },
+    'background': {
+        width: scaleSize(750),
+        height: scaleSize(1623),
+        backgroundColor: '#fff',
+    },
+    'button-view': {
+        position: 'absolute',
+        bottom: scaleSize(120),
+        width: '100%',
+        alignItems: 'center',
+    },
+    'button': {
+        backgroundColor: 'rgba(255, 255, 255, 0.07)',
+        paddingTop: scaleSize(26),
+        paddingBottom: scaleSize(26),
+        paddingLeft: scaleSize(112),
+        paddingRight: scaleSize(112),
+        borderColor: '#FFF',
+        borderWidth: scaleSize(1),
+        borderRadius: scaleSize(8),
+    },
+    'text': {
+        color: '#FFF',
+        fontSize: scaleSize(32),
+        lineHeight: scaleSize(45),
+    },
 });

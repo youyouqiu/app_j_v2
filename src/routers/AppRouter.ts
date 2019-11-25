@@ -6,7 +6,7 @@ import {
 import BottomTab from './BottomTab'
 
 // 公共页面
-import WebView from '../pages/publicPages/WebView'
+import TextDetail from '../pages/publicPages/textDetail'
 import GroupInternal from '../businessComponents/Search/GroupInternal'
 import ForgetPwd from '../pages/login/forgetPwd'
 
@@ -27,18 +27,20 @@ import SingSearch from '../pages/workbench/singManage/search'
 import ScanPage from '../pages/publicPages/scan'
 import CustomerList from '../pages/workbench/customerManage/index'
 import StationHelper from '../pages/workbench/stationHelper/index'
+import Calculate from '../pages/workbench/calculate/index'
+import CalculateDetail from '../pages/workbench/calculate/detail'
 import CusList from '../pages/workbench/customerManage/cusList/index'
 import CusLJ from '../pages/workbench/customerManage/simpleList'
 import ReCusList from '../pages/workbench/customerManage/simpleList'
 import AddCustom from '../pages/workbench/customerManage/addCustom'
+import StationStatistical from '../pages/workbench/stationHelper/stationStatistical'
 import CusSearch from '../pages/workbench/customerManage/search'
 import CustomDetail from '../pages/workbench/customerManage/customDetail/index'
 import DynamicLogging from '../pages/workbench/customerManage/customDetail/weChatInfo/dynamicLogging'
 import ArticleList from '../pages/workbench/article/articleList'
-import ArticleDetail from '../pages/workbench/article/articleDetail'
 import PhotosPreView from '../businessComponents/photosPreView/index'
 import System from '../pages/personal/system'
-import BuildingDetail from '../pages/project/buildingDetail/buildingDetail'
+import BuildingDetail from '../pages/project/buildingDetail'
 import ShopList from '../pages/project/shopList/shopList'
 import ShopDetail from '../pages/project/shopDetail/shopDetail'
 import PersonalInfo from '../pages/personal/info'
@@ -54,16 +56,17 @@ import BusinessScanPage from '../pages/publicPages/businessScan/businessScan'
 import Registration from '../pages/publicPages/agreement/registration'
 import Privacy from '../pages/publicPages/agreement/privacy'
 import MarketingData from '../pages/project/marketingData/MarketingData'
-import XKJWebView from "../components/WebView"
+import XKJWebView from "../components/XKJWebView";
+import SearchBuilding from "../pages/workbench/searchBuilding/searchBuilding/SearchBuilding";
+import SearchResult from "../pages/workbench/searchBuilding/searchResult/SearchResult";
+import WorkReport from '../pages/workbench/WorkReport'
+import FollowUp from "../pages/workbench/customerManage/followUp/FollowUp";
+import BuildingDetailPhotos from '../pages/project/buildingDetail/Photos'
 
 const routeConfigMap: NavigationRouteConfigMap = {
     // 底部导航
     BottomTabNav: {
         screen: BottomTab
-    },
-    // web url
-    webView: {
-        screen: WebView
     },
     groupInternal: {
         screen: GroupInternal
@@ -75,6 +78,9 @@ const routeConfigMap: NavigationRouteConfigMap = {
     // 报备列表
     reportList: {
         screen: ReportList,
+    },
+    stationStatistical: {
+        screen: StationStatistical
     },
     // 报备搜索
     reportSearch: {
@@ -129,11 +135,14 @@ const routeConfigMap: NavigationRouteConfigMap = {
     stationHelper: {
         screen: StationHelper
     },
+    calculate: {
+        screen: Calculate
+    },
+    calculateDetail: {
+        screen: CalculateDetail
+    },
     articleList: {
         screen: ArticleList
-    },
-    articleDetail: {
-        screen: ArticleDetail
     },
     photosPreView: {
         screen: PhotosPreView
@@ -225,6 +234,25 @@ const routeConfigMap: NavigationRouteConfigMap = {
     xkjWebView: {
         screen: XKJWebView
     },
+    searchBuilding: {
+        screen: SearchBuilding
+    },
+    workReport: {
+        screen: WorkReport,
+    },
+    searchResult: {
+        screen: SearchResult,
+    },
+    followUp:{
+        screen:FollowUp
+    },
+    textDetail: {
+        screen: TextDetail
+    },
+    // 房源 -> 楼盘详情 -> 楼盘相册
+    buildingDetailPhotos: {
+        screen: BuildingDetailPhotos,
+    }
 }
 
 const stackConfig: StackNavigatorConfig = {
@@ -245,6 +273,7 @@ const stackConfig: StackNavigatorConfig = {
     // headerTransitionPreset: 'fade-in-place',
     // headerMode: 'float',
     // mode: 'modal'
+    // initialRouteName:'customerList'
 }
 
 export default createStackNavigator(routeConfigMap, stackConfig)

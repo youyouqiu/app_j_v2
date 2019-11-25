@@ -24,7 +24,7 @@ class BuildingList extends Component {
             pageSize: 10,
             pageIndex: 0,
             total: 0,
-            city: props.global.cityCode || props.global.defaultCityCode,
+            city: props.projectLocation.cityCode || props.projectLocation.defaultCityCode,
             showEmptyComponent: false
         }
     }
@@ -67,6 +67,7 @@ class BuildingList extends Component {
         this.props.navigation.navigate('buildingDetail', {buildingId, buildingTreeId})
     };
 
+    // eslint-disable-next-line no-unused-vars
     _keyExtractor = (item, index) => index.toString();
 
     gotoSearch = () => {
@@ -109,7 +110,7 @@ class BuildingList extends Component {
     };
 
     render() {
-        let {buildingList, refreshing, hasMore, showFooter, showEmptyComponent} = this.state;
+        let {buildingList, refreshing, hasMore, showEmptyComponent} = this.state;
 
         const renderRight = (
             <TouchableOpacity activeOpacity={0.8} onPress={this.gotoSearch}>
@@ -135,10 +136,10 @@ class BuildingList extends Component {
     }
 }
 
-const mapStateToProps = ({config, global}) => {
+const mapStateToProps = ({config,projectLocation}) => {
     return {
         requestUrl: config.requestUrl,
-        global
+        projectLocation
     }
 };
 export default connect(mapStateToProps)(BuildingList)

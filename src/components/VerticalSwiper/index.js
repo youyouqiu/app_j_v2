@@ -40,7 +40,7 @@ class VerticalSwiper extends Component {
         }
     };
 
-    componentWillReceiveProps(nextProps, nextState) {
+    componentWillReceiveProps(nextProps) {
         this.setState({
             children:[]
         },()=>{

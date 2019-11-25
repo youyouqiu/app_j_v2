@@ -1,12 +1,14 @@
-import { Model } from 'dva'
+import {Model} from 'dva'
 import locationApi from '../services/location'
 import BuryPoint from '../utils/BuryPoint'
 import projectService from "../services/projectService";
 
 export default <Model>{
-  namespace: 'location',
+    namespace: 'location',
 
   state: {
+    locationCityName:'',//定位失败时为空，成功时赋值给conversionName
+    locationCityCode:'',//定位失败时为空，成功时赋值给conversionCode
     conversionName: '重庆',
     conversionCode: '500000',
     cityList: [],
@@ -16,23 +18,24 @@ export default <Model>{
   effects: {
     *getLocationInfo(_, { put, call }) {
       try {
-        const coordinate = yield locationApi.fetchCoordinate()
-        BuryPoint.setLogBodyData(coordinate)
+        const coordinate = yield locationApi.fetchCoordinate();
+        BuryPoint.setLogBodyData(coordinate);
         let location = yield locationApi.fetchLocationInfo(coordinate)
-        let locationInfo = location.result
+        let locationInfo = location.result;
         const res = yield call(projectService.cityListReq, {levels: [1]});
         const cityList = res.extension;
         const {city} = locationInfo.addressComponent;
-        const { lng, lat } = locationInfo.location
+        const { lng, lat } = locationInfo.location;
         let currentCity = cityList.find((x: any) => x.name === city.substr(0, city.length - 1));
         locationInfo = {
           ...locationInfo,
           conversionCode: currentCity ? currentCity.code : '500000',
           conversionName: currentCity ? currentCity.name : '重庆',
+          locationCityCode: currentCity ? currentCity.code : '',
+          locationCityName: currentCity ? currentCity.name : '',
           cityList,
           status: 'success'
         }
-        console.log(locationInfo)
         yield put({ type: 'getLocationSuccess', payload: locationInfo })
         yield put({ type: 'weather/getWeather', payload: `${lng},${lat}` })
         yield put({ type: 'global/saveCoordinateAndCityName', payload: {
@@ -47,11 +50,20 @@ export default <Model>{
         // TODO
       }
     },
+    *getCityList(_, {put, call}) {
+        const res = yield call(projectService.cityListReq, {levels: [1]});
+        yield put({type: 'saveCityList', payload: res.extension})
+    }
   },
-
   reducers: {
-    getLocationSuccess: (_, { payload }) => ({
+    getLocationSuccess: (state, { payload }) => ({
+      ...state,
       ...payload
     }),
+    saveCityList: (state, {payload}) => ({
+        ...state,
+        cityList: payload
+    })
   },
+
 }

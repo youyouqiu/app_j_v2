@@ -59,10 +59,14 @@ export default class BasicModal extends Component {
     }
     // 多选初始化
     initMulti = (selectCode,multiData) =>{
+        let multiRes = [],
+            multiSelectCode = []
         if((selectCode || []).length){
             multiData = multiData.map((item)=>{
                 if(selectCode.includes(item.code)){
                     item.isSelet = true
+                    multiRes.push(item)
+                    multiSelectCode.push(item.code)
                 } else {
                     item.isSelet = false
                 }
@@ -75,14 +79,13 @@ export default class BasicModal extends Component {
             })
 
         }
-        this.setState({multiData})
+        this.setState({multiData,multiRes,multiSelectCode})
     }
 
     // 多选确定
     handleMultiOk = () =>{
-        let {multiRes,multiData,multiSelectCode} = this.state
-        let {onOk,selectCode} = this.props
-        this.initMulti(selectCode,multiData)
+        let {multiRes,multiSelectCode} = this.state
+        let {onOk} = this.props
         onOk && onOk(multiRes,multiSelectCode)
     }
 
@@ -212,7 +215,7 @@ export default class BasicModal extends Component {
     }
 
     selectContent = () =>{
-        let {onClose,data,selectCode,contentStyle} = this.props
+        let {onClose,data,selectCode,contentStyle, title} = this.props
         let height = (data || []).length *109 + 132
         data = data.map((item)=>{
             if(selectCode === item.code){
@@ -227,6 +230,29 @@ export default class BasicModal extends Component {
                 justifyContent: 'flex-end'
             }]}>
                 <View style={[modalStyles.selectWrap,{height:scaleSize(height)},contentStyle]}>
+                    {
+                        title 
+                        ?
+                        (typeof title === 'string' 
+                        ?
+                        <View
+                            style={[modalStyles.selectOne, modalStyles.bottomLine]}
+                            activeOpacity={0.8}
+                        >
+                            <Text style={modalStyles.selectOneText}>{title}</Text>
+                        </View>
+                        :
+                        <View
+                            style={[modalStyles.selectOne, modalStyles.bottomLine]}
+                            activeOpacity={0.8}
+                        >
+                            {title}
+                        </View>
+                        )
+                        :
+                        null
+
+                    }
                     {
                         data && data.map((item,key)=>{
                             return(

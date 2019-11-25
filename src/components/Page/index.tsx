@@ -1,10 +1,11 @@
-import React, { FunctionComponent, ReactElement, PureComponent } from 'react'
-import { View, ActivityIndicator, ScrollView, StyleSheet } from 'react-native'
+import React, { FunctionComponent, ReactElement, PureComponent, useEffect } from 'react'
+import { View, ActivityIndicator, ScrollView, StyleSheet, StatusBar } from 'react-native'
 import { Theme } from 'teaset'
 import TopBar from './TopBar'
 import ErrorView from '../ErrorView'
 import { scaleSize } from '../../utils/screenUtil'
 import { PageProps, PageError } from './types'
+
 
 class ErrorHandler extends PureComponent<PageError> {
     render() {
@@ -23,6 +24,7 @@ const Page: FunctionComponent<PageProps> = ({
     footerStyle = {},
     children,
     navBar,
+    fixed,
     contentBgColor,
     ...TopBarProps
 }) => {
@@ -35,6 +37,10 @@ const Page: FunctionComponent<PageProps> = ({
         flex: 1,
         backgroundColor: contentBgColor || '#FFF',
     }
+
+    useEffect(()=>{
+        StatusBar.setBarStyle(TopBarProps.statusBarStyle || 'dark-content')
+    }, [TopBarProps])
 
     const StatusBarAndNarBarHeight = !hiddenTopBar ? Theme.statusBarHeight + Theme.navBarContentHeight : 0
     body.marginTop = body.marginTop || StatusBarAndNarBarHeight
@@ -62,7 +68,7 @@ const Page: FunctionComponent<PageProps> = ({
                     <View style={{ flex: 1, marginBottom: footer ? footerHeight : 0 }}>
                         {scroll ? <ScrollView>{children}</ScrollView> : children}
                     </View>
-
+                    {fixed ? fixed : null}
                     {/* footer */}
                     {footer ? <View style={[styles.footer, footerStyle]}>{footer}</View> : null}
                 </ErrorHandler>

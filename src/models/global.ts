@@ -1,7 +1,7 @@
 import {Model} from 'dva'
 import articleService from "../services/articleService"
 import projectService from "../services/projectService";
-import {buildingCityScreenByCityCodeReq} from "../services/component";
+import {buildingCityScreenByCityCodeReq} from "@/services/component";
 
 const globalModel: Model = {
     namespace: 'global',
@@ -42,8 +42,8 @@ const globalModel: Model = {
             };
             yield put({type: 'saveBuildingCityScreen', payload: payloadData})
         },
-        *saveBuildingInfo({payload}, {put}){
-            yield put({type:'buildingInfo',payload:payload})
+        * saveBuildingInfo({payload}, {put}) {
+            yield put({type: 'buildingInfo', payload: payload})
         }
     },
     reducers: {
@@ -60,7 +60,7 @@ const globalModel: Model = {
             }
         },
         saveCoordinateAndCityName(state, {payload}) {
-            console.log(payload, 'saveCoordinateAndCityName')
+            console.log('saveCoordinateAndCityName',payload);
             return Object.assign({}, {
                 ...state,
                 latitude: payload.latitude,
@@ -71,7 +71,6 @@ const globalModel: Model = {
             })
         },
         changeCity(state, {payload}) {
-            console.log(payload, 'changeCity')
             return {
                 ...state,
                 cityName: payload.cityName,
@@ -81,29 +80,33 @@ const globalModel: Model = {
         saveBuildingCityScreen(state, {payload}) {
             const {extension, code} = payload;
             let buildingCityScreen: any = state.buildingCityScreen;
-            buildingCityScreen[code] = [{code:code+'_0',name:'全部'},...extension] || {};
+            if(code.includes('_0')){
+                buildingCityScreen[code] = extension;
+            }else {
+                buildingCityScreen[code] = [{code: code + '_0', name: '全部'}, ...extension] || {};
+            }
+
             return {
                 ...state,
                 buildingCityScreen
             }
         },
-        buildingInfo(state, {payload}){
-            console.log('payload',payload);
-            return{
+        buildingInfo(state, {payload}) {
+            return {
                 ...state,
-                buildingTreeId:payload.buildingTreeId,
-                buildingName:payload.buildingName,
+                buildingTreeId: payload.buildingTreeId,
+                buildingName: payload.buildingName,
                 buildingId: payload.buildingId
             }
         },
-        cleanLocation(state){
-            return{
+        cleanLocation(state) {
+            return {
                 ...state,
                 latitude: '',
                 longitude: '',
                 cityList: [],
-                cityCode: '',
-                cityName: '',
+                cityCode: null,
+                cityName: null,
             }
         }
     },

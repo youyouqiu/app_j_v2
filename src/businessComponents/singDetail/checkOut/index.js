@@ -100,7 +100,7 @@ export default class CheckOut  extends Component {
                         </View>
                         <Image source={require('../../../images/icons/time.png')} style={checkOutStyles.time}/>
                         <Text style={{color:'#868686',fontSize:scaleSize(28)}}>
-                            {data.returnTime && moment(data.returnTime).format('YYYY-MM-DD HH:mm:ss')}
+                            {data.markTime && moment(data.markTime).format('YYYY-MM-DD HH:mm:ss')}
                         </Text>
                     </View>
 

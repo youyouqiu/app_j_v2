@@ -236,12 +236,12 @@ export const IndexStyle = StyleSheet.create({
     },
     header_container_op: {
         position: 'absolute',
-        zIndex: 9,
         height: scaleSize(105) + Theme.statusBarHeight,
         width: '100%',
         backgroundColor: '#fff',
         opacity: 0,
-        top: 0
+        zIndex: 9,
+        top: -16
     },
     header_container_opacity: {
         position: 'absolute',
@@ -254,19 +254,18 @@ export const IndexStyle = StyleSheet.create({
     header_container: {
         height: '100%',
         flex: 1,
+        zIndex: 9,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0)',
+        // backgroundColor: 'red',
         paddingRight: scaleSize(24),
         paddingLeft: scaleSize(24),
-        // paddingTop: scaleSize(15),
-        // paddingBottom: scaleSize(15)
     },
     header_content: {
         backgroundColor: '#fff',
         height: scaleSize(72),
         flex: 1,
-        borderRadius: scaleSize(5),
+        borderRadius: scaleSize(8),
         flexDirection: 'row',
         alignItems: 'center',
         borderWidth: scaleSize(1),
@@ -277,11 +276,13 @@ export const IndexStyle = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        width: scaleSize(159),
         height:'100%'
     },
     header_center: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
+        paddingLeft: scaleSize(108), // UI未居中
         alignItems: 'center',
         flex: 1
     },
@@ -303,7 +304,6 @@ export const IndexStyle = StyleSheet.create({
     header_search_icon: {
         height: scaleSize(30),
         width: scaleSize(30),
-        marginLeft: scaleSize(10)
     },
     header_scan_icon: {
         height: scaleSize(45),
@@ -311,8 +311,9 @@ export const IndexStyle = StyleSheet.create({
         marginLeft: scaleSize(20)
     },
     header_search_text: {
-        fontSize: scaleSize(25),
-        paddingLeft: scaleSize(10),
+        fontSize: scaleSize(28),
+        fontWeight: '400',
+        paddingLeft: scaleSize(30),
         color: '#b6b6b6'
     },
     row: {

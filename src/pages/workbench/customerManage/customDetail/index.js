@@ -34,8 +34,7 @@ class CustomDetail extends Component {
     }
 
     componentDidMount() {
-        console.log(this.props, '456785656')
-        let info = ((this.props.navigation || {}).state || {}).params || {}
+        let info = ((this.props.navigation || {}).state || {}).params || {};
         this.setState({
             info
         }, () => {
@@ -78,7 +77,6 @@ class CustomDetail extends Component {
     }
 
     deleteCus = async () => {
-        console.log(this.state, 'this.statestate')
         this.setState({
             visible: true
         })
@@ -133,7 +131,7 @@ class CustomDetail extends Component {
                 contentBgColor={'#F8F8F8'}
                 bodyStyle={{ padding: 0 }}
                 rightView={
-                        showDel && !pureWechat ?
+                    showDel && !pureWechat ?
                         <TouchableOpacity onPress={() => this.deleteCus()}>
                             <Text style={styles.deleteText}>删除</Text>
                         </TouchableOpacity> : null
@@ -171,6 +169,7 @@ class CustomDetail extends Component {
                     width={541}
                     height={200}
                     title=''
+                    contentStyle={{ alignItems: 'center' }}
                 >
                     <Text style={styles.modalText}>确定删除该用户？ 请谨慎操作</Text>
                 </Modal>

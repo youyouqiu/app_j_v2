@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Image, Modal, StyleSheet, Text, TouchableOpacity, View, ScrollView, Platform} from 'react-native';
 import {Theme, Button} from 'teaset';
 import {scaleSize} from '../../utils/screenUtil';

@@ -24,17 +24,17 @@ export default class WarnItem  extends Component{
             },
             {
                 type:'RemindComfirmBeltLook',
-                title:'还有到访未确认',
+                title:'未确认到访单',
                 icon:require('../../../images/icons/news_visit.png')
             },
             {
                 type:'RemindProtectBeltLook',
-                title:'保护期即将到期',
+                title:'保护期预警',
                 icon:require('../../../images/icons/news_period.png')
             },
             {
                 type:'RemindNotSign',
-                title:'需要跟进签约',
+                title:'认购单需跟进',
                 icon:require('../../../images/icons/news_sing.png')
             },
         ]

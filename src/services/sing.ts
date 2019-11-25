@@ -10,6 +10,9 @@ const ApiSing = {
             body: params,
         })
     },
+    total: (api: string) => {
+        return request.get(`${api}/v2.0/api/signing/list/total`)
+    },
     search: (api: string, params: SearchConditions): Promise<SearchResponse> => {
         return request.post(`${api}/v2.0/api/signing/search`, {
             method: 'POST',

@@ -32,7 +32,8 @@ class BusinessScanPage extends React.Component {
     onBarCodeRead = (data) => {
         this.stopScan();
         if (data === '') {
-            ToastCallback.message('无法识别二维码', null, this.startScan);
+            this.startScan();
+            ToastCallback.message('无法识别二维码', null, null);
             return
         }
         if (data.indexOf('https://') >= 0 || data.indexOf('http://') >= 0 || data.indexOf('HTTPS://') >= 0 || data.indexOf('HTTP://') >= 0) {
@@ -41,7 +42,8 @@ class BusinessScanPage extends React.Component {
                 data = data.substring(strIndex + 3);
             } else {
                 Linking.openURL(data).catch(err => {
-                    Toast.info(`无法识别二维码${err.message}`, 2, this.startScan(), false)
+                    this.startScan();
+                    ToastCallback.message('无法识别二维码', null, null);
                 });
                 return
             }
@@ -49,7 +51,7 @@ class BusinessScanPage extends React.Component {
         this.getCodeCurrentInfo(data)
     };
 
-    
+
 
     getCodeCurrentInfo = async (id) => {
         const {requestUrl} = this.props.config;
@@ -64,13 +66,6 @@ class BusinessScanPage extends React.Component {
             return
         }
         if (extension.type === 4) {
-            // let registerInfo = JSON.parse(extension.content);
-            // registerInfo.id = id;
-            // this.setState({registerInfo}, () => {
-            //     this.startScan();
-            //     //TODO
-            //     // this.gotoPath('register', this.state.barCodeData);
-            // });
         } else if (extension.type === 5) {
             this.common.filialeId = JSON.parse(extension.content).filialeId;
             //判断经纪公司状态
@@ -96,7 +91,7 @@ class BusinessScanPage extends React.Component {
     };
 
     componentWillUnmount() {
-        this.common.interval && clearTimeout(this.common.interval);
+        this.common.interval && clearInterval(this.common.interval);
     }
 
     showAgreement = () => {
@@ -124,8 +119,9 @@ class BusinessScanPage extends React.Component {
             source: source
         };
         this.setState({joinLoading: true});
-        const result = await projectService.oldUsersRegisterReq(config.requestUrl.cqAuth, requestData).catch(() => {
-            this.setState({joinSuccess: false, joinLoading: false});
+        const result = await projectService.oldUsersRegisterReq(config.requestUrl.cqAuth, requestData).catch((e) => {
+            this.setState({joinSuccess: false, joinLoading: false, visible: false});
+            Toast.message(`加入失败${e.message}`)
             this.startScan();
         });
         if (!result) return;

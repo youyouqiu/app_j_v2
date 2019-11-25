@@ -39,11 +39,11 @@ export function updateUserBasic (api, condition) {
     })
 }
 
-export function setUserExtension (condition, token) {
+export function setUserExtension (condition) {
     return request.post(`${request.getUrl().cqAuth}/api/user/extensions`, {
         method: 'POST',
         body: condition
-    }, token)
+    })
 }
 
 export function updateUser (api, condition) {
@@ -92,6 +92,13 @@ export function getReportNum (api) {
 export function phoneModifyPwd (api, condition) {
     return request.post(`${api}/api/User/PasswordBack`, {
         method: 'PUT',
+        body: condition
+    })
+}
+
+export function bindWechatAsync (condition) {
+    return request.post(`${request.getUrl().cqAuth}/v2/api/user/bind/wechat`, {
+        method: 'POST',
         body: condition
     })
 }

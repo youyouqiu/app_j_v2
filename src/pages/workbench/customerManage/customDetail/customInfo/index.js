@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import {Text, View, StyleSheet, Image, ImageBackground, ScrollView, Linking, TouchableOpacity, Platform} from 'react-native'
-import {deviceWidth, scaleSize} from '../../../../../utils/screenUtil';
-import NewSteps from '../newSteps'
+import { Text, View, StyleSheet, Image, ImageBackground, ScrollView, Linking, TouchableOpacity, findNodeHandle, UIManager, SafeAreaView } from 'react-native'
+import { deviceWidth, scaleSize } from '../../../../../utils/screenUtil';
 import { connect } from 'react-redux'
 import ApiCustom from '../../../../../services/customManager'
 import { Toast } from 'teaset'
-import {selectCustomerInfoParam} from '../../../report/addReport';
+import { selectCustomerInfoParam } from '../../../report/addReport';
+import Progress from './progress'
+import LinearGradient from 'react-native-linear-gradient'
 
-
-const NewStep = NewSteps.Step;
 
 const HEADIMG = require('../../../../../images/pictures/head.png')
 const WHITE = require('../../../../../images/icons/write.png')
@@ -18,7 +17,8 @@ const REGION = require('../../../../../images/pictures/region.png')
 const otherManImage = require('../../../../../images/pictures/manInfo.png')
 const otherWomenImage = require('../../../../../images/pictures/womenInfo.png')
 const NOINFO = require('../../../../../images/pictures/noInfo.png')
-const CLAAPHONE = require('../../../../../images/icons/cusPhone.png')
+
+
 
 const styles = StyleSheet.create({
     Detail: {
@@ -48,8 +48,10 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         // marginLeft: scaleSize(16)
     },
-    nameText: {
-        color: '#000000'
+    blodTextBase: {
+        color: '#000000',
+        fontWeight: '500',
+        fontSize: scaleSize(32)
     },
     rightDetail: {
         width: scaleSize(175),
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         marginTop: scaleSize(24),
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
     },
     buyTitle: {
         color: '#000000',
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         alignItems: 'center',
         height: scaleSize(132),
-        marginLeft: scaleSize(10),
+        paddingHorizontal: scaleSize(10),
         marginTop: scaleSize(28),
     },
     recImg: {
@@ -156,11 +158,11 @@ const styles = StyleSheet.create({
     },
     otherInfo: {
         width: '100%',
-        height: scaleSize(673),
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: '#FFFFFF',
-        marginTop: scaleSize(24)
+        marginTop: scaleSize(24),
+        paddingBottom: scaleSize(108 + 2 * 40),
     },
     titleView: {
         height: scaleSize(116)
@@ -170,11 +172,11 @@ const styles = StyleSheet.create({
         marginTop: scaleSize(32),
         color: '#000000',
         fontSize: scaleSize(28),
-        fontWeight: '600'
+        fontWeight: '600',
     },
     otherImg: {
         height: scaleSize(390),
-        width: scaleSize(750)
+        width: scaleSize(750),
     },
     infoText: {
         color: '#868686',
@@ -183,18 +185,21 @@ const styles = StyleSheet.create({
     },
     otherInfoView: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        width: deviceWidth,
+        position: 'relative',
     },
     markView: {
         marginTop: scaleSize(55),
-        marginLeft: scaleSize(31),
+        marginHorizontal: scaleSize(30),
         width: scaleSize(686),
-        height: scaleSize(88),
+        paddingVertical: scaleSize(24),
+        paddingLeft: scaleSize(16),
+        paddingRight: scaleSize(32),
         backgroundColor: '#F8F8F8',
-        justifyContent: 'center',
         alignItems: 'center',
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
     reportCus: {
         width: scaleSize(686),
@@ -204,7 +209,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#1F3070',
-        borderRadius: scaleSize(8)
+        borderRadius: scaleSize(8),
+    },
+    footer: {
+        position: 'absolute',
+        bottom: scaleSize(0),
+        height: scaleSize(140),
+        backgroundColor: '#fff',
+        justifyContent: 'flex-end'
     },
     reportCusText: {
         color: '#FFFFFF',
@@ -226,7 +238,7 @@ const styles = StyleSheet.create({
     },
     noInfoImg: {
         width: deviceWidth,
-        height: deviceWidth*247/750
+        height: deviceWidth * 247 / 750
     },
     phoneView: {
         width: '100%',
@@ -257,6 +269,14 @@ const styles = StyleSheet.create({
         height: scaleSize(30),
         marginRight: scaleSize(8),
     },
+    linearGradient: {
+        width: scaleSize(78),
+        height: scaleSize(36),
+        borderRadius: scaleSize(18),
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: scaleSize(11)
+    },
 })
 
 const gradeTextObj = {
@@ -277,8 +297,25 @@ class CustomInfo extends Component {
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            this.getCusInfo()
+        this.getCusInfo()
+    }
+
+    // shouldComponentUpdate(nextProps, nextState) {
+
+    // }
+
+    /**
+     * 控制
+     */
+    TextZoom = () => {
+        const handle = findNodeHandle(this.area);
+        UIManager.measure(handle, (x, y, width, height, X, Y) => {
+            console.log('相对父视图位置x', x);
+            console.log('相对父视图位置y', y);
+            console.log('组件宽度', width);
+            console.log('组件高度', height);
+            console.log('绝对位置x', X);
+            console.log('绝对位置y', Y);
         })
     }
 
@@ -299,9 +336,9 @@ class CustomInfo extends Component {
             buildingTreeId: ''
         }
         try {
-            let res = await ApiCustom.cusDetail(api, params)
+            let res = await ApiCustom.cusDetail(api, params);
             if (res.code === '0') {
-                let dataInfo = res.extension || {}
+                let dataInfo = res.extension || {};
                 this.setState({
                     dataInfo
                 })
@@ -319,7 +356,7 @@ class CustomInfo extends Component {
         let customerPhones = dataInfo.customerPhones || []
         let dataArr = []
         customerPhones.map((item, index) => {
-            dataArr.push({phone: item.phone, isMain: index === 0 ? true : false})
+            dataArr.push({ phone: item.phone, isMain: index === 0 ? true : false })
         })
 
         let _q = new selectCustomerInfoParam();
@@ -329,7 +366,6 @@ class CustomInfo extends Component {
         _q.customerId = dataInfo.id;
         _q.sex = dataInfo.sex;
 
-        console.log(this.state.dataInfo, 'this.state.dataInfo');
         this.props.navigation.navigate('addReport', { customerInfo: _q })
     }
 
@@ -344,178 +380,156 @@ class CustomInfo extends Component {
         Linking.openURL(`tel: ${phone}`)
     }
 
+
     render() {
         let { dataInfo } = this.state
-        let phonArr = []
+        console.log('dataInfo', dataInfo);
         let customerPhones = dataInfo.customerPhones || []
-        console.log(dataInfo, 'dataInfodataInfo')
         let fullName = dataInfo.areaFullName || ''
         let areaFullName = ''
+        //范围显示 相等时只显示一个
+        const { sumArea, maxSumArea, sumBudget, maxSumBudget } = dataInfo
+        let area = sumArea === maxSumArea ? sumArea : sumArea + (sumArea && maxSumArea && '~') + maxSumArea
+        let budget = sumBudget === maxSumBudget ? sumBudget : sumBudget + (sumBudget && maxSumBudget && '~') + maxSumBudget
+
         if (fullName) {
             areaFullName = fullName.substring(fullName.lastIndexOf('-') + 1)
         } else {
             areaFullName = '暂无数据'
         }
-        customerPhones.map((item, index) => {
-            if (index === 0) return
-            phonArr.push({ phone: item.phone })
-        })
 
         let portrait = dataInfo.portrait || {}
         let regPhone = /^1[3-9]{1}[\d]{9}$/;
-        const steps = [
-            {
-                title: '报备',
-                transactionsStatus: 0
-            },
-            {
-                title: '到访',
-                transactionsStatus: 1
-            },
-            {
-                title: '认购',
-                transactionsStatus: 2
-            },
-            {
-                title: '签约',
-                transactionsStatus: 3
-            }
-        ].map((s, i) => (
-            <NewStep
-                key={i}
-                isStart={i === 0}
-                isEnd={i === 3}
-                icon={s.transactionsStatus > 2}
-            >
-                <Text style={[{ fontSize: scaleSize(24), marginBottom: scaleSize(50), marginLeft: scaleSize(80) }, s.transactionsStatus > 2 ? { color: '#CBCBCB' } : { color: '#1F3070' }]}>{s.title}</Text>
-            </NewStep>
-        ))
-        return (
-            <ScrollView loading={false}>
-                {/* 进程一期不开发 */}
-                {/* <View style={styles.timeAxis}>
-                    <NewSteps direction="horizontal">{steps}</NewSteps>
-                </View> */}
-                <View style={styles.Detail}>
-                    <View style={styles.leftDetail}>
-                        {
-                            dataInfo.isRelationCustomerId ?
-                            <Image source={dataInfo.headImg ? {uri: dataInfo.headImg} : HEADIMG} style={styles.headImg} /> : null
-                        }
 
-                        <View style={styles.infoView}>
-                            <Text style={[styles.nameText, { fontSize: scaleSize(28) }]}>{dataInfo.customerName || '暂无数据'}</Text>
+        return (
+            <>
+                <ScrollView loading={false}>
+                    {/* 跟进进程 */}
+                    <Progress id={dataInfo.id} navigation={this.props.navigation} />
+
+                    <View style={styles.Detail}>
+                        <View style={styles.leftDetail}>
                             {
-                                dataInfo.isFullPhone ?
-                                    <TouchableOpacity onPress={() => this.callPhone(dataInfo.mainPhone || '')} style={{ display: 'flex', flexDirection: 'row', marginTop: scaleSize(15) }}>
-                                        <Text style={[styles.nameText, { fontSize: scaleSize(32), fontWeight: '500' }]}>{dataInfo.mainPhone || '暂无数据'}</Text>
-                                        <Image source={CLAAPHONE} style={[styles.whiteImg, { marginLeft: scaleSize(8), marginTop: scaleSize(8) }]} />
-                                    </TouchableOpacity>
-                                    : <Text style={[styles.nameText, { fontSize: scaleSize(32), fontWeight: '500' }]}>{dataInfo.mainPhone || '暂无数据'}</Text>
+                                dataInfo.isRelationCustomerId ?
+                                    <Image source={dataInfo.headImg ? { uri: dataInfo.headImg } : HEADIMG} style={styles.headImg} /> : null
                             }
 
+                            <View style={styles.infoView}>
+                                <Text style={styles.blodTextBase}>{dataInfo.customerName || '暂无数据'}</Text>
+                            </View>
+                        </View>
+                        <View>
+                            <TouchableOpacity style={styles.rightDetail} onPress={() => this.improveData()}>
+                                <Image source={WHITE} style={styles.whiteImg} />
+                                <Text style={styles.allInfo}>完善资料</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                    <View>
-                        <TouchableOpacity style={styles.rightDetail} onPress={() => this.improveData()}>
-                            <Image source={WHITE} style={styles.whiteImg} />
-                            <Text style={styles.allInfo}>完善资料</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                {
-                    phonArr.length > 0 ?
-                        phonArr.map((item, index) => {
-                            return (
-                                <View key={index} style={styles.phoneView}>
-                                    <Text style={{ color: '#000000', fontSize: scaleSize(32), marginLeft: scaleSize(32) }}>{item.phone}</Text>
-                                    {
-                                        regPhone.test(item.phone) ?
-                                            <TouchableOpacity
-                                                activeOpacity={0.8}
-                                                style={[styles.phoneWarp, styles.topRight, {marginRight: scaleSize(32)}]}
-                                                onPress={() => { this.callPhone(item.phone || '') }}
-                                            >
-                                                <Image
-                                                    style={styles.topImg}
-                                                    source={require('../../../../../images/icons/phone2.png')}
-                                                    alt='图标'
-                                                />
-                                                <Text style={{ fontSize: scaleSize(24), color: 'rgba(75,106,197,1)' }}>拨打电话</Text>
-                                            </TouchableOpacity> : null
-                                    }
-
-                                </View>
-                            )
-                        }) : null
-                }
-                <View style={styles.basicInfo}>
-                    <Text style={styles.basicTitle}>基本信息</Text>
-                    <View style={styles.strengthView}>
-                        <Text style={styles.cusText}>客户强度</Text>
-                        <Text style={styles.gradeText}>{(gradeTextObj[dataInfo.grade] || {}).text || '暂无数据'}</Text>
-                    </View>
-                    <View style={[styles.strengthView, { marginTop: scaleSize(16) }]}>
-                        <Text style={styles.cusText}>现居地址</Text>
-                        <Text style={[styles.cusText, { color: '#000000', marginLeft: scaleSize(32) }]}>{(dataInfo.portrait || {}).address || '暂无数据'}</Text>
-                    </View>
-                </View>
-                <View style={styles.buyExpect}>
-                    <Text style={styles.buyTitle}>购买期望</Text>
-                    <View style={styles.content}>
-                        <ImageBackground source={REGION} style={styles.recImg}>
-                            <Text style={styles.areaText}>区域</Text>
-                            <Text style={styles.bottomText}>{areaFullName || '暂无数据'}</Text>
-                        </ImageBackground>
-                        <ImageBackground source={AREA} style={styles.recImg}>
-                            <Text style={styles.areaText}>面积</Text>
-                            <Text style={styles.bottomText}>{dataInfo.sumArea? dataInfo.sumArea+'㎡' : '暂无数据'}</Text>
-                        </ImageBackground>
-                        <ImageBackground source={BUDGET} style={styles.recImg}>
-                            <Text style={styles.areaText}>预算</Text>
-                            <Text style={styles.bottomText}>{dataInfo.sumBudget?dataInfo.sumBudget+'元' : '暂无数据'}</Text>
-                        </ImageBackground>
-                    </View>
-                </View>
-                <View style={styles.otherInfo}>
-                    <View style={styles.titleView}>
-                        <Text style={styles.otherText}>其他信息</Text>
-                    </View>
                     {
-                        portrait.age || portrait.address || portrait.buildingCategory || portrait.matching || portrait.direction || portrait.homePurchaseTarget ?
-                            <ImageBackground source={dataInfo.sex ? otherManImage : otherWomenImage} style={styles.otherImg}>
-                                <Text style={[styles.infoText, { marginLeft: scaleSize(375) }]}>{portrait.address || '暂无数据'}</Text>
-                                <View style={styles.otherInfoView}>
-                                    <Text style={[styles.infoText, { marginLeft: scaleSize(100), marginTop: scaleSize(30) }]}>{ portrait.matching ? portrait.matching.slice(0,5) + '...' : '暂无数据'}</Text>
-                                    <Text style={[styles.infoText, { marginLeft: scaleSize(270), marginTop: scaleSize(30) }]}>{portrait.age || '暂无数据'}</Text>
-                                </View>
-                                <View style={[styles.otherInfoView, { marginTop: scaleSize(120) }]}>
-                                    <Text style={[styles.infoText, { marginLeft: scaleSize(150), marginTop: scaleSize(20) }]}>{portrait.direction || '暂无数据'}</Text>
-                                    <Text style={[styles.infoText, { marginLeft: scaleSize(350), marginTop: scaleSize(20) }]}>{portrait.homePurchaseTarget || '暂无数据'}</Text>
-                                </View>
-                                <View style={[styles.otherInfoView, { marginTop:Platform.OS==='ios' ? scaleSize(76) :  scaleSize(50), }]}>
-                                    <Text style={[styles.infoText, { marginLeft: scaleSize(410) }]}>{portrait.buildingCategory || '暂无数据'}</Text>
-                                </View>
-                            </ImageBackground>
-                            :
-                            <View style={styles.noInfoView}>
-                                <Image source={NOINFO} style={styles.noInfoImg} />
-                                <Text style={{ color: '#868686', fontSize: scaleSize(28), marginTop: scaleSize(24) }}>抱歉，您未录入用户数据</Text>
-                            </View>
+                        customerPhones.length > 0 ?
+                            customerPhones.slice(0, 3).map((item, index) => {
+                                return (
+                                    <View key={index} style={styles.phoneView}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                            <Text style={[styles.blodTextBase, { marginLeft: scaleSize(32) }]}>
+                                                {index === 0 ? '主 ：' + item.phone : item.phone}
+                                            </Text>
+                                            {
+                                                item.hasRepeatPhone &&
+                                                <LinearGradient colors={['#FF8A6B', '#FE5139']} style={styles.linearGradient}>
+                                                    <Text style={{ color: '#fff', fontSize: scaleSize(24) }}>重复</Text>
+                                                </LinearGradient>
+                                            }
+                                        </View>
+                                        {
+                                            regPhone.test(item.phone) ?
+                                                <TouchableOpacity
+                                                    activeOpacity={0.8}
+                                                    style={[styles.phoneWarp, styles.topRight, { marginRight: scaleSize(32) }]}
+                                                    onPress={() => { this.callPhone(item.phone || '') }}
+                                                >
+                                                    <Image
+                                                        style={styles.topImg}
+                                                        source={require('../../../../../images/icons/phone2.png')}
+                                                        alt='图标'
+                                                    />
+                                                    <Text style={{ fontSize: scaleSize(24), color: 'rgba(75,106,197,1)' }}>拨打电话</Text>
+                                                </TouchableOpacity> : null
+                                        }
 
+                                    </View>
+                                )
+                            }) : null
                     }
-
-                    <View style={styles.markView}>
-                        <Text style={styles.infoText}>备注:</Text>
-                        <Text style={[styles.infoText, { color: '#000000' }]}>{dataInfo.mark || '暂无备注'}</Text>
+                    <View style={styles.basicInfo}>
+                        <Text style={styles.basicTitle}>基本信息</Text>
+                        <View style={styles.strengthView}>
+                            <Text style={styles.cusText}>客户强度</Text>
+                            <Text style={styles.gradeText}>{(gradeTextObj[dataInfo.grade] || {}).text || '暂无数据'}</Text>
+                        </View>
+                        <View style={[styles.strengthView, { marginTop: scaleSize(16) }]}>
+                            <Text style={styles.cusText}>现居地址</Text>
+                            <Text style={[styles.cusText, { color: '#000000', marginLeft: scaleSize(32) }]}>{(dataInfo.portrait || {}).address || '暂无数据'}</Text>
+                        </View>
                     </View>
-                </View>
-                <View style={{ marginBottom: scaleSize(20) }}>
+                    <View style={styles.buyExpect}>
+                        <Text style={styles.buyTitle}>购买期望</Text>
+                        <View style={styles.content}>
+                            <ImageBackground source={REGION} style={styles.recImg}>
+                                <Text style={styles.areaText}>区域</Text>
+                                <Text style={styles.bottomText}>{areaFullName || '暂无数据'}</Text>
+                            </ImageBackground>
+                            <ImageBackground source={AREA} style={styles.recImg}>
+                                <Text style={styles.areaText} >面积</Text>
+                                <Text style={styles.bottomText} ref={ref => this.area = ref} onPress={this.AA}>{area ? area + '㎡' : '暂无数据'}</Text>
+                            </ImageBackground>
+                            <ImageBackground source={BUDGET} style={styles.recImg}>
+                                <Text style={styles.areaText}>预算</Text>
+                                <Text style={styles.bottomText}>{budget ? budget + '万' : '暂无数据'}</Text>
+                            </ImageBackground>
+                        </View>
+                    </View>
+                    <View style={styles.otherInfo}>
+                        <View style={styles.titleView}>
+                            <Text style={styles.otherText}>其他信息</Text>
+                        </View>
+                        {
+                            portrait.age || portrait.address || portrait.buildingCategory || portrait.matching || portrait.direction || portrait.homePurchaseTarget ?
+                                <>
+                                    <ImageBackground source={dataInfo.sex ? otherManImage : otherWomenImage} style={styles.otherImg}>
+                                    </ImageBackground>
+                                    <Text style={[styles.infoText, { position: 'absolute', left: scaleSize(374), top: scaleSize(110) }]}>{portrait.address || '暂无数据'}</Text>
+                                    <Text style={[styles.infoText, { position: 'absolute', left: scaleSize(124), top: scaleSize(178) }]}>
+                                        {portrait.matching ?
+                                            portrait.matching.split(',').length > 2 ?
+                                                portrait.matching.split(',').slice(0, 2).join(',') + '...'
+                                                : portrait.matching
+                                            : '暂无数据'}
+                                    </Text>
+                                    <Text style={[styles.infoText, { position: 'absolute', left: scaleSize(533), top: scaleSize(178) }]}>{portrait.age || '暂无数据'}</Text>
+                                    <Text style={[styles.infoText, { position: 'absolute', left: scaleSize(76), top: scaleSize(359) }]}>{portrait.direction || '暂无数据'}</Text>
+                                    <Text style={[styles.infoText, { position: 'absolute', left: scaleSize(555), top: scaleSize(359) }]}>{portrait.homePurchaseTarget || '暂无数据'}</Text>
+                                    <Text style={[styles.infoText, { position: 'absolute', left: scaleSize(411), top: scaleSize(449) }]}>{portrait.buildingCategory || '暂无数据'}</Text>
+                                </>
+                                :
+                                <View style={styles.noInfoView}>
+                                    <Image source={NOINFO} style={styles.noInfoImg} />
+                                    <Text style={{ color: '#868686', fontSize: scaleSize(28), marginTop: scaleSize(24) }}>抱歉，您未录入用户数据</Text>
+                                </View>
+
+                        }
+                        <View style={styles.markView}>
+                            <Text style={styles.infoText}>备注：</Text>
+                            <Text style={[styles.infoText, { color: '#000000', width: '90%' }]}>{dataInfo.mark || '暂无备注'}</Text>
+                        </View>
+                    </View>
+                </ScrollView>
+                <View style={styles.footer}>
                     <TouchableOpacity style={styles.reportCus} onPress={() => this.gotoAddReport()}>
                         <Text style={styles.reportCusText}>报备客户</Text>
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
+            </>
         )
     }
 }

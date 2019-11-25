@@ -24,12 +24,14 @@ const NavigatorBar: FunctionComponent<TopBarProps> = ({
             />
         )
     }
+    // StatusBar 现在未起作用
+    
     return (
         <NavigationBar
             style={[{ backgroundColor: '#FFF' }, topBarStyle]}
             tintColor={tintColor}
             title={title}
-            titleStyle={{ color: '#000', fontSize: scaleSize(32) }}
+            titleStyle={{ color: '#000', fontSize: scaleSize(32),fontWeight:'500' }}
             leftView={leftView}
             rightView={rightView}
             statusBarStyle={statusBarStyle}

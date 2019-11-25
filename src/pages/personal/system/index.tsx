@@ -16,6 +16,8 @@ import DeviceInfo from 'react-native-device-info'
 import UpdateModal from '../updateModal'
 const ios = Platform.OS === 'ios'
 import requestUrl, {apiTypes} from '../../../constants/requestUrl'
+import { StackActions, NavigationActions } from 'react-navigation';
+
 
 const System: FunctionComponent<any> = props => {
 
@@ -100,7 +102,12 @@ const System: FunctionComponent<any> = props => {
                 buildingId: ''
             }
         });
-        navigation.navigate('login', '')
+        const resetAction = StackActions.reset({
+            index: 0,
+            key: 'AuthRouter',
+            actions: [NavigationActions.navigate({ routeName: 'login' })],
+        });
+        props.navigation.dispatch(resetAction)
     }
 
     const checkUpdate = async () => {

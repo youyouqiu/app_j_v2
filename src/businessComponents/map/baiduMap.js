@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Image, TouchableOpacity, Linking, TextInput} from 'react-native';
+import {Platform, StyleSheet, View, Image, TouchableOpacity, Linking, Text, ScrollView} from 'react-native';
 import {Location, MapView} from 'react-native-baidumap-sdk'
 import {XActionSheet} from "../../components/XActionSheet";
 import Page from "../../components/Page";
@@ -7,6 +7,11 @@ import {scaleSize} from "../../utils/screenUtil";
 import {connect} from "react-redux";
 import Toast from 'teaset/components/Toast/Toast'
 import projectService from "../../services/projectService";
+import {aroundType} from '../../pages/project/buildingDetail/buildJson'
+import {mapSearch} from '../../utils/mapServerApi'
+import ScrollableTabView from '@new-space/react-native-scrollable-tab-view'
+
+// import {} from '@new'
 
 let serviceUrl = {
     baidu: Platform.OS === 'ios' ? 'baidumap://' : 'baidumap://map/direction',
@@ -19,7 +24,6 @@ class BaiduMap extends Component {
 
     constructor(props) {
         super(props);
-        console.log('props', props);
         const {latitude, longitude, name, address, txLatitude, txLongitude} = props.navigation.state.params;
         this.state = {
             latitude: parseFloat(latitude),
@@ -28,10 +32,13 @@ class BaiduMap extends Component {
             txLongitude: parseFloat(txLongitude),
             name: name,
             address: address,
+            cuurValue: {
+                value: []
+            },
             visible: false,
+            aroundMatchingValue: aroundType
         };
         this.common = {
-
             haveGDMap: false,
             haveBDMap: false,
             haveQQMap: false,
@@ -54,12 +61,12 @@ class BaiduMap extends Component {
         });
         //检测是否安装高德地图
         Linking.canOpenURL(serviceUrl.gaode).then(supported => {
-            console.log('gaode', supported);
             supported ? this.common.mapList.push('高德地图') : null;
         });
         if (Platform.OS === 'ios') {
             this.common.mapList.push('本机地图')
         }
+        this.getAroundMatching()
         this.getCurrentCoordinate();
     }
 
@@ -71,8 +78,37 @@ class BaiduMap extends Component {
         }))
     };
 
+    // 获取周边配套信息
+    getAroundMatching = async() => {
+        let {latitude, longitude} = this.state
+        let list = []
+        aroundType.map(item => {
+            let a = new Promise((resolve) => {
+                mapSearch(latitude, longitude, item.label, 10).then(res => {
+                    if (res.message === 'ok' && res.total > 0) {
+                        resolve({key: item.key, value: res.results, ...item})
+                    } else {
+                        resolve({key: item.key, value: [], ...item})
+                    }
+                // eslint-disable-next-line no-unused-vars
+                }).catch(e => {
+                    resolve({key: item.key, value: [], ...item})
+                })
+            })
+            list.push(a)
+        })
+        Promise.all(list).then(values => {
+            this.setState({
+                aroundMatchingValue: values
+            }, () => {
+                this.setCuurValue(0)
+            })
+        })
+    }
+
     getCurrentCoordinate = async () => {
         await Location.init();
+        // eslint-disable-next-line no-unused-vars
         let locationListener = Location.addLocationListener(async (location) => {
             const {latitude, longitude} = location;
             const res = await projectService.baiduTotx(latitude, longitude);
@@ -92,7 +128,7 @@ class BaiduMap extends Component {
         if (this.common.mapList.length === 0) {
             if (Platform.OS === 'ios') {
                 Linking.openURL(`http://maps.apple.com/?ll=${latitude},${longitude}&q=${address}`).catch(err => {
-                    Toast.fail('打开地图失败');
+                    Toast.fail(`打开地图失败:${err.message}`);
                 })
             } else {
                 if (selfLatitude === 0) {
@@ -110,7 +146,7 @@ class BaiduMap extends Component {
         }))
     };
 
-    onSelect = (item, idx) => {
+    onSelect = (item) => {
         this.setState({visible: false});
         const {latitude, longitude, name, address, txLatitude, txLongitude} = this.state;
         if (item === '高德地图') {
@@ -129,42 +165,98 @@ class BaiduMap extends Component {
         }
     };
 
+    _onChangeTab = (item) => {
+        this.setCuurValue(item.i)
+    }
+
+    setCuurValue = (index) => {
+        let {aroundMatchingValue} = this.state
+        let cuurValue = aroundMatchingValue[index] || {}
+        this.setState({
+            cuurValue: cuurValue
+        })
+    }
+
     openMapUrl = (url, param) => {
-        Linking.openURL(url).catch(err => {
+        Linking.openURL(url).catch(e => {
             this.modalToggle();
-            Toast.message(param + '打开失败');
+            Toast.message(param + '打开失败' + e.message);
         })
     };
 
+    renderTabBar = (props) => {
+        return <View style={mapStyle.renderTabBar}>
+            {props.tabs.map((item, i) => {
+                return <TouchableOpacity activeOpacity={0.9} style={mapStyle.renderTabBarItem} key={item.key} onPress={() => props.goToPage(i)}>
+                    <Image style={mapStyle.itemIcon} source={item.icon}/>
+                    <Text style={[mapStyle.itemText, {color: props.activeTab === i ? '#1DA873' : '#868686'}]}>{item.label}</Text>
+                </TouchableOpacity>
+            })}
+        </View>
+    }
+
     render() {
-        const {latitude, longitude, visible, name, address,} = this.state;
+        const {latitude, longitude, visible, name, aroundMatchingValue, cuurValue} = this.state;
+        let cuurValueList = cuurValue.value || []
         const {mapList} = this.common;
-        const markerView = <Image style={mapStyle.ms_marker_icon} source={require('../../images/icons/map_location.png')}/>;
+        const markerView = (source, style) => { return <Image style={[mapStyle.ms_marker_icon, style]} source={source || require('../../images/icons/map_red.png')}/>};
         return (
-            <Page scroll={false} title='地图服务'>
+            <Page scroll={false} title={name}>
                 <View style={mapStyle.ms_wrapper}>
                     <MapView style={mapStyle.ms_map_view}
                              zoomControlsDisabled={true}
                              center={{latitude: latitude, longitude: longitude}}
                              zoomLevel={15}>
                         <MapView.Marker coordinate={{latitude: latitude, longitude: longitude}}
-                                        view={() => (markerView)}/>
+                                        view={() => (markerView())}/>
+                        {
+                            cuurValueList.map((item, i) => {
+                                let {location = {}} = item
+                                return <MapView.Marker key={i} coordinate={{latitude: location.lat, longitude: location.lng}}
+                                view={() => (markerView(cuurValue.mapIcon, {width: scaleSize(48), height: scaleSize(58)}))}/>
+                            })
+                        }
                     </MapView>
-                    <TouchableOpacity style={{position: 'absolute', bottom: scaleSize(180), right: scaleSize(30)}}
+                    <TouchableOpacity style={{position: 'absolute', bottom: '32%', right: scaleSize(30), padding: scaleSize(10)}}
                                       onPress={this.gotoCenter}>
                         <Image style={{width: scaleSize(55), height: scaleSize(55),}}
                                source={require('../../images/icons/dingwei.png')}/>
                     </TouchableOpacity>
-                    <View style={mapStyle.ms_footer}>
-                        <View style={mapStyle.ms_footer_left}>
-                            <Text numberOfLines={1} style={mapStyle.ms_footer_text1}>{name}</Text>
-                            <Text numberOfLines={1} style={mapStyle.ms_footer_text2}>{address}</Text>
-                        </View>
-                        <TouchableOpacity onPress={this.modalToggle}>
-                            <Image source={require('../../images/icons/lubiao.png')}
-                                   style={mapStyle.ms_footer_right_icon}/>
-                        </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity style={{position: 'absolute', bottom: '32%', right: scaleSize(120), padding: scaleSize(10)}} onPress={this.modalToggle}>
+                        <Image style={{width: scaleSize(55), height: scaleSize(55),}} source={require('../../images/icons/lubiao.png')}/>
+                    </TouchableOpacity>
+                    <ScrollableTabView
+                        renderTabBar={(props) => this.renderTabBar(props)}
+                        tabBarBackgroundColor='white'
+                        tabBarInactiveTextColor={'#4D4D4D'}
+                        tabBarActiveTextColor={'#1F3070'}
+                        onChangeTab={this._onChangeTab}
+                        style={{paddingBottom: scaleSize(20)}}
+                    >
+                        {
+                            aroundMatchingValue.map((curr, cruuindex) => {
+                                let value = curr.value
+                                if (!value || (value && value.length === 0)) return <View  style={mapStyle.noData} tabLabel={curr}  key={cruuindex}>
+                                    <Text style={mapStyle.noDataText}>周围2公里内没有更多数据了~</Text>
+                                </View>
+                                return <ScrollView tabLabel={curr} key={cruuindex} style={{width: '100%'}}>
+                                {   
+                                    value.map((item, index) => {
+                                        return <View style={mapStyle.valueItem} key={index}>
+                                            <View style={mapStyle.valueItemLeft}>
+                                                <Text style={mapStyle.valueItemName} numberOfLines={1}>{item.name}</Text>
+                                                <Text style={mapStyle.address} numberOfLines={1}>{item.address}</Text>
+                                            </View>
+                                            <View style={mapStyle.valueItemRight}>
+                                                <Image style={mapStyle.addressIcon} source={require('../../images/icons/address.png')}/>
+                                                <Text style={mapStyle.distance}>{item.detail_info.distance}m</Text>
+                                            </View>
+                                        </View>
+                                    })
+                                }
+                            </ScrollView>})
+                        }
+                    </ScrollableTabView>
                     <XActionSheet data={mapList} visible={visible} onSelect={this.onSelect}
                                   onClose={this.modalToggle}/>
                 </View>
@@ -182,13 +274,84 @@ const mapStateToProps = ({config}) => {
 export default connect(mapStateToProps)(BaiduMap)
 
 const mapStyle = StyleSheet.create({
+    noDataText: {
+        color: '#868686'
+    },
+    noData: {
+        width: '100%',
+        height: '100%',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    address: {
+        fontSize: scaleSize(24),
+        color: '#868686'
+    },
+    addressIcon: {
+        width: scaleSize(32),
+        height: scaleSize(32)
+    },
+    distance: {
+        fontSize: scaleSize(24),
+        color: '#868686'
+    },
+    valueItemName: {
+        fontSize: scaleSize(28),
+        color: '#000000',
+        marginBottom: scaleSize(10)
+    },
+    valueItemRight: {
+        flex: 0,
+        flexDirection: 'row'
+    },
+    valueItemLeft: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    valueItem: {
+        display: 'flex',
+        flexDirection: 'row', 
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingLeft: scaleSize(24),
+        paddingRight: scaleSize(24),
+        paddingTop: scaleSize(16),
+        paddingBottom: scaleSize(16)
+    },
+    itemText: {
+        fontSize: scaleSize(24),
+    },
+    itemIcon: {
+        width: scaleSize(32),
+        height: scaleSize(32)
+    },
+    renderTabBarItem: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        height: '100%',
+        justifyContent: 'space-between',
+        paddingTop: scaleSize(12),
+        paddingBottom: scaleSize(12),
+        flex: 1
+    },
+    renderTabBar: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: scaleSize(90)
+    },
     ms_wrapper: {
         flexDirection: 'column',
         height: '100%',
     },
     ms_map_view: {
         width: '100%',
-        height: '100%'
+        height: '70%'
     },
     ms_marker_icon: {
         width: scaleSize(82),

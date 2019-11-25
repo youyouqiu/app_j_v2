@@ -28,7 +28,6 @@ class PhoneLogin extends PureComponent {
         this.siv = null
         // WeChat.registerApp('wxcb4a3da46de63809');
     }
-
     componentWillUnmount () {
         this.siv && clearInterval(this.siv)
     }
@@ -108,7 +107,7 @@ class PhoneLogin extends PureComponent {
                     { 'parName': 'APP_OS_VERSION', 'parValue': Platform.Version },
                     { 'parName': 'APP_VERSION', 'parValue': DeviceInfo.getReadableVersion() || '' }
                 ]
-                await setUserExtension(extendeds, res.access_token)
+                await setUserExtension(extendeds)
             }
         }
     }
@@ -148,15 +147,28 @@ class PhoneLogin extends PureComponent {
     }
 
     count = () => {
+        const codeTime = this.state.verifiTime;
+        /*过期时间戳（毫秒） +1000 毫秒容错*/
+        const overTimeStamp = Date.now() + codeTime * 1000 + 1000;
         this.siv = setInterval(() => {
+            if (Date.now() >= (overTimeStamp - 1000)) {
+                this.siv && clearInterval(this.siv);
+                this.setState({ verfi: 'end', verifiTime: 59 })
+            } else {
+                const leftTime = parseInt((overTimeStamp - Date.now()) / 1000, 10);
+                this.setState({ verifiTime: leftTime })
+            }
+        }, 1000)
+
+        /*this.siv = setInterval(() => {
             let {verifiTime} = this.state
             this.setState({ verifiTime: (verifiTime - 1) }, () => {
                 if (verifiTime <= 0) {
-                    clearInterval(this.siv);　　//倒计时( setInterval() 函数会每秒执行一次函数)，用 clearInterval() 来停止执行:
+                    this.siv && clearInterval(this.siv);　　//倒计时( setInterval() 函数会每秒执行一次函数)，用 clearInterval() 来停止执行:
                     this.setState({ verfi: 'end', verifiTime: 60 })
                 }
-            }) 
-        }, 1000)
+            })
+        }, 1000)*/
     }
 
     render() {

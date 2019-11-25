@@ -32,7 +32,7 @@ class SingHistory extends Component{
         try{
             let {api} = this.props.config.requestUrl
             let subscriptionId = (this.props.navigation.state.params || {}).subscriptionId ||''
-  
+
             let res = await ApiSing.hisory(api,subscriptionId)
             console.log(res,'hisory111')
 
@@ -47,21 +47,21 @@ class SingHistory extends Component{
             this.setState({loading:false})
             console.log(e,777777777)
         }
-        
+
     }
     gotoPreview = (key,fileList) =>{
         this.photoProps = {
             index:key
         }
         fileList.length && this.setState({visible:true})
-        
+
     }
     onClose = () =>{
         this.setState({visible:false})
     }
     render(){
         let {visible,historyInfo = {},loading} = this.state
-        
+
         let params = this.props.navigation.state.params || {}
         let status = params.status || 5
 
@@ -94,45 +94,45 @@ class SingHistory extends Component{
             <BaseContainer title='历史变更' bodyStyle={{padding:0,backgroundColor: '#F8F8F8'}} loading={loading}>
                 {
                     status == 5?
-                        <CheckOut 
-                            title='退房'  
-                            data={historyInfo.roomReturnInfo} 
+                        <CheckOut
+                            title='退房'
+                            data={historyInfo.roomReturnInfo}
                             gotoPreview={this.gotoPreview}
-                        /> 
+                        />
                         :
                         <View>
 
                             {
                                 isRoomFirst == true?
                                     <View>
-                                        <SubscriptionInfo 
-                                            title='换房' 
-                                            isHistory={true} 
+                                        <SubscriptionInfo
+                                            title='换房'
+                                            isHistory={true}
                                             titleBg='#FE5139'
                                             data={historyInfo.changeRoomInfo}
                                         />
 
                                         <View style={{height:scaleSize(25)}}/>
-                                        <SubscriptionInfo 
-                                            title='换客' 
-                                            isHistory={true} 
-                                            titleBg='#49A1FF' 
+                                        <SubscriptionInfo
+                                            title='换客'
+                                            isHistory={true}
+                                            titleBg='#49A1FF'
                                             data={historyInfo.changeCustomerInfo}
                                         />
                                     </View>
                                     :isRoomFirst == false?
                                         <View>
-                                            <SubscriptionInfo 
-                                                title='换客' 
-                                                isHistory={true} 
-                                                titleBg='#49A1FF' 
+                                            <SubscriptionInfo
+                                                title='换客'
+                                                isHistory={true}
+                                                titleBg='#49A1FF'
                                                 data={historyInfo.changeCustomerInfo}
                                             />
                                             <View style={{height:scaleSize(25)}}/>
-                                            <SubscriptionInfo 
-                                                title='换房' 
-                                                isHistory={true} 
-                                                titleBg='#FE5139' 
+                                            <SubscriptionInfo
+                                                title='换房'
+                                                isHistory={true}
+                                                titleBg='#FE5139'
                                                 data={historyInfo.changeRoomInfo}
                                             />
                                         </View>
@@ -141,17 +141,17 @@ class SingHistory extends Component{
 
                             {
                                 isRoom?
-                                    <SubscriptionInfo 
-                                        title='换房' 
-                                        isHistory={true} 
-                                        titleBg='#FE5139' 
+                                    <SubscriptionInfo
+                                        title='换房'
+                                        isHistory={true}
+                                        titleBg='#FE5139'
                                         data={historyInfo.changeRoomInfo}
                                     />
                                     :isCus?
-                                        <SubscriptionInfo 
-                                            title='换客' 
-                                            isHistory={true} 
-                                            titleBg='#49A1FF' 
+                                        <SubscriptionInfo
+                                            title='换客'
+                                            isHistory={true}
+                                            titleBg='#49A1FF'
                                             data={historyInfo.changeCustomerInfo}
                                         />
                                         :null
@@ -159,22 +159,22 @@ class SingHistory extends Component{
                             }
 
                             <View style={{height:scaleSize(25)}}/>
-                            <VisitInfo 
-                                title='到访历史' 
-                                isHistory={true} 
-                                data={historyInfo.takeLookInfo} 
+                            <VisitInfo
+                                title='到访历史'
+                                isHistory={true}
+                                data={historyInfo.takeLookInfo}
                                 gotoPreview={this.gotoPreview}
                             />
 
                             <View style={{height:scaleSize(25)}}/>
                             <ReportInfo title='报备历史'  data={historyInfo.reportInfo}/>
 
-                        </View>     
+                        </View>
                 }
-                
+
                 <PhotosPreView onClose={this.onClose} visible={visible} fileList={fileList} {...this.photoProps}/>
-                
-            </BaseContainer> 
+
+            </BaseContainer>
         )
     }
 }

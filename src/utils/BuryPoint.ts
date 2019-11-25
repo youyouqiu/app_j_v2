@@ -143,7 +143,7 @@ class BuryingPoint {
   private setLocalLogs = async (logs: BehaviorLog[]) => {
     try {
       await storage.set(BuryingPoint.STORAGE_KEY, logs)
-    } catch {
+    } catch (e) {
       /** nothing todo */
     }
   }
@@ -156,6 +156,7 @@ class BuryingPoint {
     try {
       const url = request.getUrl().buryPoint
       const body = { ...this.logBodyData, logs }
+      console.log(JSON.stringify(body), 'body')
       await request.post(url, { body })
       await this.setLocalLogs([])
     } catch (e) {

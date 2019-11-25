@@ -35,6 +35,14 @@ const ApiCustom = {
         })
     },
 
+    // 号码查重
+    phoneIsRepeated: (api, params) => {
+        return request.post(`${api}/v2.0/api/customer/querycusomterrepeatphones`, {
+            method: 'POST',
+            body: params
+        })
+    },
+
     // 修改客户
     updateCustom: (api, params) => {
         return request.post(`${api}/v2.0/api/customer/putcustomerinfo`, {
@@ -61,7 +69,7 @@ const ApiCustom = {
 
     // 关联客户查询
     queryRelation: (api, params) => {
-        return request.post(`${api}/v2.0/api/customer/querycustomersimplebyphone`,{
+        return request.post(`${api}/v2.0/api/customer/querycustomersimplebyphone`, {
             method: 'POST',
             body: params
         })
@@ -69,25 +77,50 @@ const ApiCustom = {
 
     //  关联客户
     relationCus: (api, params) => {
-        return request.post(`${api}/v2.0/api/customer/wxclientcustomerbindselfcustomer`,{
+        return request.post(`${api}/v2.0/api/customer/wxclientcustomerbindselfcustomer`, {
             method: 'POST',
             body: params
         })
     },
 
-    // 获取城市列表
+    // 获取某一城市具体列表
     getCityList: (_public, params) => {
-        // `${api}/api/areadefines/list/${params}/${3}`
         return request.get(_public + '/api/areadefines/list/' + params + '/' + '3')
+    },
+
+    // 获取已有楼盘的所有城市
+    getCity: (_public) => {
+        return request.post(_public + '/api/areadefines/list', { body: { levels: ['1'] } })
+    },
+
+    //获取全国城市
+    getAllCity: (_public, parentCode) => {
+        return request.get(_public + `/api/areadefines/querysysareainforesponses/${parentCode}`)
     },
 
     // 一键报备
     quickReport: (api, params) => {
-        return request.post(`${api}/api/customerreport/addtransactions`,{
+        return request.post(`${api}/api/customerreport/addtransactions`, {
             method: 'POST',
             body: params
         })
+    },
+
+    // 报备前置接口 判断号码是否重复
+    beforeQuickReport: (api, customerId) => {
+        return request.get(`${api}/v2.0/api/customer/querycusomterrepeatphones/${customerId}`)
+    },
+
+    getFollowData: (body) => {
+        return request.post(request.getUrl().api + '/v2.0/api/customer/getfollowlist', { body })
+    },
+
+    addFollow: (body) => {
+        return request.post(request.getUrl().api + '/v2.0/api/customer/follow/add', { body })
+    },
+    followVerify: (body) => {
+        return request.post(request.getUrl().api + '/v2.0/api/customer/follow/verify', { body })
     }
-}
+};
 
 export default ApiCustom

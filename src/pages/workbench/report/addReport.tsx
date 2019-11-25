@@ -3,11 +3,12 @@ import {DeviceEventEmitter, Image, Text, TouchableOpacity, View, ActivityIndicat
 import {connect, MapStateToProps} from 'react-redux';
 import {Toast} from 'teaset';
 import {scaleSize} from '../../../utils/screenUtil';
-import {addReportDataApi} from '../../../services/report';
+import {addReportDataApi, verifyReport} from '../../../services/report';
 import BaseContainer from '../../../components/Page';
 import Input from '../../../components/Form/Input';
 import {STYLE} from './style';
 import {NavigationScreenProps} from 'react-navigation';
+import XkjModal from '../../../components/Modal'
 
 interface propsTypes {
     config: any
@@ -43,7 +44,10 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
         selectBuildingInfo: new selectBuildingInfoParam(),
         selectCustomerInfo: new selectCustomerInfoParam(),
         phoneList: [] as phoneListTypes[],
-        loading: false
+        isChooseCus: false,
+        verifyModal: false,
+        loading: false,
+        verifyCus: []
     };
     routeParameter: routeParam = (this.props.navigation.state.params as routeParam) || new routeParam(); // 路由参数
     addListener: any; // 监听返回
@@ -54,14 +58,13 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
     }
 
     componentDidMount () {
-        console.log(this.props.navigation.state.params, 'this.props.navigation.state.params');
-        console.log(this.routeParameter, 'routeParameter');
         this._initData();
         this.addListener = DeviceEventEmitter.addListener('addReport', (params: routeParam) => {
             this.routeParameter = params;
             if (params.type === 'continue') {
                 this.setState({
                     selectCustomerInfo: new selectCustomerInfoParam(),
+                    isChooseCus: false,
                     phoneList: [],
                 }, () => {
                     this._initData()
@@ -83,6 +86,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
             const {customerInfo, buildingInfo} = this.routeParameter;
             customerInfo && await this.setState({
                 selectCustomerInfo: customerInfo,
+                isChooseCus: true
             });
             const phoneList = this._initPhoneList(customerInfo ? customerInfo.phones : []);
             await this.setState({phoneList});
@@ -112,9 +116,9 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                 isFocus: false
             };
             curr.isMain ? res.unshift(item) : res.push(item);
-
             return res;
         }, [] as phoneListTypes[]);
+        _list = _list.slice(0, 3)
         return _list.length ? _list : list;
     };
 
@@ -142,10 +146,8 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
     };
 
     setCustomer = (selectCustomerInfo: selectCustomerInfoParam|null) => {
-        console.log('选择的客户信息', selectCustomerInfo);
         if (!selectCustomerInfo || !selectCustomerInfo.customerId || !selectCustomerInfo.customerName) return;
         const {customerId, customerName, sex, phones} = selectCustomerInfo;
-
         const phoneList = this._initPhoneList(phones || []);
         this.setState({
             selectCustomerInfo: {
@@ -153,9 +155,18 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                 customerName: customerName,
                 sex: sex
             },
+            isChooseCus: true,
             phoneList: phoneList
         });
     };
+
+    cleanUser = () => {
+        this.setState({
+            isChooseCus: false,
+            selectCustomerInfo: new selectCustomerInfoParam(),
+            phoneList: [{phone: '', isMain: true}],
+        });
+    }
 
     setBuilding = (selectBuildingInfo: selectBuildingInfoParam|null) => {
         selectBuildingInfo && this.setState({
@@ -173,15 +184,11 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
     }) as (key: keyof selectCustomerInfoParam, val: selectCustomerInfoParam[keyof selectCustomerInfoParam]) => void;
 
     _setPhoneList = (item: phoneListTypes, index: number, val: string) => {
-        console.log(item, val, '输入');
         const phoneList = this.state.phoneList;
-        console.log(phoneList, '_setPhoneList');
         const afterItem = phoneList[index + 1];
         if (val.length === 7) {
-            console.log(val, '赋值');
             phoneList[index].phone = val;
             if (afterItem && afterItem.phone.length < 7) {
-                console.log(val, '跳下一行');
                 phoneList.forEach((curr, i) => {
                     curr.isFocus = i === index + 1 && curr.isMain === afterItem.isMain;
                 });
@@ -189,10 +196,8 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                 this[`phoneNum_${index + 1}`] && this[`phoneNum_${index + 1}`].focus();
             }
         } else if (val.length < 7){
-            console.log(val, '赋值');
             phoneList[index].phone = val;
         } else {
-            console.log('不操作');
         }
         this.setState({phoneList})
     };
@@ -227,13 +232,14 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
     _rightContent = (key: number, isMain: boolean) => {
         let valueList: string[] = [];
         valueList = (this.state.phoneList[key] || '').phone.split('');
+        let {isChooseCus} = this.state
         const item = this.state.phoneList[key];
         return (
             <View style={STYLE.inputRightWarp}>
                 {
                     [0,1,2,3,4,5,6].map((i) => {
                         return  <View key={i}  style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <TouchableOpacity style={{marginRight: scaleSize(i === 2 ? null : 8)}}
+                            <TouchableOpacity disabled={isChooseCus} style={{marginRight: scaleSize(i === 2 ? null : 8)}}
                                               activeOpacity={0.8}
                                               onPress={() => {
                                                   this._toFocus(isMain, key)
@@ -243,7 +249,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                                 ]}>{valueList[i]}</Text>
                             </TouchableOpacity>
                             {
-                                i === 2 ?  <Text style={{fontSize: scaleSize(28), color: '#868686', textAlign: 'center', width: scaleSize(60)}}>****</Text> : null
+                                i === 2 ? <Text style={{fontSize: scaleSize(28), color: '#868686', textAlign: 'center', width: scaleSize(60)}}>****</Text> : null
                             }
                         </View>
                     })
@@ -285,7 +291,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
             phoneList,
         })
     };
-    
+
     _checkPhone = (phoneList: phoneListTypes[]): boolean => {
         if (!phoneList || !phoneList.length) {
             return false
@@ -312,10 +318,60 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
         return res
     };
 
+    verifyCustomer = async () => {
+        try {
+            const phone_obj = this._getMainAndOtherPhone();
+            let {selectCustomerInfo: customer} = this.state;
+            let phones = phone_obj.list || []
+            phones.push(phone_obj.main)
+            let verifParam = {
+                customerName: customer.customerName,
+                customerSex: customer.sex ? 1 : 0,
+                phones
+            }
+            let res = await verifyReport(verifParam)
+            let extension = res.extension || []
+            if (extension.length > 0) {
+                extension = extension.map((v: any) => {
+                    return {
+                        label: `${v.customerName}  ${v.customerSex ? '男':'女'}  ${v.phone}`,
+                        code: v.customerId,
+                        phone: v.phone || '',
+                        name: v.customerName,
+                        customerSex: v.customerSex
+                    }
+                })
+                let filterArr = extension.filter((item: any) => item.phone.includes('*')) // 只管半号码。不用管全号码
+                let showAdd = filterArr.findIndex((item: any) => { // 判断性别
+                    return item.customerSex === verifParam.customerSex
+                })
+                if (showAdd !== -1 && extension.length === 1) { // 在性别相同，只反了一个半号码的情况就回走到这一步
+                    let userInfo = extension[0]
+                    await this.submit(userInfo)
+                    return
+                }
+                if (showAdd === -1) { // 在性别不同的情况下。需要加一项添加客户  性别相同的情况下 不需要新增
+                    extension.push({
+                        label: '以上都不是，新增一个',
+                        code: ''
+                    })
+                }
+                this.setState({
+                    verifyCus: extension,
+                    verifyModal: true
+                })
+            } else {
+                await this.submit()
+            }
+        } catch (e) {
+            throw new Error(e.message)
+        }
+    }
+
     _onSubmit = async () => {
         try {
             await this.setState({loading: true});
-            let {selectBuildingInfo: build, selectCustomerInfo: customer, phoneList} = this.state;
+            let {selectBuildingInfo: build, selectCustomerInfo: customer, phoneList, isChooseCus} = this.state;
             if (!build.buildingId || !build.buildingName || !build.buildTreeId) {
                 Toast.message('请选择报备楼盘');
                 return
@@ -324,6 +380,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                 Toast.message('请输入客户姓名');
                 return
             }
+            customer.customerName && (customer.customerName = customer.customerName.trim())
             if (!/^[\u4e00-\u9fa5]{1,10}$/.test(customer.customerName)) {
                 Toast.message('姓名为10位以内的汉字');
                 return
@@ -332,14 +389,28 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                 Toast.message('请完善客户手机号码');
                 return
             }
+            if (!isChooseCus) { // 不是从客户列表选择的值得时候碰到前三后四需要处理
+                await this.verifyCustomer()
+            } else {
+                await this.submit()
+            }
+        } catch (e) {
+            Toast.message(e.message || '提交报备失败');
+        } finally {
+            this.setState({loading: false});
+        }
+    };
 
+    submit = async (item?: any, showMessage?: boolean) => {
+        try {
             const phone_obj = this._getMainAndOtherPhone();
-
+            let {selectBuildingInfo: build, selectCustomerInfo: customer} = this.state;
             const param = {
                 source: 1,
+                version: 'V2.2',
                 phones: phone_obj.list,
                 customerInfos: {
-                    customerId: customer.customerId, //todo 选择客户时才有值--感觉产品逻辑有问题
+                    customerId: customer.customerId , //todo 选择客户时才有值--感觉产品逻辑有问题
                     customerName: customer.customerName,
                     sex: customer.sex ? 1 : 0,
                     customerPhone: phone_obj.main
@@ -348,12 +419,18 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                 buildingTreeId: build.buildTreeId || '',
                 buildingName: build.buildingName || '',
             };
-            console.log(param, 'requestData');
+            if (item && item.code) { // 从重复客户中选择出来的客户
+                param.customerInfos = {
+                    ...param.customerInfos,
+                    customerId: item.code , //todo 选择客户时才有值--感觉产品逻辑有问题
+                    customerName: item.name,
+                    sex: item.customerSex ? 1 : 0,
+                }
+            }
             const res = await addReportDataApi(param);
-            console.log(res, '提交报备成功');
             let reportSuccessInfo = {
                 buildingTreeName: (res.extension || {}).buildingTreeName || '暂无数据',
-                companyName: (res.extension || {}).companyName || '暂无数据',
+                companyName: (res.extension || {}).companyShortName || '暂无数据',
                 customerName: (res.extension || {}).customerName || '暂无数据',
                 customerPhones: ((res.extension || {}).customerPhones || []),
                 userName: (res.extension || {}).userName || '暂无数据',
@@ -364,16 +441,28 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
             DeviceEventEmitter.emit('refreshReportData', 1);
             this.props.navigation.navigate('reportSuccess', reportSuccessInfo);
         } catch (e) {
-            console.log(e, '提交报备失败');
-            Toast.message(e.message || '提交报备失败');
-        } finally {
-            this.setState({loading: false});
+            showMessage && Toast.message(e.message)
+            throw new Error(e.message)
         }
-    };
+    }
+
+    verifyChange = (v:any) => {
+        this.submit(v, true)
+    }
 
     render () {
-        let {selectBuildingInfo: build, selectCustomerInfo: customer, phoneList} = this.state;
+        let {selectBuildingInfo: build, verifyModal, selectCustomerInfo: customer, phoneList, isChooseCus, verifyCus} = this.state;
         const sex = customer ? customer.sex : true;
+        const renderTtile = () => {
+            return <View style={{width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-around'}}>
+                <Text style={{color: '#868686'}}>
+                    请关联相同客户
+                </Text>
+                <Text style={{color: '#868686'}}>
+                    系统检测到此号码曾报备，确保客户信息准确
+                </Text>
+            </View>
+        }
         return (
             <BaseContainer
                 title='添加报备'
@@ -404,29 +493,46 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                         }
                     />
                 </View>
-                <Input
-                    onChange={(e: any) => this._setCustomerInfo('customerName', e)}
-                    value={(customer && customer.customerName) ? customer.customerName : ''}
-                    label={
-                        <View style={{width: 100, marginLeft: scaleSize(32)}}>
-                            <Text style={{fontSize: scaleSize(28), color: 'rgb(134,134,134)'}}>客户姓名</Text>
-                        </View>
-                    }
-                    placeholder='请输入客户名'
-                    style={{textAlign: 'right', paddingRight: scaleSize(16)}}
-                    rightContent={
-                        <TouchableOpacity
-                            style={[STYLE.bigBtns, {paddingRight: scaleSize(32)}]}
+                <View>
+                    <Input
+                        onChange={(e: any) => this._setCustomerInfo('customerName', e)}
+                        disabled={isChooseCus}
+                        value={(customer && customer.customerName) ? customer.customerName : ''}
+                        label={
+                            <View style={{width: 100, marginLeft: scaleSize(32)}}>
+                                <Text style={{fontSize: scaleSize(28), color: 'rgb(134,134,134)'}}>客户姓名</Text>
+                            </View>
+                        }
+                        placeholder='请输入客户名'
+                        style={{textAlign: 'right', paddingRight: scaleSize(16)}}
+                        rightContent={
+                            <TouchableOpacity
+                                style={[STYLE.bigBtns, {paddingRight: scaleSize(32)}]}
+                                activeOpacity={0.8}
+                                onPress={this._customerChoice}
+                            >
+                                <Image
+                                    style={{width: scaleSize(40), height: scaleSize(40)}}
+                                    source={require('../../../images/icons/kehu2.png')}
+                                />
+                            </TouchableOpacity>
+                        }
+                    />
+                    {
+                        isChooseCus && <TouchableOpacity
+                            style={{position: 'absolute', left: '30%', top: '19%', padding: 10}}
                             activeOpacity={0.8}
-                            onPress={this._customerChoice}
+                            onPress={() => {this.cleanUser()}}
                         >
                             <Image
-                                style={{width: scaleSize(40), height: scaleSize(40)}}
-                                source={require('../../../images/icons/kehu2.png')}
+                                style={{width: scaleSize(30), height: scaleSize(30)}}
+                                source={require('../../../images/icons/delelte2.png')}
                             />
                         </TouchableOpacity>
-                    }
-                />
+                        }
+
+                </View>
+
                 <Input
                     label={
                         <View style={{width: 100, marginLeft: scaleSize(32)}}>
@@ -446,6 +552,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                                     ]
                                 }
                                 activeOpacity={0.8}
+                                disabled={isChooseCus}
                                 onPress={() => {this._setCustomerInfo('sex', true)}}
                             >
                                 <Text
@@ -467,6 +574,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                                         !sex ? STYLE.sexYes : STYLE.sexNo
                                     ]
                                 }
+                                disabled={isChooseCus}
                                 activeOpacity={0.8}
                                 onPress={() => {this._setCustomerInfo('sex', false)}}
                             >
@@ -490,6 +598,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                         return (
                             <Input
                                 key={index}
+                                disabled={isChooseCus}
                                 value={item.phone}
                                 // autoFocus={item.isFocus}
                                 onChange={(e: any) => this._setPhoneList(item, index, e)}
@@ -513,7 +622,7 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                 }
 
                 {
-                    phoneList.length < 5 ?
+                    (phoneList.length < 3 && !isChooseCus) ?
                         <TouchableOpacity
                             style={[STYLE.topRight, {padding: scaleSize(32)}]}
                             activeOpacity={0.8}
@@ -528,7 +637,15 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                         :
                         null
                 }
-
+            <XkjModal
+                visible={verifyModal}
+                title={renderTtile()}
+                onClose={() => {this.setState({verifyModal: false})}}
+                onOk={() => {}}
+                type='select'
+                data={verifyCus}
+                onChange={this.verifyChange}
+            />
             </BaseContainer>
         )
     }

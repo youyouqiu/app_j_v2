@@ -8,6 +8,9 @@ import storage from './storage'
 import navigation from './navigation'
 import {Toast, Overlay} from 'teaset'
 import PopEle from '../components/PopEle'
+import moment from 'moment'
+import {BasicInfoItem} from '../pages/project/buildingDetail/buildJson'
+
 /**
  * checkPermission
  */
@@ -166,6 +169,27 @@ export const transFormViewCount = (count: number) => {
     }
 };
 
+/**
+ * 检测是否为文章链接，是则返回文章ID
+ * @param url
+ */
+export const checkArticleUrl = (url: string): string => {
+    const local = 'http://192.168.100.159:5100';
+    const localTest = 'http://192.168.100.159:5100';
+    const test = 'https://stagging-file.puzhentan.com';
+    const production = 'https://file-v2.puzhentan.com';
+    const domainNames = [local, localTest, test, production];
+    let articleId = '';
+    //判断是否为本公司url
+    const isOwnUrl = domainNames.some((name: any) => {
+        return url.includes(name)
+    });
+    if (isOwnUrl && url.includes('/html/') && url.includes('.html')) {
+        articleId = extractIdFromUrl(url)
+    }
+    return articleId
+};
+
 /*提取资讯ID*/
 export const extractIdFromUrl = (url: string) => {
     const strArr = url.split('.html')[0].split('/');
@@ -204,4 +228,89 @@ export const verifyUser = (type: string = 'weak', message?: string) => {
             reject(new Error('用户未加入经济公司'))
         }
     })
+}
+
+/**
+ * 去除对象中所有符合条件的对象
+ * @param {Object} obj 来源对象
+ * @param {Function} fn 函数验证每个字段
+ */
+export function compactObj(obj: { [key: string]: any }, fn: (foo: any) => boolean) {
+    for (let i in obj) {
+        if (typeof obj[i] === 'object') {
+            compactObj(obj[i], fn)
+        }
+        if (fn(obj[i])) {
+            delete obj[i]
+        }
+    }
+}
+
+// 判断对象是否为空（浅判断）
+export function isEmpty(foo: any): boolean {
+    if (typeof foo === 'object') {
+        for (let i in foo) {
+            return false
+        }
+        return true
+    } else {
+        return foo === '' || foo === undefined || foo === null
+    }
+}
+
+// 判断对象是否为空（内部也全为'',undefind,null）
+export function isEmptyDeep(foo: any): boolean {
+    if (typeof foo === 'object') {
+        if (foo === null) return true
+        if (Array.isArray(foo)) return false
+        return Object.keys(foo).every(k => isEmptyDeep(foo[k]))
+    } else {
+        return foo === '' || foo === undefined || foo === null
+    }
+}
+
+export interface CheckBlankParams {
+    value: any
+    unit?: string
+    boolLabel?: string[]
+    func?: (...a: any[]) => void
+    isMoment?: boolean
+    basicInfo?: any
+    key?: string
+    dictionary?: any
+}
+
+export const checkBlank = ({value, unit = '', boolLabel, func, isMoment, basicInfo, key, dictionary}: CheckBlankParams) => {
+    if (func) {
+        if (key && key.includes(',')) {
+            let keys = key.split(',')
+            keys = keys.map(v => basicInfo[v] || '')
+            return func(...keys)
+        }
+    }
+    if (dictionary) {
+        let {dictionaries = {}} = global.store.getState()
+        return (dictionaries[`${dictionary.toLowerCase()}_obj`] || {})[value]
+    }
+    if (isMoment) {
+        return value ? moment(value).format('YYYY-MM-DD') : ''
+    }
+    if (boolLabel) {
+        return value ? boolLabel[0] : boolLabel[1]
+    }
+    if (typeof (value) === 'number') {
+        return value + unit
+    }
+    return value ? value + unit : ''
+};
+
+export const returnFloatStr = (value: string | number, decimal: number): string => {
+    if (typeof value === 'string') {
+        value = parseFloat(value)
+    }
+    if (value === 0) return `0.${new Array(decimal + 1).join('0')}`
+    if (value.toString() === 'NaN') return 'NaN'
+    value = value * 10 ** decimal
+    value = parseInt(value.toString()).toString()
+    return `${value.slice(0, value.length - decimal)}.${value.slice(value.length - decimal)}`
 }

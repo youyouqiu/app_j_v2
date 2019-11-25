@@ -36,6 +36,8 @@ const userModel: Model = {
                 let {access_token} = payload
                 let res = yield call(getUserInfo, access_token)
                 let {extension} = res
+                console.log(extension)
+
                 user = { // 用户信息来源还是从本地读取，传过来的，以及重新接口拿去的数据组合
                     ...user,
                     ...payload,

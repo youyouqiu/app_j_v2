@@ -11,6 +11,7 @@ import {debounce} from '../../../utils/utils'
 import LocalBarcodeRecognizer from 'react-native-local-barcode-recognizer';
 import {checkPermission} from "../../../utils/utils";
 import {scaleSize} from '../../../utils/screenUtil'
+
 // import LocalBarcodeRecognizer from 'react-native-local-barcode-recognizer';
 
 /**
@@ -37,10 +38,11 @@ class ScanPage extends Component {
     }
 
     analysisCode = (data) => {
-        let getCodeCurrentInfo = (this.props.navigation.state.params || {}).getInfo
-        let noBack = (this.props.navigation.state.params || {}).noBack
+        let getCodeCurrentInfo = (this.props.navigation.state.params || {}).getInfo;
+        let noBack = (this.props.navigation.state.params || {}).noBack;
         if (data === '') {
-            ToastCallback.message('无法识别二维码', null, this.startScan);
+            this.startScan();
+            ToastCallback.message('无法识别二维码', null, null);
             return
         }
         if (data.indexOf('https://') >= 0 || data.indexOf('http://') >= 0 || data.indexOf('HTTPS://') >= 0 || data.indexOf('HTTP://') >= 0) {
@@ -49,13 +51,14 @@ class ScanPage extends Component {
                 data = data.substring(strIndex + 3);
             } else {
                 Linking.openURL(data).catch(err => {
-                    Toast.info(`无法识别二维码${err.message}`, 2, this._startScan, false)
+                    this.startScan();
+                    ToastCallback.message(`无法识别二维码${err.message}`, 2, null, false)
                 });
                 return
             }
         }
         if (getCodeCurrentInfo) { // 业务逻辑放到外面页面去
-            debounce(getCodeCurrentInfo,500)(data)
+            debounce(getCodeCurrentInfo, 500)(data)
             if (!noBack) {
                 this.props.navigation.goBack()
             }
@@ -72,7 +75,7 @@ class ScanPage extends Component {
         try {
             let result = await LocalBarcodeRecognizer.decode(imageBase64, {codeTypes: ['ean13', 'qr']});
             this.analysisCode(result)
-        }catch (e) {
+        } catch (e) {
             console.log(e)
         }
     };
@@ -145,11 +148,11 @@ class ScanPage extends Component {
     render() {
         const renderRight = (
             <TouchableOpacity style={styles.cs_photo} onPress={this.openPhoto}>
-                <Text>相册</Text>
+                <Text>相册11</Text>
             </TouchableOpacity>
         );
         return (
-            <BaseContainer rightView={renderRight} title='扫一扫' statusBarColor='#fff' scroll={false} bodyStyle={{padding: 0}} >
+            <BaseContainer rightView={renderRight} title='扫一扫' statusBarColor='#fff' scroll={false} bodyStyle={{padding: 0}}>
                 <Scan onBarCodeRead={this.onBarCodeRead} scanRef={ref => this.scanRef = ref}/>
             </BaseContainer>
 

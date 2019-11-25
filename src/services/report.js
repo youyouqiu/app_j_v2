@@ -12,9 +12,19 @@ export function reportDataApi (api, body) {
     })
 }
 
+// 报备列表数量
+export function reportCountApi (api) {
+    return request.get(`${api}/v2.0/api/customerreport/searchtotal`)
+}
+
 // 二维码信息
 export function qCoderDataApi (api, reportId) {
     return request.get(`${api}/api/customerreport/getdetails/${reportId}`)
+}
+
+// 二维码信息
+export function qCoderDataApi_followUp (api, reportId) {
+    return request.get(`${api}/v2.0/api/customerreport/report/details/${reportId}`)
 }
 
 // 录入到访信息
@@ -64,6 +74,13 @@ export function ruleDataApi (api, buildingId) {
 // 新增报备
 export function addReportDataApi (body) {
     return request.post(`${request.getUrl().api}/api/customerreport/addtransactions`, {
+        method: 'POST',
+        body: body,
+    })
+}
+
+export function verifyReport (body) {
+    return request.post(`${request.getUrl().api}/api/customerreport/report/verify`, {
         method: 'POST',
         body: body,
     })

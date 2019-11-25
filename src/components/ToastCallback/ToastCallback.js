@@ -9,8 +9,12 @@ export const ToastCallback = {
     message: (text, duration = messageDefaultDuration, callback, position) => {
         const time = duration === messageDefaultDuration ? 2000 : 3500;
         setTimeout(() => {
-            callback()
+            callback && callback()
         }, time);
-        Toast.message(text, duration, position);
+        const options = {
+            modal: true,
+            text, duration, position
+        };
+        Toast.show(options)
     }
 };

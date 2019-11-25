@@ -7,63 +7,34 @@ import BaseContainer from '../../../components/Page'
 import {FlatList} from 'react-native-gesture-handler';
 import styles from './styles'
 import Toast from "teaset/components/Toast/Toast";
-
+import {getLocationInfo} from "@/pages/project/common";
 
 class cityList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            cityList: props.global.cityList,
-            cityName: props.global.cityName,
-            cityCode: props.global.cityCode,
+            cityList: [],
+            cityName: '',
+            cityCode: '',
             locationLoading: false,
-            renderFrom: ''
-        }
-    }
-
-    _setState = (params) => {
-        this.setState({
-            ...params,
-            renderFrom: 'state'
-        })
-    };
-
-    componentDidMount() {
-        if (this.props.CityLists) {
-            this.setState({
-                currentCity: this.props.currentCity
-            })
         }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (prevState.renderFrom === 'state') {
-            return {
-                ...prevState,
-                renderFrom: ''
-            }
-        } else {
-            return {
-                ...prevState,
-                cityName: nextProps.global.cityName,
-                cityCode: nextProps.global.cityCode,
-                renderFrom: 'props'
-            }
-        }
+        return {
+            ...prevState,
+            cityName: nextProps.projectLocation.cityName,
+            cityCode: nextProps.projectLocation.cityCode,
+            defaultCityName: nextProps.projectLocation.defaultCityName,
+            defaultCityCode: nextProps.projectLocation.defaultCityCode,
+            cityList: nextProps.projectLocation.cityList,
+        };
     }
 
-    componentDidUpdate(prevProps) {
-        const {cityCode, cityName, locationLoading, renderFrom} = this.state;
-        if (cityCode !== prevProps.global.cityCode) {
-            if (locationLoading) {
-                Toast.message('已定位到当前城市：' + cityName);
-                this._setState({locationLoading: false})
-            }
-        } else if (cityCode === prevProps.global.cityCode && renderFrom === 'props') {
-            if (locationLoading) {
-                Toast.message('已定位到当前城市：' + cityName);
-                this._setState({locationLoading: false})
-            }
+    componentDidMount() {
+        if (this.state.cityList.length === 0) {
+            const {dispatch} = this.props;
+            dispatch({type: 'projectLocation/getCityList'})
         }
     }
 
@@ -71,15 +42,36 @@ class cityList extends PureComponent {
         const response = await checkPermission('location');
         if (response) {
             const {dispatch} = this.props;
-            this._setState({locationLoading: true});
-            dispatch({type: 'location/getLocationInfo'});
+            this.setState({locationLoading: true});
+            const result = await getLocationInfo({cityList: this.state.cityList}).catch(err => {
+                console.log('获取定位失败：', err)
+            });
+            if (!result) return;
+            console.log('result', result);
+            const {cityName, cityCode, lat, lng} = result;
+            let payloadData = null;
+            if (result.cityCode) {
+                Toast.message('已定位到当前城市：' + cityName);
+                payloadData = {cityName, cityCode, lat, lng}
+            } else {
+                Toast.message('定位失败，为您切换到：' + this.state.defaultCityName);
+                payloadData = {
+                    cityCode: this.state.defaultCityCode,
+                    cityName: this.state.defaultCityName
+                }
+            }
+            dispatch({
+                type: 'projectLocation/changeCityInfo',
+                payload: payloadData
+            });
+            this.setState({locationLoading: false});
         }
     };
 
     changeCity = (cityItem) => {
         const {dispatch} = this.props;
         dispatch({
-            type: 'global/changeCity',
+            type: 'projectLocation/changeCityInfo',
             payload: {
                 cityName: cityItem.name,
                 cityCode: cityItem.code,
@@ -102,6 +94,7 @@ class cityList extends PureComponent {
 
     render() {
         const {cityList, currentCity, cityName, locationLoading} = this.state;
+        console.log('cityName', cityName);
         return (
 
             <BaseContainer title='城市切换' viewBackgroundColor={'#F8F8F8'}>
@@ -144,8 +137,8 @@ class cityList extends PureComponent {
 }
 
 
-const mapStateToProps = ({config, global}) => {
-    return {config, global}
+const mapStateToProps = ({config, projectLocation}) => {
+    return {config, projectLocation}
 };
 
 

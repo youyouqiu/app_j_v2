@@ -84,7 +84,7 @@ class Login extends Component {
     }
 
     changeDev = () => {
-        storage.set('currentEnvironment', 'localTesst')
+        storage.set('currentEnvironment', 'test')
     }
 
     gotoPage = (path) => {
@@ -96,10 +96,10 @@ class Login extends Component {
         return (
             <Animated.View style={[styles.content, {marginTop: this.keyboardHeight}]}>
                 <View style={[styles.content]}>
-                    <View style={[styles.header]}>
+                    <TouchableOpacity onPress={() => this.changeDev()} style={[styles.header]}>
                         <Text style={[styles.hello]}>Hello</Text>
                         <Text style={[styles.welcome]}>欢迎来到铺侦探！</Text>
-                    </View>
+                    </TouchableOpacity>
                     <ScrollableTabView
                         locked={true}
                         initialPage={0}

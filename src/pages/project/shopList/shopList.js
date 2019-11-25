@@ -1,21 +1,21 @@
 import React from 'react';
-import { Image, Text, View, TouchableOpacity } from 'react-native';
-import { connect } from 'react-redux';
+import {Image, Text, View, TouchableOpacity} from 'react-native';
+import {connect} from 'react-redux';
 import Page from '../../../components/Page';
 import styles from './styles'
-import { XKJScrollTabView } from '../../../components/XKJScrollTabView/XKJScrollTabView';
+import {XKJScrollTabView} from '../../../components/XKJScrollTabView/XKJScrollTabView';
 import projectService from '../../../services/projectService';
-import { scaleSize } from '../../../utils/screenUtil';
+import {scaleSize} from '../../../utils/screenUtil';
 import ChoiceModal from '../../../components/ChoiceModal/ChoiceModal';
 import Toast from 'teaset/components/Toast/Toast';
 
 
 const statusStyle = {
-    1: { text: '待售', backgroundColor: '#CBCBCB', color: '#868686', priceBackgroundColor: '#fff' },
-    2: { text: '在售', backgroundColor: '#56A1F0', color: '#FFFFFF', priceBackgroundColor: '#fff' },
-    3: { text: '锁定', backgroundColor: '#56A1F0', color: '#FFFFFF', priceBackgroundColor: '#fff' },
-    4: { text: '已认购', backgroundColor: '#56A1F0', color: '#FFFFFF', priceBackgroundColor: '#fff' },
-    10: { text: '已售', backgroundColor: '#FF7F6D', color: '#FFFFFF', priceBackgroundColor: '#FF7F6D' },
+    1: {text: '待售', backgroundColor: '#CBCBCB', color: '#868686', priceBackgroundColor: '#fff'},
+    2: {text: '在售', backgroundColor: '#56A1F0', color: '#FFFFFF', priceBackgroundColor: '#fff'},
+    3: {text: '锁定', backgroundColor: '#56A1F0', color: '#FFFFFF', priceBackgroundColor: '#fff'},
+    4: {text: '已认购', backgroundColor: '#56A1F0', color: '#FFFFFF', priceBackgroundColor: '#fff'},
+    10: {text: '已售', backgroundColor: '#FF7F6D', color: '#FFFFFF', priceBackgroundColor: '#FF7F6D'},
 };
 
 class ShopList extends React.Component {
@@ -64,7 +64,7 @@ class ShopList extends React.Component {
     };
 
     getSearchShopAreaDic = () => {
-        const { dispatch, requestUrl } = this.props;
+        const {dispatch, requestUrl} = this.props;
         dispatch({
             type: 'dictionaries/getDictionaryDefines',
             payload: {
@@ -75,34 +75,34 @@ class ShopList extends React.Component {
     };
 
     getBuildingNo = async () => {
-        const { requestUrl } = this.props;
-        const { buildingTreeId } = this.requestData;
+        const {requestUrl} = this.props;
+        const {buildingTreeId} = this.requestData;
         if (!buildingTreeId) {
             Toast.message('参数错误');
             return
         }
         const res = await projectService.buildingNosReq(requestUrl.api, this.requestData);
-        this.setState({ buildingNos: res.extension });
+        this.setState({buildingNos: res.extension});
     };
 
     getShopsSearch = async () => {
-        const { requestUrl } = this.props;
+        const {requestUrl} = this.props;
         const response = await projectService.shopsSearchReq(requestUrl.api, this.requestData);
-        this.setState({ floorList: response.extension })
+        this.setState({floorList: response.extension})
     };
 
     openChoice = () => {
-        const { searchShopArea, searchPriceXyh, shopStatus, shopSaleStatus } = this.state;
-        const { choiceOption } = this.common;
+        const {searchShopArea, searchPriceXyh, shopStatus, shopSaleStatus} = this.state;
+        const {choiceOption} = this.common;
         if (searchShopArea.length > 0 && choiceOption.length === 0) {
             this.common.choiceOption = [
-                { label: '面积', data: searchShopArea, index: 0, key: 'area' },
-                { label: '价格', data: searchPriceXyh, index: 1, key: 'price' },
-                { label: '铺状态', data: shopStatus, index: 2, key: 'shopStatus' },
-                { label: '售卖状态', data: shopSaleStatus, index: 3, key: 'saleStatus' },
+                {label: '面积', data: searchShopArea, index: 0, key: 'area'},
+                {label: '价格', data: searchPriceXyh, index: 1, key: 'price'},
+                {label: '铺状态', data: shopStatus, index: 2, key: 'shopStatus'},
+                {label: '售卖状态', data: shopSaleStatus, index: 3, key: 'saleStatus'},
             ]
         }
-        this.setState({ choiceVisible: true })
+        this.setState({choiceVisible: true})
         this.props.sendPoint.add({
             target: '筛选内容_button',
             page: '房源-房源详情-商铺列表',
@@ -113,7 +113,7 @@ class ShopList extends React.Component {
     };
 
     modalClosed = () => {
-        this.setState({ choiceVisible: false })
+        this.setState({choiceVisible: false})
     };
 
     requestDataManual = (callback) => {
@@ -170,8 +170,8 @@ class ShopList extends React.Component {
     };
 
     rightView = (
-        <TouchableOpacity activeOpacity={0.8} onPress={this.openChoice} style={{ paddingRight: scaleSize(16) }}>
-            <Image source={require('../../../images/icons/choice.png')} style={{ width: scaleSize(40), height: scaleSize(40) }} />
+        <TouchableOpacity activeOpacity={0.8} onPress={this.openChoice} style={{paddingRight: scaleSize(16)}}>
+            <Image source={require('../../../images/icons/choice.png')} style={{width: scaleSize(40), height: scaleSize(40)}}/>
         </TouchableOpacity>
     );
 
@@ -185,26 +185,33 @@ class ShopList extends React.Component {
 
     shopItem = (item) => {
         const saleStatus = Number(item.saleStatus);
-        const { backgroundColor, color, priceBackgroundColor } = statusStyle[saleStatus];
+        const {backgroundColor, color, priceBackgroundColor} = statusStyle[saleStatus];
         return (
             <TouchableOpacity onPress={() => this.gotoShopDetail(item)} activeOpacity={0.8} key={item.id} style={styles.roomItemWrap}>
-                <View style={[styles.roomNumWrap, { backgroundColor: backgroundColor }]}>
-                    <Text style={[styles.roomNum, { backgroundColor: backgroundColor, color: color }]} numberOfLines={1}>{item.number}</Text>
+                <View style={[styles.roomNumWrap, {backgroundColor: backgroundColor}]}>
+                    {/*<Text style={[styles.roomNum, { backgroundColor: backgroundColor, color: color }]} numberOfLines={1}>{item.number}</Text>*/}
+                    <View style={[styles.roomNumContainer, {backgroundColor: backgroundColor}]}>
+                        <Text style={[styles.roomNum,{color: color}]} numberOfLines={1}>{item.number}</Text>
+                    </View>
                     {item.saleStatus === '4' || item.saleStatus === '3' ? (
                         <View style={styles.roomLockWrap}>
-                            <Image style={styles.roomLock} source={require('../../../images/icons/subscriptionLock.png')} />
+                            <Image style={styles.roomLock} source={require('../../../images/icons/subscriptionLock.png')}/>
                         </View>
                     ) : null}
                 </View>
-                <Text style={[styles.roomArea, { backgroundColor: backgroundColor, color: color }]}>{item.buildingArea}㎡</Text>
-                <Text style={[styles.roomPrise, { backgroundColor: priceBackgroundColor }]} numberOfLines={1}>
-                    {saleStatus !== 10 ? item.totalPrice + '万' : ' '}
-                </Text>
+                <Text style={[styles.roomArea, {backgroundColor: backgroundColor, color: color}]}>{item.buildingArea}㎡</Text>
+                {saleStatus !== 10?(
+                    <Text style={[styles.roomPrise, {backgroundColor: priceBackgroundColor}]}
+                          numberOfLines={1}>
+                        {saleStatus !== 10 ? item.totalPrice + '万' : ' '}
+                    </Text>
+                ):<Text style={[styles.roomPrise, {backgroundColor: priceBackgroundColor}]}>&emsp;</Text>}
+
             </TouchableOpacity>
         )
     };
 
-    tabItemComponent = ({ item }) => {
+    tabItemComponent = ({item}) => {
         return (
             <View style={styles.floorItem} key={Math.random()}>
                 <View style={styles.floorHeader}>
@@ -225,36 +232,36 @@ class ShopList extends React.Component {
     };
 
     render() {
-        const { buildingNos, choiceVisible } = this.state;
-        const { requestUrl } = this.props;
-        const { choiceOption, fullName } = this.common;
+        const {buildingNos, choiceVisible} = this.state;
+        const {requestUrl} = this.props;
+        const {choiceOption, fullName} = this.common;
 
         return (
             <Page title={fullName || ''} scroll={false} rightView={this.rightView}>
-                <BuildingStatusTips />
-                <View style={{ flex: 1 }}>
+                <BuildingStatusTips/>
+                <View style={{flex: 1}}>
                     <XKJScrollTabView tabs={buildingNos}
-                        dataRequestUrl={requestUrl.api + '/v2.0/api/shops/search'}
-                        tabIdKey='buildingNos' requestData={this.requestData}
-                        scrollView={true} onChangeTab={this.onChangeTab}
-                        merge={false}
-                        tabBarUnderlineStyle={{ backgroundColor: '#ff332c', height: 2, width: 40 }}
-                        style={{ borderWidth: 0, backgroundColor: 'rgba(248,248,248,1)' }}
-                        requestDataManual={this.requestDataManual}
-                        tabItemComponent={[this.tabItemComponent]}
+                                      dataRequestUrl={requestUrl.api + '/v2.0/api/shops/search'}
+                                      tabIdKey='buildingNos' requestData={this.requestData}
+                                      scrollView={true} onChangeTab={this.onChangeTab}
+                                      merge={false}
+                                      tabBarUnderlineStyle={{backgroundColor: '#ff332c', height: 2, width: 40}}
+                                      style={{borderWidth: 0, backgroundColor: 'rgba(248,248,248,1)'}}
+                                      requestDataManual={this.requestDataManual}
+                                      tabItemComponent={[this.tabItemComponent]}
                     />
                 </View>
                 {choiceVisible ? (
                     <ChoiceModal visible={choiceVisible} title={fullName} selectOption={this.selectOption} random={Math.random()}
-                        modalClosed={this.modalClosed}
-                        choiceOption={choiceOption} submitOption={this.submitOption} />
+                                 modalClosed={this.modalClosed}
+                                 choiceOption={choiceOption} submitOption={this.submitOption}/>
                 ) : null}
             </Page>
         )
     }
 }
 
-const mapStateToProps = ({ config, global, dictionaries, point }) => {
+const mapStateToProps = ({config, global, dictionaries, point}) => {
     return {
         requestUrl: config.requestUrl,
         global, dictionaries,
@@ -268,22 +275,22 @@ export const BuildingStatusTips = () => {
 
     return (
         <View style={styles.tipsContent}>
-            <Disorder color='#49A1FF' text='在售' />
-            <Disorder color='#FE5139' text='已售' />
-            <Disorder color='#D2D0D2' text='待售' />
+            <Disorder color='#49A1FF' text='在售'/>
+            <Disorder color='#FE5139' text='已售'/>
+            <Disorder color='#D2D0D2' text='待售'/>
             <View style={styles.tipsRight}>
-                <Image style={styles.subscriptionLock} source={require('../../../images/icons/subscriptionLock.png')} />
+                <Image style={styles.subscriptionLock} source={require('../../../images/icons/subscriptionLock.png')}/>
                 <Text style={styles.tipsRightText}>已认购 / 锁定</Text>
             </View>
         </View>
     )
 };
 
-export const Disorder = ({ text, color }) => {
+export const Disorder = ({text, color}) => {
     return (
         <View style={styles.disorderItem}>
-            <Text style={[styles.tipsCircular, { backgroundColor: color }]} />
-            <Text style={[styles.tipsStatusText, { color: color }]}>{text}</Text>
+            <Text style={[styles.tipsCircular, {backgroundColor: color}]}/>
+            <Text style={[styles.tipsStatusText, {color: color}]}>{text}</Text>
         </View>
     )
 };

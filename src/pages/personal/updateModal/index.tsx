@@ -1,20 +1,30 @@
-import React, { FunctionComponent, useState } from 'react'
-import {Modal, View, ImageBackground, Text, ScrollView, StyleSheet} from 'react-native'
-import {scaleSize} from '../../../utils/screenUtil'
+import React, { FunctionComponent, useState, useEffect } from 'react'
+import { Modal, View, ImageBackground, Text, ScrollView, StyleSheet, DeviceEventEmitter } from 'react-native'
+import { scaleSize } from '../../../utils/screenUtil'
 import * as Progress from 'react-native-progress';
 import Button from '../../../components/Button'
 import codePush from "react-native-code-push";
 import storage from '../../../utils/storage'
+import { connect, MapStateToProps } from 'react-redux'
+import { ConfigState } from '../../../models/types'
+
+
 interface updateType {
     updateInfo: any
     setUpdateModa: any
     visible: boolean
+    dispatch: any
+    config: ConfigState
 }
 
-const updateModal : FunctionComponent <updateType> = ({updateInfo, setUpdateModa, visible}) => {
+const updateModal: FunctionComponent<updateType> = ({ updateInfo, setUpdateModa, visible, dispatch, config }) => {
     const [immediateUpdate, setImmediateUpdate] = useState(false)
     const [downloadingPercent, setDownloadingPercent] = useState(0)
     let updating = false
+
+    useEffect(() => {
+        visible && dispatch({ type: 'config/controlWillUpdate' })
+    }, [visible])
 
     const codePushStatusDidChange = (status: any) => {
         switch (status) {
@@ -29,7 +39,7 @@ const updateModal : FunctionComponent <updateType> = ({updateInfo, setUpdateModa
     }
 
     const codePushDownloadDidProgress = (progress: any) => {
-        let p : any = progress.receivedBytes / progress.totalBytes;
+        let p: any = progress.receivedBytes / progress.totalBytes;
         let pv = p;
         p = (p * 100).toFixed(0);
         if (pv == 1 || pv > 1) {
@@ -50,7 +60,7 @@ const updateModal : FunctionComponent <updateType> = ({updateInfo, setUpdateModa
         try {
             updating = true;
             codePush.sync(
-                {installMode: codePush.InstallMode.IMMEDIATE}, 
+                { installMode: codePush.InstallMode.IMMEDIATE },
                 codePushStatusDidChange,
                 codePushDownloadDidProgress
             )
@@ -59,7 +69,7 @@ const updateModal : FunctionComponent <updateType> = ({updateInfo, setUpdateModa
         }
     }
     return <Modal
-        visible={visible} 
+        visible={visible}
         transparent={true}
     >
         <View style={styles.modal}>
@@ -79,22 +89,22 @@ const updateModal : FunctionComponent <updateType> = ({updateInfo, setUpdateModa
                     </View>
                     {
                         immediateUpdate
-                        ?
-                        <View style={styles.modalFooter}>
-                            <Progress.Circle
-                                size={scaleSize(80)}
-                                progress={downloadingPercent}
-                                showsText={true}
-                                textStyle={{fontSize: 14}}
-                                color='#4B6AC5'
-                                indeterminate={false}
-                            />
-                        </View>
-                        :
-                        <View style={styles.modalFooter}>
-                            <Button onPress={() => setUpdateModa ? setUpdateModa(false) : null} style={styles.btnStyle} type='normal' title='稍后再说'/>
-                            <Button onPress={_immediateUpdate} style={styles.btnStyle} title={updateInfo.isPending ? '立即重启' : '立即下载'}/>
-                        </View>
+                            ?
+                            <View style={styles.modalFooter}>
+                                <Progress.Circle
+                                    size={scaleSize(80)}
+                                    progress={downloadingPercent}
+                                    showsText={true}
+                                    textStyle={{ fontSize: 14 }}
+                                    color='#4B6AC5'
+                                    indeterminate={false}
+                                />
+                            </View>
+                            :
+                            <View style={styles.modalFooter}>
+                                <Button onPress={() => setUpdateModa ? setUpdateModa(false) : null} style={styles.btnStyle} type='normal' title='稍后再说' />
+                                <Button onPress={_immediateUpdate} style={styles.btnStyle} title={updateInfo.isPending ? '立即重启' : '立即下载'} />
+                            </View>
                     }
                 </View>
             </View>
@@ -103,9 +113,9 @@ const updateModal : FunctionComponent <updateType> = ({updateInfo, setUpdateModa
 }
 
 const styles = StyleSheet.create({
-    contentText: { 
-        lineHeight: 20, 
-        color: "#92979E" 
+    contentText: {
+        lineHeight: 20,
+        color: "#92979E"
     },
     realModalContent: {
         width: '100%',
@@ -161,8 +171,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        flex:1,
-        backgroundColor:'#000000AA'
+        flex: 1,
+        backgroundColor: '#000000AA'
     },
     realModal: {
         width: scaleSize(540),
@@ -186,4 +196,6 @@ const styles = StyleSheet.create({
     }
 })
 
-export default updateModal
+const mapStateToProps = ({ config }: { config: ConfigState }) => ({ config })
+
+export default connect(mapStateToProps)(updateModal)

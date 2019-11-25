@@ -20,4 +20,11 @@ export const geocoder = (lat, lng) => {
     return request.getPure(url)
         .then(res=>{return res})
 }
+
+export const mapSearch = (lat, lng, query, size = 3) => {
+    let url = `http://api.map.baidu.com/place/v2/search?query=${query}&location=${lat},${lng}&radius=2000&page_size=${size}&page_num=0&scope=2&output=json&ak=BvbGX2GsoWdpmmZAbT4YhjwVNyx0pSFI`
+    console.log(url)
+    return request.getPure(url)
+        .then(res=>{return res})
+}
 export default { ChangeCoords,BaiduKeywordsSearch,geocoder}

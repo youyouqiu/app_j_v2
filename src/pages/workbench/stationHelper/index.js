@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Page from '../../../components/Page';
 import LinearGradient from 'react-native-linear-gradient';
-import { View, TouchableOpacity, Image, Text,  FlatList, Animated, Easing , ActivityIndicator} from 'react-native'
+import { View, TouchableOpacity, Image, Text, FlatList, Animated, Easing, ActivityIndicator, ImageBackground } from 'react-native'
 import styles from './css';
 import XKJButton from '../../../components/Button';
 import TopBar from './../../../components/Page/TopBar';
@@ -12,6 +12,7 @@ import { Toast, ActionPopover } from 'teaset';
 import API from './../../../services/stationHelper'
 import { wxApi } from '../../../utils/wxUtils';
 import NoData from './../../../businessComponents/noData'
+import BuryingPoint from "@/utils/BuryPoint";
 class StationHelper extends Component {
     constructor(props) {
         super(props);
@@ -40,11 +41,7 @@ class StationHelper extends Component {
     _handleShare = async ({ build_tree_name = '', build_tree_id = '', building_id = '', cover = '' }) => {
         try {
             const { userInfo = {} } = this.props.user;
-            console.log(userInfo.filialeId, 'company_id');
-            console.log(build_tree_id, 'build_tree_id');
-            console.log(building_id, 'build_id');
-            console.log(2, 'type');
-            await Image.getSize(cover, () => {}, () => {
+            await Image.getSize(cover, () => { }, () => {
                 cover = `${this.props.config.requestUrl.cqAuth}/images/defaultProject.png`
             });
             const data = {
@@ -57,7 +54,6 @@ class StationHelper extends Component {
                 userName: 'gh_76def9e899ca',
                 path: `/pages/share/index?company_id=${userInfo.filialeId || ''}&build_tree_id=${build_tree_id}&build_id=${building_id}&type=2`  //小程序页面路径
             };
-            console.log(data, '分享信息');
             await wxApi.handleShareToSession(data);
             this.props.sendPoint.add({
                 target: '分享报备小程序_button',
@@ -72,20 +68,14 @@ class StationHelper extends Component {
         }
     };
     _handleTips = (ref, per_item, item) => {
-        // console.log(item, 'item');
-        const rate = (!per_item.val || !item.val) ? 0 : Math.round(item.progress * 100 );
+        const rate = (!per_item.val || !item.val) ? 0 : Math.round(item.progress * 100);
         const tips = [
             { title: `转换率：${rate}%` }
         ];
+        // eslint-disable-next-line no-unused-vars
         this.ref_progress[ref].measure((frameX, frameY, frameWidth, frameHeight, pageX, pageY) => {
-            // console.log(frameX);
-            // console.log(frameY);
-            // console.log(frameWidth);    // 当前组件的宽度
-            // console.log(frameHeight);   // 当前组件的高度
-            // console.log(pageX);         // 当前组件距离左侧的距离
-            // console.log(pageY);         // 当前组件距离顶部的距离
-            const Y = frameWidth * (item.progress / 100) - 18;
-            ActionPopover.show({ x: Y < 8 ? 10 : Y, y: pageY + 10, width: 100, height: 100 }, tips);
+            const X = frameWidth * (item.linearGradientWidth) - 18;
+            ActionPopover.show({ x: X < 8 ? 10 : X, y: pageY + 10, width: 100, height: 100 }, tips);
         });
     };
     goProjectDetail = (item) => {
@@ -100,13 +90,22 @@ class StationHelper extends Component {
         return a / b > 1 ? 1 : a / b;
     };
 
+    _statistical = (item) => {
+        BuryingPoint.add({
+            page: '工作台-驻场助手',
+            target: '统计分析_button',
+        });
+        this.props.navigation.navigate('stationStatistical', { id: item.build_tree_id })
+    }
+
+    // eslint-disable-next-line no-unused-vars
     _keyExtractor = (item, index) => index.toString();
     _renderItems = ({ item, index }) => {
         const progressList = [
-            { text: '报备', val: item.reportCount || 0, unit: '次', colors: ['#415DA9', '#1F3070'], progress: item.reportCount ? 1 : 0 },
-            { text: '带看', val: item.takeLookCount || 0, unit: '次', colors: ['#FFEC51', '#FFD428'], progress: this._getProgress(item.takeLookCount, item.reportCount) },
-            { text: '认购', val: item.subscribeCount || 0, unit: '套', colors: ['#80CFFF', '#49A1FD'], progress: this._getProgress(item.subscribeCount, item.takeLookCount) },
-            { text: '签约', val: item.signingCount || 0, unit: '套', colors: ['#FF8A6B', '#FE5139'], progress: this._getProgress(item.signingCount, item.subscribeCount) },
+            { text: '报备', val: item.reportCount || 0, unit: '次', colors: ['#415DA9', '#1F3070'], linearGradientWidth: this._getProgress(item.reportCount, item.reportCount), progress: item.reportCount ? 1 : 0 },
+            { text: '带看', val: item.takeLookCount || 0, unit: '次', colors: ['#6CEA7D', '#3AD047'], linearGradientWidth: this._getProgress(item.takeLookCount, item.reportCount), progress: this._getProgress(item.takeLookCount, item.reportCount) },
+            { text: '认购', val: item.subscribeCount || 0, unit: '套', colors: ['#80CFFF', '#49A1FD'], linearGradientWidth: this._getProgress(item.subscribeCount, item.reportCount), progress: this._getProgress(item.subscribeCount, item.takeLookCount) },
+            { text: '签约', val: item.signingCount || 0, unit: '套', colors: ['#FF8A6B', '#FE5139'], linearGradientWidth: this._getProgress(item.signingCount, item.reportCount), progress: this._getProgress(item.signingCount, item.subscribeCount) },
         ];
         const cover = item.cover ? { uri: item.cover } : require('./../../../images/pictures/building_def.png');
         return <View style={[styles.itemView, (index + 1) === this.state.list.length ? { marginBottom: 0 } : {}]}>
@@ -127,12 +126,11 @@ class StationHelper extends Component {
                         </View>
                         <View style={styles.projectDataItem}>
                             <Text style={styles.projectDataItem_text}>销售货值</Text>
-                            <Text style={styles.projectDataItem_val}>{Math.round((item.saleAmount / 10000 || 0) * 10) / 10}万</Text>
+                            <Text style={[styles.projectDataItem_val, { color: '#FE5139' }]}>{Math.round((item.saleAmount / 10000 || 0) * 10) / 10}万</Text>
                         </View>
                     </View>
                 </View>
             </View>
-            {/*<Text style={styles.times}>2018-08-07 12:00:00至2018-08-08 12:00:00</Text>*/}
             <View style={styles.progress}>
                 {
                     progressList.map((progressItem, i) => {
@@ -147,7 +145,7 @@ class StationHelper extends Component {
                                     <LinearGradient
                                         start={{ x: 1.5, y: 0 }} end={{ x: 0.0, y: 1.0 }}
                                         colors={progressItem.colors}
-                                        style={[styles.progressItemLG, { width: progressItem.progress * 100 + '%' }]}
+                                        style={[styles.progressItemLG, { width: progressItem.linearGradientWidth * 100 + '%' }]}
                                     />
                                 </View>
                                 <View style={styles.progressItemInfo}>
@@ -159,13 +157,21 @@ class StationHelper extends Component {
                     })
                 }
             </View>
-            <XKJButton onPress={() => this._handleShare(item)} title={
-                <View style={[styles.flex, styles.flexRow, styles.alignCenter]}>
-                    <Image style={styles.weiXin} source={require('./../../../images/icons/weixin.png')} />
-                    <Text style={styles.btn_text}>分享报备小程序</Text>
-                </View>
-            }
-                style={styles.btn} />
+            <View style={styles.footer}>
+                <XKJButton onPress={() => this._statistical(item)} title={
+                    <View style={[styles.flex, styles.flexRow, styles.alignCenter]}>
+                        <Image style={styles.weiXin} source={require('./../../../images/icons/statistical.png')} />
+                        <Text style={styles.btn_text}>统计分析</Text>
+                    </View>
+                } style={[styles.btn, styles.btnBgColor]} />
+                <XKJButton onPress={() => this._handleShare(item)} title={
+                    <View style={[styles.flex, styles.flexRow, styles.alignCenter]}>
+                        <Image style={styles.weiXin} source={require('./../../../images/icons/weixin.png')} />
+                        <Text style={styles.btn_text}>分享报备小程序</Text>
+                    </View>
+                } style={styles.btn} />
+            </View>
+
         </View>
     };
     _listHeaderComponent = () => {
@@ -220,11 +226,8 @@ class StationHelper extends Component {
     };
     _onRefresh = async () => {
         if (this.state.isRefreshing) return;
-        await this.setState({pageIndex: 0});
+        await this.setState({ pageIndex: 0 });
         this.initData('update');
-    };
-    _isShowTopBar = () => {
-        return this.state.offsetY < scaleSize(300)
     };
     _onEndReached = async () => {
         if (!this.state.moreLoading && this.state.totalCount !== this.state.list.length) {
@@ -235,8 +238,8 @@ class StationHelper extends Component {
         }
     };
     _handleDataToList = (data = []) => {
-        
-        return data.reduce((res, curr, index) => {
+
+        return data.reduce((res, curr) => {
             res.push({
                 building_id: curr.buildingId,
                 build_tree_id: curr.buildingTreeId,
@@ -286,9 +289,8 @@ class StationHelper extends Component {
                     { text: '退房', val: returnRoomCount },
                 ]
             });
-            console.log(res, 'res--res')
         } catch (e) {
-            console.log(e, '请求失败');
+            console.log(e)
             type === 'init' && this.setState({ initError: true });
             type !== 'init' && Toast.message(e.message || '请求失败')
         } finally {
@@ -310,17 +312,15 @@ class StationHelper extends Component {
                     isError: initError,
                     onErrorPress: async () => {
                         if (loading) return;
-                        await this.setState({pageIndex: 0});
+                        await this.setState({ pageIndex: 0 });
                         this.initData('init')
                     }
                 }}
-                // loading={loading}
                 hiddenTopBar={true}
                 title={'驻场助手'}
                 scroll={false}
                 bodyStyle={styles.page}
             >
-                {/*<ActivityIndicator size="large" animating={loading}/>*/}
                 <Animated.View style={[styles._project, { opacity: barAnimated }]}>
                     <TopBar title={'驻场助手'} />
                     <View style={[styles.flexRow, styles.alignCenter, styles._projectNum]}>
@@ -358,7 +358,7 @@ class StationHelper extends Component {
                     ListHeaderComponent={this._listHeaderComponent}
                     ListEmptyComponent={
                         <View>
-                            {loading ? <ActivityIndicator size="large" animating={loading}/> : null}
+                            {loading ? <ActivityIndicator size="large" animating={loading} /> : null}
                             <NoData tips='抱歉，没有相关信息' style={{ marginTop: '50%' }} />
                         </View>
                     }
@@ -369,6 +369,26 @@ class StationHelper extends Component {
                     style={styles.list}
                 >
                 </FlatList>
+
+                {
+                    this.props.config.isFirstInZczs && (
+                        <ImageBackground
+                            style={styles['container']}
+                            imageStyle={styles['background']}
+                            source={require('@/images/guide/zczs.png')}
+                        >
+                            <View style={styles['button-view']}>
+                                <TouchableOpacity
+                                    activeOpacity={1}
+                                    style={styles['button']}
+                                    onPress={() => this.props.dispatch({ type: 'config/noLongerFirstInZczs' })}
+                                >
+                                    <Text style={styles['text']}>我知道了</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ImageBackground>
+                    )
+                }
             </Page>
         )
     }

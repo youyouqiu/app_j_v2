@@ -8,7 +8,8 @@ import SplashScreen from 'react-native-splash-screen'
 import {Image} from 'react-native'
 import GuidePage from './guidePage'
 const AuthLoading: FunctionComponent<NavigationScreenProps> = props => {
-  const [initFirst, setInitFirst] = useState(false)
+  const [initFirst, setInitFirst] = useState(false);
+  global.navigation = props.navigation;
   useEffect(() => {
     SplashScreen.hide()
     storage.get('initFirst').then((res: any) => {
@@ -31,7 +32,7 @@ const AuthLoading: FunctionComponent<NavigationScreenProps> = props => {
       getUeserInfo()
     }).catch(e => {
       getUeserInfo()
-    }) 
+    })
   }
 
   const getUeserInfo = () => {
@@ -54,8 +55,8 @@ const AuthLoading: FunctionComponent<NavigationScreenProps> = props => {
     })
   }
 
-  return !initFirst 
-    ? 
+  return !initFirst
+    ?
     <Image source={require('../images/pictures/start.gif')} style={{width: '100%', height: '100%'}}/>
     :
     <GuidePage init={init}/>

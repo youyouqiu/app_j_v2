@@ -49,7 +49,7 @@ export default StyleSheet.create({
         flexDirection: 'column',
         paddingTop: scaleSize(40),
         paddingLeft: scaleSize(32),
-        paddingRight: scaleSize(32)
+        paddingRight: scaleSize(32),
     },
     floorHeader: {
         flexDirection: 'row',
@@ -104,28 +104,37 @@ export default StyleSheet.create({
         paddingRight: scaleSize(10),
         marginBottom: scaleSize(24),
     },
-    roomItem: {},
     roomNumWrap: {
         flexDirection: 'row',
         paddingRight: scaleSize(8),
         paddingLeft: scaleSize(8),
         borderTopRightRadius: scaleSize(6),
-        borderTopLeftRadius: scaleSize(6)
+        borderTopLeftRadius: scaleSize(6),
+    },
+    roomNumContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: '#fff',
+        flex: 1,
+        paddingTop: scaleSize(6),
+        paddingBottom: scaleSize(6)
     },
     roomNum: {
         flex: 1,
         textAlign: 'center',
         fontSize: scaleSize(24),
         paddingTop: scaleSize(6),
-        paddingBottom: scaleSize(6),
+        // paddingBottom: scaleSize(6),
         borderBottomWidth: StyleSheet.hairlineWidth,
-        borderColor: '#fff',
+        borderBottomColor: '#ffe22a',
     },
     roomLockWrap: {
         width: '100%',
         height: '100%',
         position: 'absolute',
-        left:scaleSize(8),
+        left: scaleSize(8),
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
@@ -143,13 +152,12 @@ export default StyleSheet.create({
     },
     roomPrise: {
         textAlign: 'center',
-        width:'100%',
+        width: '100%',
         fontSize: scaleSize(24),
         paddingTop: scaleSize(6),
         paddingBottom: scaleSize(6),
-        borderWidth: StyleSheet.hairlineWidth,
+        borderTopWidth: StyleSheet.hairlineWidth,
         borderColor: '#EAEAEA',
-        borderTopWidth: 0,
         borderBottomLeftRadius: scaleSize(6),
         borderBottomRightRadius: scaleSize(6)
     }

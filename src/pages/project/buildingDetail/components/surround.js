@@ -1,30 +1,57 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Image, Text, View} from "react-native";
 import styles from "../styles";
 import {scaleSize} from "../../../../utils/screenUtil";
+import {mapSearch} from '../../../../utils/mapServerApi'
+import {aroundType} from '../buildJson'
 
-const surroundData = {
-    1: {type: 1, label: '交通配套', icon: require('../../../../images/icons/surround1.png')},
-    2: {type: 1, label: '医疗配套', icon: require('../../../../images/icons/surround2.png')},
-    3: {type: 1, label: '周边教育', icon: require('../../../../images/icons/surround3.png')},
-    4: {type: 1, label: '品质生活', icon: require('../../../../images/icons/surround4.png')},
-    5: {type: 1, label: '其他配套', icon: require('../../../../images/icons/surround5.png')},
-};
+const Surround = ({onLayout, buildingDetail = {}}) => {
+    let {basicInfo = {}} = buildingDetail
+    let {latitude, longitude} = basicInfo
+    let [aroundData, setAroundData] = useState([])
 
+    useEffect(() => {
+        if (!latitude || !longitude) return
+        let list = []
+        aroundType.map(item => {
+            let a = new Promise((resolve) => {
+                mapSearch(latitude, longitude, item.label).then(res => {
+                    if (res.message === 'ok' && res.total > 0) {
+                        resolve({key: item.key, value: res.results})
+                    } else {
+                        resolve({key: item.key, value: null})
+                    }
+                // eslint-disable-next-line no-unused-vars
+                }).catch(e => {
+                    resolve({key: item.key, value: null})
+                })
+            })
+            list.push(a)
+        })
+        Promise.all(list).then(values => {
+            setAroundData(values)
+        })
+    }, [buildingDetail])
 
-const Surround = ({onLayout, facilitiesInfo = []}) => {
     return (
         <View style={[styles.subContent, {paddingBottom: scaleSize(8)}]} onLayout={onLayout}>
             <Text style={styles.subHeader}>周边配套</Text>
-            {facilitiesInfo.map(item => (
-                <View style={styles.SIItem} key={item.type}>
-                    <Image style={styles.SIItemIcon} source={surroundData[item.type].icon}/>
+            {aroundType.map(item => {
+                let arroundDataItem = aroundData.find(v => v.key === item.key) || {}
+                if (!arroundDataItem.value) return null
+                let {value = []} = arroundDataItem
+                let detail = value.map(val => {
+                    return `${val.name}约${(val.detail_info || {}).distance}m`
+                })
+                return <View style={styles.SIItem} key={item.key}>
+                    <Image style={styles.SIItemIcon} source={item.icon}/>
                     <View style={styles.SIItemRight}>
-                        <Text style={styles.SIItemTitle} numberOfLines={1}>{surroundData[item.type].label}</Text>
-                        <Text style={styles.SIItemDesc} numberOfLines={5}>{item.content}</Text>
+                        <Text style={styles.SIItemTitle} numberOfLines={1}>{item.label}</Text>
+                        <Text style={styles.SIItemDesc} numberOfLines={1}>{detail.join(',')}</Text>
                     </View>
                 </View>
-            ))}
+            }
+        )}
         </View>
     )
 };

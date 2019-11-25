@@ -4,16 +4,18 @@ import {StyleSheet} from 'react-native'
 const styles = StyleSheet.create({
     fy_contentView: {
         height: scaleSize(268),
-        marginTop: scaleSize(69),
-        paddingBottom: scaleSize(24)
+        marginTop: scaleSize(20),
+        paddingBottom: scaleSize(24),
+        borderBottomColor: '#EAEAEA',
+        borderBottomWidth: scaleSize(1)
     },
     fy_buildingItem: {
         borderBottomWidth: scaleSize(2),
         borderBottomColor: '#EAEAEA',
         paddingLeft: scaleSize(32),
-        paddingTop: scaleSize(32),
+        paddingTop: scaleSize(12),
         paddingRight: scaleSize(32),
-        paddingBottom: scaleSize(18)
+        paddingBottom: scaleSize(32)
     },
     fy_buildingImage: {
         width: deviceWidth - scaleSize(64),
@@ -25,8 +27,7 @@ const styles = StyleSheet.create({
         paddingRight: scaleSize(20),
         paddingLeft: scaleSize(20),
         paddingTop: scaleSize(32),
-        paddingBottom: scaleSize(32),
-        backgroundColor: '#FCFCFC'
+        paddingBottom: scaleSize(12),
     },
     fy_bannerItem: {
         paddingRight: scaleSize(12),
@@ -35,7 +36,10 @@ const styles = StyleSheet.create({
     fy_recommend: {
         marginLeft: scaleSize(32),
         flexDirection: 'row',
-        marginRight: scaleSize(32)
+        alignItems: 'center',
+        // paddingTop: scaleSize(16),
+        // paddingBottom: scaleSize(16),
+        marginRight: scaleSize(32),
     },
     fy_recommendLeft: {
         color: '#000',

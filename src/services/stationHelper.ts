@@ -7,6 +7,14 @@ const API = {
         return request.post(`${request.getUrl().api}/v2.0/api/customerreport/querybuildingonsiteassistant`, {
             body: body
         })
+    },
+    searchBuidingStation: (treeId: string) => {
+        return request.get(`${request.getUrl().api}/v2.0/api/customerreport/analysis/buildinginfo/${treeId}`)
+    },
+    searchCustomerReportStation: (body: {treeId: string, startTime: string, endTime: string}) => {
+        return request.post(`${request.getUrl().api}/v2.0/api/customerreport/analysis/number`, {
+            body: body
+        })
     }
 };
 export default API

@@ -1,5 +1,5 @@
 import {scaleSize} from "../../../utils/screenUtil";
-import {Image, Text, View, StyleSheet} from "react-native";
+import {Image, Text, View, StyleSheet, ImageBackground} from "react-native";
 import React, {useEffect, useState} from "react";
 import projectService from "../../../services/projectService";
 
@@ -16,9 +16,7 @@ export const Trend = ({requestUrl, cityCode, refreshing}) => {
 
     useEffect(() => {
         _cityCode ? getTrend() : null;
-    }, [_cityCode]);
-
-    refreshing ? getTrend() : null;
+    }, [_cityCode, refreshing]);
 
     const dateMonthTransform = (dateMonth) => {
         if (dateMonth) {
@@ -71,9 +69,7 @@ export const ProjectNum = ({requestUrl, cityCode, shopStatus, refreshing}) => {
 
     useEffect(() => {
         _cityCode ? getBuildingShopTotalNumber() : null;
-    }, [_cityCode]);
-
-    refreshing ? getBuildingShopTotalNumber() : null;
+    }, [_cityCode,refreshing]);
 
     const check = (shopsStocks, value) => {
         if (!shopsStocks || JSON.stringify(shopsStocks) === '{}') {
@@ -109,7 +105,7 @@ export const ProjectNum = ({requestUrl, cityCode, shopStatus, refreshing}) => {
             </View>
             <View style={styles.line}/>
             {shopStatus.map((item, idx) => (
-                <View key={idx} style={styles.contentItem}>
+                <View key={idx} style={[styles.contentItem, {borderRightColor: '#EAEAEA', borderRightWidth: idx === 0 ? 1 : 0}]}>
                     <Text style={styles.contentBtom}>{check(projectNum.shopStocks, item.value)}</Text>
                 </View>
             ))}

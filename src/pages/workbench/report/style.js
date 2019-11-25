@@ -230,6 +230,7 @@ export const STYLE = StyleSheet.create({
         fontSize: scaleSize(28),
         color: 'rgba(31,48,112,1)',
         fontWeight: 'bold',
+        paddingTop:scaleSize(30)
     },
     buildingTypeText: {
         height: scaleSize(33),

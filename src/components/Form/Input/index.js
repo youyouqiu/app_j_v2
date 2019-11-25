@@ -70,6 +70,7 @@ export default class Input extends TextInput {
                         style={[this.buildStyle()]}
                         onChangeText={onChange?onChange:null}
                         ref={elem}
+                        editable={!disabled}
                         placeholderTextColor={placeholderTextColor ? placeholderTextColor : Theme.Input.placeholderTextColor}
                         pointerEvents={disabled ? 'none' : pointerEvents}
                         opacity={disabled ? Theme.inputDisabledOpacity : opacity}

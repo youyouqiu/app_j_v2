@@ -15,9 +15,9 @@ const ProjectCarousel = ({BROKER_HOME_TOP = [], advertisementDetail}) => {
         renderCarousel = (
             <Carousel control={true} style={styles.pc_carousel} control={
                 <Carousel.Control
-                    style={{alignItems: 'flex-end', marginBottom: 30, paddingRight: scaleSize(15)}}
-                    dot={<View style={{backgroundColor: '#CBCBCB', width:10,height:10,borderRadius: 5, margin: 4}}></View>}
-                    activeDot={<View style={{backgroundColor: '#fff', width:10,height:10,borderRadius: 5, margin: 4}}></View>}
+                    style={{alignItems: 'center', marginBottom: 20}}
+                    dot={<View style={{backgroundColor: 'rgba(0,0,0,0.15)', width:scaleSize(10),height:scaleSize(10),borderRadius: scaleSize(5), margin: 4}}></View>}
+                    activeDot={<View style={{backgroundColor: '#fff', width:scaleSize(10),height:scaleSize(10),borderRadius: scaleSize(5), margin: 4}}></View>}
                 />
             }>
                 {BROKER_HOME_TOP.map((item, idx) => (

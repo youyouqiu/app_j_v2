@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react'
 import {
     ScrollView, StatusBar, ImageBackground, ListRenderItem,
-    View, Text, Image, FlatList, TouchableOpacity, RefreshControl, Platform, DeviceEventEmitter
+    View, Text, Image, FlatList, TouchableOpacity, RefreshControl, Platform, DeviceEventEmitter, Alert, EmitterSubscription
 } from 'react-native'
 import { connect, MapStateToProps, DispatchProp } from 'react-redux'
 import { NavigationScreenProps, NavigationEventSubscription } from 'react-navigation'
-import { ConfigState } from '../../models/types'
+import StoreState, { ConfigState, UserInfo } from '../../models/types'
 import { scaleSize } from '../../utils/screenUtil'
-import { checkPermission, verifyUser } from '../../utils/utils'
+import { checkPermission, extractIdFromUrl, verifyUser } from '../../utils/utils'
 import { getWeatherIcon } from '../../utils/weather'
 import { Toast } from 'teaset'
 import messageApi, {
@@ -18,24 +18,36 @@ import messageApi, {
 import adApi, {
     GetAdvertisingsConditions,
     GetAdvertisingsResponseExtensionListItem,
+    QueryAdvertisingsConditions,
+    QueryAdvertisingsResponseExtensionListItem
 } from '../../services/advertising'
 // @ts-ignore
 import QuickEntry from '../../businessComponents/quickEntry'
-import EntryIcon from '../../businessComponents/EntryIcon'
 // @ts-ignore
 import Shadow from '../../components/Shadow'
 import VerticalSwiper from '../../components/VerticalSwiper'
 import styles from './styles'
 import tracking, { PageTimer } from '../../utils/BuryPoint'
 import InitGuide from './InitGuide'
+import EntryIcons from '../../businessComponents/EntryIcons'
 import projectService from "../../services/projectService";
+import Advertisement from '../../businessComponents/advertisement'
+import EntryIcon from "../../businessComponents/EntryIcon";
+import navigationUtils from '../../utils/navigation'
+import { CONSTANT } from "@/constants";
+
+const alert = Alert.alert
+
+const EGroup = EntryIcons.Group
+const EItem = EntryIcons.Item
 
 interface TStateProps {
     config: ConfigState
-    user: any
+    user: UserInfo
     guest: boolean
     location: any
     weather: any
+    freeUser: boolean
 }
 
 interface State {
@@ -45,7 +57,8 @@ interface State {
         list: WaitMessageResponseListItem[]
     }
     headline: GetAdvertisingsResponseExtensionListItem[]
-    refreshing: boolean
+    ADOnOpen: GetAdvertisingsResponseExtensionListItem[]
+    refreshing: boolean,
 }
 
 class Workbench extends PureComponent<NavigationScreenProps & TStateProps & DispatchProp, State> {
@@ -66,6 +79,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
             list: [] as WaitMessageResponseListItem[],
         },
         headline: [] as GetAdvertisingsResponseExtensionListItem[],
+        ADOnOpen: [] as GetAdvertisingsResponseExtensionListItem[],
         refreshing: false,
     }
     didFocusListener?: NavigationEventSubscription
@@ -73,11 +87,24 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
     pageTimer: PageTimer = new PageTimer()
 
     componentDidMount() {
-        const { navigation } = this.props
+        const { navigation, dispatch, config: { noticeInfo } } = this.props
         this.didFocusListener = navigation.addListener('didFocus', this.navigationDidFocus)
         this.didBlurListener = navigation.addListener('didBlur', this.navigationDidBlur)
         if (this.props.config.isFirstUseApp) {
             navigation.setParams({ tabBarVisible: false })
+        } else {
+            this.getADOfOpen()
+            if (noticeInfo && noticeInfo.url) {
+                navigationUtils.noticeNavigate(noticeInfo)
+            }
+        }
+    }
+
+    componentDidUpdate(prevProps: TStateProps) {
+        // 典型用法（不要忘记比较 props）：
+        if (prevProps.config.noticeInfo && prevProps.config.noticeInfo.pushId !== this.props.config.noticeInfo.pushId) {
+            const { noticeInfo } = this.props.config
+            noticeInfo.url && navigationUtils.noticeNavigate(noticeInfo)
         }
     }
 
@@ -88,11 +115,12 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
 
     // 进入页面
     navigationDidFocus = () => {
+        StatusBar.setBarStyle('light-content')
         DeviceEventEmitter.emit('initMessage') // 进入页面的时候调用获取消息  因为静默消息的原因临时处理
         this.pageTimer.start()
         this.getDtInfo()
         this.getBacklog()
-        this.getHeadlines()
+        this.getADOfHeadline()
     }
 
     // 离开页面
@@ -108,9 +136,10 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
         })
     }
 
+
     // 请求客户动态接口
     fetchDtInfo = () => {
-        return messageApi.dtInfo(this.props.config.requestUrl.api)
+        return messageApi.dtInfo()
     }
 
     // 请求待办提示接口
@@ -128,9 +157,14 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
         return messageApi.readDt(this.props.config.requestUrl.api, conditions)
     }
 
-    // 请求头条接口
-    fetchHeadline = (conditions: GetAdvertisingsConditions) => {
+    // 请求广告接口
+    fetchAdvertising = (conditions: GetAdvertisingsConditions) => {
         return adApi.getAdvertisings(this.props.config.requestUrl.public, conditions)
+    }
+
+    // 批量请求广告接口
+    fetchAdvertisings = (conditions: QueryAdvertisingsConditions) => {
+        return adApi.queryAdvertisings(this.props.config.requestUrl.public, conditions)
     }
 
     // 获取客户动态data
@@ -141,7 +175,6 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
             this.setState({ dtInfo: extension })
         } catch (e) {
             console.log('getDtInfo error:', e)
-            // TODO
         }
     }
 
@@ -158,23 +191,50 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
             })
         } catch (e) {
             console.log('getBacklog error:', e)
-            // TODO
         }
     }
 
-    // 获取头条data
-    getHeadlines = async () => {
+    // 获取头条广告
+    getADOfHeadline = async () => {
         const conditions: GetAdvertisingsConditions = {
-            site: 'BROKER_HOME_HEADLINE',
             cityId: this.props.location.conversionCode,
             app: 1,
+            site: 'BROKER_HOME_HEADLINE'
         }
         try {
-            const { extension } = await this.fetchHeadline(conditions)
-            this.setState({ headline: extension })
+            const { extension }: { extension: GetAdvertisingsResponseExtensionListItem[] } = await this.fetchAdvertising(conditions)
+            this.setState({
+                headline: extension,
+            })
         } catch (e) {
-            console.log('getHeadlines error:', e)
-            // TODO
+            console.log('getAdvertisings error:', e)
+        }
+    }
+
+    /**
+     * 获取开屏广告
+     */
+    getADOfOpen = async () => {
+        //游客或定位失败时不做显示
+        if (!this.props.location.locationCityCode || this.props.config.willUpdate || this.props.guest) return
+        const conditions: GetAdvertisingsConditions = {
+            cityId: this.props.location.locationCityCode,
+            app: 1,
+            site: 'BROKER_ON_OPEN'
+        }
+        try {
+            const { extension }: { extension: GetAdvertisingsResponseExtensionListItem[] } = await this.fetchAdvertising(conditions)
+            let ADOnOpen = [] as GetAdvertisingsResponseExtensionListItem[]
+            if (extension.length >= 1) {
+                //随机取出一张
+                const randomOne = extension[Math.floor(Math.random() * extension.length)]
+                ADOnOpen.push(randomOne)
+            }
+            this.setState({ ADOnOpen },
+                () => this.props.dispatch({ type: 'config/controlADVisible' })
+            )
+        } catch (e) {
+            console.log('getADOfOpen error:', e)
         }
     }
 
@@ -209,14 +269,12 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
             adId: item.id,
             app: 1,
             source: Platform.OS === 'ios' ? 1 : 2,
-            userId: (this.props.user.userInfo || {}).id,
+            userId: (this.props.user || {}).id,
             cityId: (location && location.conversionCode) || '500000'
         };
         projectService.addVisitReq(config.requestUrl.public, reqParams);
-
-
         if (item.jumpType === 0) {
-            navigation.navigate('webView', {
+            navigation.navigate('xkjWebView', {
                 title: item.adName,
                 url: item.link,
             })
@@ -234,7 +292,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
         this.setState({ refreshing: true }, async () => {
             await this.getDtInfo()
             await this.getBacklog()
-            await this.getHeadlines()
+            await this.getADOfHeadline()
             this.setState({ refreshing: false })
         })
     }
@@ -284,6 +342,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
     // 待办提示 item
     renderBacklogItem: ListRenderItem<WaitMessageResponseListItem> = ({ item, index }) => {
         const { backlog } = this.state
+        let { title = '' } = item
         return (
             <TouchableOpacity
                 key={item.messageId}
@@ -293,14 +352,14 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
             >
                 <Shadow style={styles['backlog-content']}>
                     {/* left */}
-                    <View style={styles['backlog-content-left']}>
+                    <View style={[styles['backlog-content-left'], { width: title.length > 4 ? scaleSize(75) : scaleSize(50) }]}>
                         <Image
                             style={styles['backlog-content-left-img']}
                             source={['RemindNotSign', 'RemindComfirmBeltLook'].includes(item.messageType)
                                 ? require('../../images/icons/detail.png')
                                 : require('../../images/icons/warning-circle.png')}
                         />
-                        <Text style={styles['backlog-content-left-text']} numberOfLines={2}>{item.title}</Text>
+                        <Text style={styles['backlog-content-left-text']} numberOfLines={2}>{title}</Text>
                     </View>
 
                     {/* line */}
@@ -373,7 +432,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
         <Shadow style={styles['backlog-noData-content']}>
             <Image
                 style={styles['backlog-noData-img']}
-                source={require('../../images/pictures/noData2.png')}
+                source={require('../../images/pictures/dbts.png')}
             />
             <View style={styles['backlog-noData-right']}>
                 <Text style={styles['backlog-noData-text-1']}>您真棒！</Text>
@@ -397,17 +456,16 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
         }
     }
 
+    handlePressADOnOpen(item: GetAdvertisingsResponseExtensionListItem) {
+        this.props.dispatch({ type: 'config/controlADVisible' })
+        this.gotoWebView(item)
+    }
+
     render() {
-        const { guest, user, location, weather } = this.props
-        const { dtInfo, backlog, headline, refreshing } = this.state
+        const { guest, user, location, weather, freeUser } = this.props
+        const { dtInfo, backlog, headline, refreshing, ADOnOpen } = this.state
         return <>
             {/* 状态栏背景透明 */}
-            <StatusBar
-                translucent={true}
-                barStyle='dark-content'
-                backgroundColor='rgba(255,255,255,0)'
-            />
-
             {/* Header */}
             <ImageBackground
                 style={styles['header-background']}
@@ -449,7 +507,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
                     <Shadow style={styles['header-content']}>
                         {/* 个人信息 */}
                         <View>
-                            <Text style={styles['header-left-line-1']}>欢迎你{ guest ? '游客' : user.trueName ? `，${user.trueName}` : ''}！</Text>
+                            <Text style={styles['header-left-line-1']}>欢迎你{guest ? '游客' : user.trueName ? `，${user.trueName}` : ''}！</Text>
                             <Text style={styles['header-left-line-2']} numberOfLines={1}>
                                 {user.filialeShortName || '暂无公司'} | {user.deptName || '暂无组别'}
                             </Text>
@@ -461,7 +519,10 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
                             onPress={this.handlePressCustomerDynamic}
                         >
                             <View style={styles['header-right-line-1']}>
-                                <Image source={require('../../images/icons/newMessage2.png')} style={styles['header-img']} />
+                                <View>
+                                    <Image source={require('../../images/icons/newMessage2.png')} style={styles['header-img']} />
+                                    {!!dtInfo.number && <View style={styles['header-right-dot']} />}
+                                </View>
                                 <Text style={styles['header-right-line-1-text']}>客户动态</Text>
                             </View>
                             <Text style={styles['header-right-line-2']}>{dtInfo.number || '0'}</Text>
@@ -471,8 +532,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
             </ImageBackground>
 
             {/* Body content */}
-            <View style={{paddingTop: scaleSize(88)}}>
-            </View>
+            <View style={{ height: scaleSize(75) }} />
             <ScrollView
                 style={styles['content']}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.handleRefresh} />}
@@ -506,49 +566,35 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
                 {/* 头条 */}
                 {headline.length ? (
                     <View style={styles['headlines']}>
-                        <Image style={styles['headlines-img']} source={require('../../images/icons/toutiao3x.png')}/>
+                        <Image style={styles['headlines-img']} source={require('../../images/icons/toutiao3x.png')} />
                         {/* 头条 content */}
                         <VerticalSwiper style={styles['headlines-content']}>
                             {headline.map(item => (
-                                <TouchableOpacity key={item.id} activeOpacity={0.8}  onPress={() => this.gotoWebView(item)}
-                                                  style={{height:scaleSize(66), flexDirection: 'row',alignItems:'center'}}>
-                                        <Text style={[styles['headlines-text'], {flex: 1, lineHeight: scaleSize(32)}]} numberOfLines={2}>{item.adName}</Text>
-                                        <Text style={[styles['headlines-text'], {color: '#868686'}]}>{item.timerStr}</Text>
+                                <TouchableOpacity key={item.id} activeOpacity={0.8} onPress={() => this.gotoWebView(item)}
+                                    style={{ height: scaleSize(66), flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={[styles['headlines-text'], { flex: 1, lineHeight: scaleSize(32) }]} numberOfLines={2}>{item.adName}</Text>
+                                    <Text style={[styles['headlines-text'], { color: '#868686' }]}>{item.timerStr}</Text>
                                 </TouchableOpacity>
                             ))}
                         </VerticalSwiper>
                     </View>
                 ) : null}
-
-                {/* 常用功能 */}
-                <View style={[styles['entry'], user.Resident ? styles['line'] : null]}>
-                    <Text style={styles['entry-title']}>常用功能</Text>
-                    <View style={styles['entry-list']}>
-                        <EntryIcon title='客户管理' path='customerList' auth={!guest} icon={require('./../../images/icons/entryIcon/khgl2.png')} />
-                        <EntryIcon title='报备管理' path='reportList' auth={!guest} icon={require('./../../images/icons/entryIcon/bbgl2.png')} />
-                        <EntryIcon title='签约管理' path='singList' auth={!guest} icon={require('./../../images/icons/entryIcon/qygl2.png')} />
-                        <EntryIcon title='资讯干货' path='articleList' auth={true} icon={require('./../../images/icons/entryIcon/zxgh2.png')} />
-                    </View>
-                </View>
-
-                {/* 工具助手 */}
-                {
-                    user.isResident 
-                    ? 
-                    <View style={styles['entry']}>
-                        <Text style={styles['entry-title']}>工具助手</Text>
-                        <View style={[styles['entry-list']]}>
-                            <EntryIcon title='驻场助手' path='stationHelper' icon={require('./../../images/icons/entryIcon/zczs2.png')} />
-                        </View>
-                    </View>
-                    :
-                    <View style={styles['entry']}>
-                        <Text style={styles['entry-title']}>工具助手</Text>
-                        <View style={[styles['entry-list']]}>
-                            <EntryIcon title='驻场助手' disabled path='stationHelper' icon={require('./../../images/icons/entryIcon/zczs_disabled.png')} />
-                        </View>
-                    </View>
-                }
+                <EntryIcons>
+                    <EGroup title='常用功能'>
+                        <EItem title='客户管理' path='customerList' auth={!guest} icon={require('./../../images/icons/entryIcon/khgl2.png')} />
+                        <EItem title='报备管理' path='reportList' auth={!guest} icon={require('./../../images/icons/entryIcon/bbgl2.png')} />
+                        <EItem title='签约管理' path='singList' auth={!guest} icon={require('./../../images/icons/entryIcon/qygl2.png')} />
+                        <EItem title='资讯干货' path='articleList' auth={true} icon={require('./../../images/icons/entryIcon/zxgh2.png')} />
+                    </EGroup>
+                    <EGroup title='工具助手'>
+                        <EItem title='工作报表' path='workReport' locked={guest} auth={!guest} icon={require('./../../images/icons/entryIcon/gzbb.png')} />
+                        <EItem title='驻场助手' path='stationHelper' locked={guest || !user.isResident} auth={!guest}
+                            icon={require('./../../images/icons/entryIcon/zczs.png')} />
+                        <EItem title='房贷计算器' path='calculate' icon={require('./../../images/icons/entryIcon/fdjsq.png')} />
+                        <EItem title='侦探寻铺' path='searchBuilding' locked={guest || freeUser} auth={!guest}
+                            icon={require('./../../images/icons/entryIcon/ztxf.png')} />
+                    </EGroup>
+                </EntryIcons>
             </ScrollView>
 
             {/* 快速入口 */}
@@ -562,16 +608,22 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
                     this.props.navigation.setParams({ tabBarVisible: true })
                 }}
             />
+            {/* 开屏广告 */}
+            {
+                ADOnOpen.length >= 1 &&
+                <Advertisement img={{ uri: ADOnOpen[0].cover }} onPress={() => this.handlePressADOnOpen(ADOnOpen[0])} />
+            }
         </>
     }
 }
 
-const mapStateToProps: MapStateToProps<TStateProps, any, any> = ({
+const mapStateToProps: MapStateToProps<TStateProps, any, StoreState> = ({
     user, config, location, weather
 }) => ({
     config,
     user: user.userInfo,
-    guest: user.status === 404,
+    freeUser: user.status === 202, // 自由经纪人
+    guest: user.status === 404, // 未登陆经纪人
     location,
     weather,
 })

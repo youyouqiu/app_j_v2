@@ -15,13 +15,13 @@ export default {
             Location.stop()
             // 安卓定位失败反悔的经纬度为java最小数
             if (latitude === 5e-324) {
-              reject(new Error('invalid location'))
+              reject('invalid location')
             }
             resolve({ latitude, longitude })
           })
           Location.start()
         }).catch(e => {
-          reject(new Error(e.message))
+          // reject(new Error(e.message))
         })
     })
   },

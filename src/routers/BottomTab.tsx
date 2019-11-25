@@ -113,7 +113,7 @@ const routeConfigMap: NavigationRouteConfigMap = {
         if (user.status === 404) {
           obj.navigation.navigate('login')
         } else {
-          obj.defaultHandler()
+         obj.defaultHandler()
         }
       },
       tabBarOnLongPress: async obj => {

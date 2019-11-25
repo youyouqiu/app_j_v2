@@ -69,6 +69,7 @@ export default StyleSheet.create({
     paddingBottom: scaleSize(48),
     borderRadius: scaleSize(8),
     width: '100%',
+    height: scaleSize(210),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -105,6 +106,15 @@ export default StyleSheet.create({
     fontSize: scaleSize(36),
     lineHeight: scaleSize(50),
   },
+  'header-right-dot': {
+    position: 'absolute',
+    top: scaleSize(2),
+    right: scaleSize(5),
+    width: scaleSize(10),
+    height: scaleSize(10),
+    borderRadius: scaleSize(5),
+    backgroundColor: '#FF0000',
+  },
   'header-img': {
     // 布局
     marginRight: scaleSize(7),
@@ -119,7 +129,7 @@ export default StyleSheet.create({
   },
   'content': {
     width: '100%',
-    height: '100%',
+    height: '100%'
   },
   'backlog': {
     marginTop: scaleSize(24),
@@ -175,6 +185,7 @@ export default StyleSheet.create({
     marginRight: scaleSize(28),
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center'
   },
   'backlog-content-left-text': {
     // 布局

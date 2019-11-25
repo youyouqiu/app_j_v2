@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import BaseContainer from '../../../components/Page'
 import { connect } from 'react-redux';
-import { View, StyleSheet, Text, TouchableOpacity, Image, TextInput, DeviceEventEmitter ,KeyboardAvoidingView} from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity, Image, TextInput, DeviceEventEmitter, KeyboardAvoidingView } from 'react-native'
 import { scaleSize } from '../../../utils/screenUtil';
 import Input from '../../../components/Form/Input'
 import BuyGrade from './grade'
 import ApiCustom from '../../../services/customManager'
 import { Toast } from 'teaset'
 import { createForm, formShape } from 'rc-form'
-import { Picker } from 'xkjdatepicker'
+import { Picker } from '@new-space/date-picker'
 import { debounce } from '../../../utils/utils'
 import MatchModal from '../../../components/Modal/index'
 
@@ -55,7 +55,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderColor: '#CBCBCB',
         borderWidth: scaleSize(1),
-        borderRadius: scaleSize(22)
+        borderRadius: scaleSize(22),
+        backgroundColor: '#F8F8F8'
     },
     sexText: {
         color: '#868686',
@@ -84,6 +85,7 @@ const styles = StyleSheet.create({
     },
     yiyuan: {
         marginRight: scaleSize(32),
+        marginLeft: scaleSize(16),
         color: '#000000',
         fontSize: scaleSize(28)
     },
@@ -141,16 +143,22 @@ const styles = StyleSheet.create({
         borderBottomColor: '#EAEAEA',
         borderBottomWidth: scaleSize(1)
     },
+    inputWrap: {
+        padding: scaleSize(32)
+    },
     inputStyle: {
         backgroundColor: '#F8F8F8',
         borderColor: '#CBCBCB',
         borderWidth: scaleSize(1),
-        width: scaleSize(686),
+        width: '100%',
         height: scaleSize(272),
-        marginLeft: scaleSize(32),
-        marginTop: scaleSize(32),
         padding: scaleSize(20),
-        textAlignVertical: 'top'
+        textAlignVertical: 'top',
+        borderRadius: scaleSize(8)
+    },
+    itemBase: {
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })
 
@@ -204,8 +212,11 @@ class AddCustom extends Component {
             showMatching: false,
             selectCode: [],
             areaCode: '',
-            provinceCode: ''
+            provinceCode: '',
+            cityCode: ''
         }
+        this.firstCity = []  //已加载的一级城市
+        this.secondCity = [] //已加载的二级城市
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -221,13 +232,14 @@ class AddCustom extends Component {
         }
     }
 
+
     componentDidMount() {
         let id = (((this.props.navigation || {}).state || {}).params || {}).id || ''
         let isEdit = (((this.props.navigation || {}).state || {}).params || {}).isEdit || false
         this.setState({
             isEdit: isEdit
         })
-        this.getListCity()
+        this.getListCity(0)
         if (id || isEdit) {
             // 查询该客户详情
             this.getCusInfo(id)
@@ -273,30 +285,31 @@ class AddCustom extends Component {
         let { dataInfo, phoneList } = this.state
         let regPhone = /^1[3-9]{1}[\d]{9}$/;
         let customerPhones = dataInfo.customerPhones || []
-
         customerPhones.map((va) => {
             phoneList.map((item) => {
                 item.phone = va.phone
             })
         })
-
+        console.log(customerPhones, 'customerPhones')
         let phoneData = []
-        customerPhones.map((item, index) => {
-            phoneData.push({ key: index, status: regPhone.test(item.phone), phone: item.phone, seq: item.seq })
+        customerPhones.slice(0, 3).map((item, index) => {
+            phoneData.push({ key: index, status: regPhone.test(item.phone), phone: item.phone, seq: item.seq, id: item.id })
         })
 
         await this.setState({
             phoneList: phoneData,
             num: phoneData.length,
-            areaCode: dataInfo.area,
+            city: dataInfo.city,
             provinceCode: dataInfo.province,
+            areaCode: dataInfo.area,
             ageChooseValue: (dataInfo.portrait || {}).age || '',
             chooseResidentArea: (dataInfo.portrait || {}).address || '',
             buildTypeChooseValue: (dataInfo.portrait || {}).buildingCategory || '',
             chooseMatchingValue: (dataInfo.portrait || {}).matching || '',
             chooseTowardValue: (dataInfo.portrait || {}).direction || '',
             choosepurchasePoseValue: (dataInfo.portrait || {}).homePurchaseTarget || '',
-            chooseAreafullName: (dataInfo || {}).areaFullName || ''
+            chooseAreafullName: (dataInfo || {}).areaFullName || '',
+            mark: (dataInfo || {}).mark || '',
         }, () => {
             this.state.phoneList.map((item) => {
                 form.setFieldsValue({ [`phone${item.key}`]: item.phone })
@@ -308,6 +321,12 @@ class AddCustom extends Component {
         }
         if (dataInfo.sumArea) {
             dataInfo.sumArea = dataInfo.sumArea + ''
+        }
+        if (dataInfo.maxSumBudget) {
+            dataInfo.maxSumBudget = dataInfo.maxSumBudget + ''
+        }
+        if (dataInfo.maxSumArea) {
+            dataInfo.maxSumArea = dataInfo.maxSumArea + ''
         }
 
         if ((dataInfo.portrait || {}).matching || '') {
@@ -345,47 +364,107 @@ class AddCustom extends Component {
         })
     }
 
-    //  获取城市列表
-    getListCity = async () => {
-        let _public = this.props.config.requestUrl.public
-        let params = this.props.user.userInfo.city
+    /**
+     * 选择picker触发的事件
+     */
+    handlePickerChange = (record, index) => {
+        if (index === 0) {
+            const code = record[0].replace(/^.+_/, '')
+            const repeat = this.firstCity.filter(a => a === code)
+            return repeat.length === 0 ? this.getListCity(code, index + 1) : undefined
+        }
+        if (index === 1) {
+            const firstCode = record[0].replace(/^.+_/, '')
+            const secondCode = record[1].replace(/^.+_/, '')
+            const repeat = this.secondCity.filter(a => a === secondCode)
+            return repeat.length === 0 ? this.getListCity(secondCode, index + 1, firstCode) : undefined
+        }
+    }
+
+    /**
+     * 获取城市列表
+     * @param code 父级城市code
+     * @param lv:number 层级  0｜1｜2
+     *【0】初始、【1】查询第一层级城市（北京、重庆。。）、【2】查询第二层级下城市（渝北区、南岸区。。。）
+     * @param firstCode 当前第一层级的key,查询第二层级时需传此参数
+     */
+    getListCity = async (code, lv = 0, firstCode) => {
+        const _public = this.props.config.requestUrl.public
+        const nullLabel = { key: '', value: '', label: '不限', }
+        const format = (item) => ({
+            key: item.areaCode,
+            value: item.name + '_' + item.areaCode,
+            label: item.name,
+        })
+
+        if (lv === 0) {
+            // 一级地区
+            const first = await this.callApi(() => ApiCustom.getAllCity(_public, code), '查询城市一级列表报错')
+            if (!first) return
+            const list = first.map(format)
+            // 二级地区
+            const sec = await this.callApi(() => ApiCustom.getAllCity(_public, first[0].areaCode), '查询城市二级列表报错')
+            if (!sec) return
+            const _sec = sec.map(format)
+            _sec.unshift(nullLabel)
+
+            list[0].children = _sec
+            _sec[0].children = [nullLabel]
+            this.firstCity.push(first[0].areaCode)
+            this.setState({ cityList: list })
+            return
+        }
+
+        if (lv === 1) {
+            const { cityList } = this.state
+            // 二级地区
+            const sec = await this.callApi(() => ApiCustom.getAllCity(_public, code), '查询城市二级列表报错')
+            if (!sec) return
+            const _sec = sec.map(format)
+            _sec.unshift(nullLabel)
+            _sec[0].children = [nullLabel]
+            //找到当前所选第一层级
+            const index = cityList.findIndex(a => a.key === parseInt(code))
+            cityList[index].children = _sec
+            await this.setState({ cityList })
+            this.firstCity.push(code)
+            return
+        }
+
+        if (lv === 2) {
+            const { cityList } = this.state
+            // 三级地区
+            const third = await this.callApi(() => ApiCustom.getAllCity(_public, code), '查询城市三级列表报错')
+            if (!third) return
+            const _third = third.map(format)
+            _third.unshift(nullLabel)
+            //找到当前所选的第一层级
+            const firstIndex = cityList.findIndex(a => a.key === parseInt(firstCode))
+            //第二层级
+            const secondIndex = cityList[firstIndex].children.findIndex(a => a.key === parseInt(code))
+            cityList[firstIndex].children[secondIndex].children = _third
+            await this.setState({ cityList })
+            this.secondCity.push(code)
+            return
+        }
+    }
+
+    /**
+     * 接口请求公共方法,需判断返回结果
+     * const bar = await this.callApi(() => api(param), '错误提示')
+     * @param call 需要请求的api
+     * @param message 出错后的弹窗提示内容
+     * @returns extension或void
+     */
+    callApi = async (call, message) => {
         try {
-            let res = await ApiCustom.getCityList(_public, params)
-            if (res && res.code === '0') {
-                this.setState({
-                    city: res.extension
-                }, () => {
-                    this.dealFirstLevel()
-                })
-            } else {
-                Toast.message('查询城市列表报错' + res.message || '')
-            }
-        } catch (e) {
-            Toast.message('查询城市列表报错')
+            const res = await call()
+            if (res.code === '0') return res.extension
+            Toast.message(message + res.message || '')
         }
-    }
-
-    dealFirstLevel = () => {
-        let { city } = this.state
-        let arr = []
-        for (let i in city) {
-            arr.push({ key: city[i].code, value: city[i].name + '_' + city[i].code, label: city[i].name, children: city[i].childAreas || [] })
+        catch (e) {
+            Toast.message(message)
         }
-        this.setState({
-            cityList: arr
-        }, () => {
-            this.dealSecondLevel()
-        })
-    }
-
-    dealSecondLevel = () => {
-        let { cityList } = this.state
-        cityList.map((item) => {
-            item.children.map((va) => {
-                va.label = va.name
-                va.value = va.name + '_' + va.code
-            })
-        })
     }
 
     chooseMan = () => {
@@ -462,13 +541,13 @@ class AddCustom extends Component {
         let { phoneList, num, isEdit } = this.state
         num++
 
-        if (phoneList.length >= 4) {
+        if (phoneList.length >= 2) {
             this.setState({
                 addPhoneFlag: false
             })
         }
-        if (phoneList.length >= 5) {
-            Toast.message('抱歉,最多只能添加5个电话')
+        if (phoneList.length > 3) {
+            Toast.message('抱歉,最多只能添加3个电话')
             return false
         }
 
@@ -498,13 +577,15 @@ class AddCustom extends Component {
             Toast.message('请填写必填信息后再提交')
             return
         }
-        let regName = /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{1,10}$/;
-        let regPhone = /^1[3-9]{1}[\d]{9}$/;
-        let regBanPhone = /^1[3-9][\d]{1}\*\*\*\*[\d]{4}$/
-        let regNum = /^[1-9][0-9]{0,3}$/
-
+        let regName = /^[\u4E00-\u9FA5\uf900-\ufa2d·s]{1,7}$/,regPhone = /^1[3-9]{1}[\d]{9}$/,regBanPhone = /^1[3-9][\d]{1}\*\*\*\*[\d]{4}$/,regNum = /^[1-9][0-9]{0,3}$/;
+        let numberTest = (number, text) => {
+            if (regNum.test(number)) return true
+            Toast.message(text + '可填范围：1·9999, 整数')
+            return false
+        };
+        submitObj.customerName && (submitObj.customerName = submitObj.customerName.trim())
         if (!regName.test(submitObj.customerName)) {
-            Toast.message('姓名为10位以内的汉字');
+            Toast.message('姓名为7位以内的汉字');
             return false;
         }
         phoneList.map((item) => {
@@ -531,17 +612,17 @@ class AddCustom extends Component {
 
         if (!flag) return
 
-        if (submitObj.sumArea) {
-            if (!regNum.test(submitObj.sumArea)) {
-                Toast.message('建面可填范围：1·9999, 整数');
-                return false;
-            }
+        let { sumArea, maxSumArea, sumBudget, maxSumBudget } = submitObj
+        //范围检测
+        if (sumArea && !numberTest(sumArea, '建面')) return
+        if (maxSumArea && !numberTest(maxSumArea, '建面')) return
+        if (sumBudget && !numberTest(sumBudget, '预算')) return
+        if (maxSumBudget && !numberTest(maxSumBudget, '预算')) return
+        if (parseInt(sumArea) > parseInt(maxSumArea)) {
+            [maxSumArea, sumArea] = [sumArea, maxSumArea]
         }
-        if (submitObj.sumBudget) {
-            if (!regNum.test(submitObj.sumBudget)) {
-                Toast.message('预算可填范围：1·9999, 整数');
-                return false;
-            }
+        if (parseInt(sumBudget) > parseInt(maxSumBudget)) {
+            [maxSumBudget, sumBudget] = [sumBudget, maxSumBudget]
         }
         let obj = {}
         // 编辑修改时 有客户id
@@ -556,15 +637,16 @@ class AddCustom extends Component {
         obj.mark = this.state.mark || ''
         obj.customerName = submitObj.customerName || ''
         obj.mainPhone = submitObj.phone0 || ''
-        console.log(this.state.areaCode, this.state.provinceCode)
         obj.xkjCustomerDemandRequest = {
-            city: this.props.user.userInfo.city,
-            area: this.state.areaCode,
+            city: this.state.cityCode,
             province: this.state.provinceCode,
-            sumArea: submitObj.sumArea,
-            sumBudget: submitObj.sumBudget,
+            area: this.state.areaCode,
             grade: this.state.isEdit ? FIVE - this.state.activeIndex : FIVE - this.state.grade,
             areaFullName: this.state.chooseAreafullName,
+            sumArea,
+            sumBudget,
+            maxSumArea,
+            maxSumBudget
         },
             obj.customerPortrait = {
                 age: this.state.ageChooseValue,
@@ -578,43 +660,48 @@ class AddCustom extends Component {
         obj.isFullPhone = phoneList[0].status
 
         let phoneArr = []
-
+        let isStick = false
         phoneList.map((item) => {
-            phoneArr.push({ phone: item.phone, seq: item.seq })
-        })
-
-        phoneArr.map((item, index) => {
-            if (index === 0) {
-                item.isMain = true
+            const phoneItem = {
+                id: item.id,
+                phone: item.phone,
+            }
+            if (!isStick && regPhone.test(item.phone)) {
+                phoneArr.unshift(phoneItem)
+                obj.mainPhone = item.phone
+                isStick = true
             } else {
-                item.isMain = false
+                phoneArr.push(phoneItem)
             }
         })
-
         obj.phones = phoneArr
-
-        console.log(obj, 'objobjobj')
+        console.log(obj, 'request obj')
 
         if (id) {
             try {
-                obj
                 let res = await ApiCustom.updateCustom(api, obj)
                 if (res.code === '0') {
                     this.props.navigation.navigate('customerList')
                     DeviceEventEmitter.emit('ReportBack')
                     Toast.message('修改成功')
                 } else {
-                    Toast.message('修改失败')
+                    Toast.message(res.message)
                 }
             } catch (e) {
-                Toast.message('修改失败')
+                Toast.message(e.message)
             }
         } else {
             try {
                 let res = await ApiCustom.addCustom(api, obj)
                 if (res.code === '0') {
                     form.resetFields()
-                    this.props.navigation.navigate('customerList')
+                    //页面顺序：首页=》列表=》新增=》列表  ----堆栈会变为---->  首页=》列表
+                    //页面顺序：首页=》新增=》列表        ----堆栈会变为---->  首页=》新增=》列表
+                    //从快速入口直接新增，确定后会导致堆栈中列表页在该页之上
+                    const parent = this.props.navigation.dangerouslyGetParent();
+                    parent.state.routes[parent.state.routes.length - 2].routeName === 'customerList' ?
+                        this.props.navigation.navigate('customerList') : this.props.navigation.replace('customerList')
+
                     await this.setState({
                         isMain: true,
                         activeIndex: -1,
@@ -630,10 +717,10 @@ class AddCustom extends Component {
                     DeviceEventEmitter.emit('ReportBack')
                     Toast.message('新建成功')
                 } else {
-                    Toast.message('新建失败:' + res.message)
+                    Toast.message(res.message)
                 }
             } catch (e) {
-                Toast.message('新建失败:' + e.message)
+                Toast.message(e.message)
             }
         }
     }
@@ -657,7 +744,9 @@ class AddCustom extends Component {
         })
     }
 
-    Ok = (v, type) => {
+    Ok = (v, type, key) => {
+        const { form } = this.props
+        key && form.setFieldsValue({ key: v })
         if (type === 'ageChooseValue') {
             this.setState({
                 ageChooseValue: this.getDicName(this.props.dictionaries.age, v[0]) || ''
@@ -681,32 +770,37 @@ class AddCustom extends Component {
         } else { }
     }
 
-    dealAdress = (va) => {
-        let areaAndCode = (va || [])[0]
-        let provinceAndCode = (va || [])[1]
-        let areaArr = areaAndCode.split('_') || ''
-        let provinceArr = provinceAndCode.split('_') || ''
+    dealAdress = (va = []) => {
+        let cityAndCode = va[0] || '',
+            provinceAndCode = va[1] || '',
+            areaAndCode = va[2] || '',
+            cityArr = cityAndCode.split('_'),
+            provinceArr = provinceAndCode.split('_'),
+            areaArr = areaAndCode.split('_')
         this.setState({
-            chooseResidentArea: (areaArr || [])[0] + '-' + (provinceArr || [])[0],
+            chooseResidentArea: cityArr[0] + (provinceArr[0] && '-') + provinceArr[0] + (areaArr[0] && '-') + areaArr[0],
         })
     }
 
 
     dealShowData = (va) => {
-        let areaAndCode = (va || [])[0]
-        let provinceAndCode = (va || [])[1]
-        let areaArr = areaAndCode.split('_') || ''
-        let provinceArr = provinceAndCode.split('_') || ''
+        let cityAndCode = va[0] || '',
+            provinceAndCode = va[1] || '',
+            areaAndCode = va[2] || '',
+            cityArr = cityAndCode.split('_'),
+            provinceArr = provinceAndCode.split('_'),
+            areaArr = areaAndCode.split('_')
         this.setState({
-            chooseAreafullName: (areaArr || [])[0] + '-' + (provinceArr || [])[0],
-            areaCode: (areaArr || [])[1],
-            provinceCode: (provinceArr || [])[1]
+            chooseAreafullName: cityArr[0] + (provinceArr[0] && '-') + provinceArr[0] + (areaArr[0] && '-') + areaArr[0],
+            cityCode: cityArr[1],
+            provinceCode: provinceArr[1],
+            areaCode: areaArr[1],
         })
     }
 
     _renderBottom = () => {
         return (
-            <TouchableOpacity onPress={() => { debounce(this.submit()) }}>
+            <TouchableOpacity onPress={debounce(this.submit)}>
                 <View style={styles.bottomView}>
                     <Text style={styles.bottomText}>确认提交</Text>
                 </View>
@@ -717,7 +811,7 @@ class AddCustom extends Component {
     deleteOne = (item) => {
         let { phoneList } = this.state
         phoneList = phoneList.filter((v) => v.key !== item.key)
-        if (phoneList.length <= 4) {
+        if (phoneList.length <= 2) {
             this.setState({
                 addPhoneFlag: true,
                 phoneList
@@ -750,28 +844,24 @@ class AddCustom extends Component {
         matchText = matchArr.join(',')
         this.setState({
             showMatching: false,
-            chooseMatchingValue: matchText.slice(0, 15),
+            chooseMatchingValue: matchText,
             selectCode
         })
     }
 
     render() {
         const { form } = this.props
-        let { selectCode, showMatching, isShowBottom, isMan, phoneList, isEdit, ageChooseValue, buildTypeChooseValue, choosepurchasePoseValue, chooseTowardValue, chooseMatchingValue, cityList, chooseAreafullName, chooseResidentArea, dataInfo, addPhoneFlag } = this.state;
-        // let age = (dataInfo.portrait || {}).age || ''
-        // let address = (dataInfo.portrait || {}).address || ''
-        // let buildingCategory = (dataInfo.portrait || {}).buildingCategory || ''
-        // let homePurchaseTarget = (dataInfo.portrait || {}).homePurchaseTarget || ''
-        // let direction = (dataInfo.portrait || {}).direction || ''
-        // let matching = (dataInfo.portrait || {}).matching || ''
+        const { selectCode, showMatching, isMan, phoneList, isEdit, ageChooseValue, buildTypeChooseValue,
+            choosepurchasePoseValue, chooseTowardValue, chooseMatchingValue, cityList, chooseAreafullName,
+            chooseResidentArea, dataInfo, addPhoneFlag, mark } = this.state;
         return (
-            <KeyboardAvoidingView style={{height:'100%'}} behavior="height" enabled>
-            <BaseContainer
-                title={isEdit ? '编辑客户' : '新增客户'}
-                contentViewStyle={{ padding: 0, backgroundColor: '#fff' }}
-                // footer={isShowBottom ? this._renderBottom() : null}
-                footer={this._renderBottom()}
-            >
+            <KeyboardAvoidingView style={{ height: '100%' }} behavior="height" enabled>
+                <BaseContainer
+                    title={isEdit ? '编辑客户' : '新增客户'}
+                    contentViewStyle={{ padding: 0, backgroundColor: '#fff' }}
+                    // footer={isShowBottom ? this._renderBottom() : null}
+                    footer={this._renderBottom()}
+                >
 
                     <View style={styles.topView}>
                         <Text style={styles.topText}>客户信息(必填)</Text>
@@ -804,11 +894,11 @@ class AddCustom extends Component {
                                 style={{ textAlign: 'right' }}
                                 rightContent={
                                     <View style={styles.sexBet}>
-                                        <TouchableOpacity style={[styles.sexView, { backgroundColor: isMan ? '#1F3070' : '#F8F8F8' }]} onPress={() => this.chooseMan()}>
-                                            <Text style={styles.sexText}>男</Text>
+                                        <TouchableOpacity style={[styles.sexView, isMan && { backgroundColor: '#1F3070', borderWidth: 0 }]} onPress={() => this.chooseMan()}>
+                                            <Text style={[styles.sexText, isMan && { color: '#fff' }]}>男</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={[styles.sexView, { backgroundColor: isMan ? '#F8F8F8' : '#1F3070' }]} onPress={() => this.chooseWomen()}>
-                                            <Text style={styles.sexText}>女</Text>
+                                        <TouchableOpacity style={[styles.sexView, !isMan && { backgroundColor: '#1F3070', borderWidth: 0 }]} onPress={() => this.chooseWomen()}>
+                                            <Text style={[styles.sexText, !isMan && { color: '#fff' }]}>女</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -833,14 +923,16 @@ class AddCustom extends Component {
                                         keyboardType='numeric'
                                         rightContent={
                                             <View style={styles.phoneView}>
-                                                <TouchableOpacity onPress={() => this.changePhoneStatus(item)}>
-                                                    <Image source={item.status ? SWITCHON : SWITCHOFF} style={styles.switchImg} />
-                                                </TouchableOpacity>
-                                                <Text style={[styles.rightText, { marginLeft: scaleSize(11) }]}>{item.status ? '全号码' : '半号码'}</Text>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                                    <TouchableOpacity onPress={() => this.changePhoneStatus(item)}>
+                                                        <Image source={item.status ? SWITCHON : SWITCHOFF} style={styles.switchImg} />
+                                                    </TouchableOpacity>
+                                                    <Text style={[styles.rightText, { marginLeft: scaleSize(11) }]}>{item.status ? '全号码' : '半号码'}</Text>
+                                                </View>
                                                 {
                                                     item.key === 0 ? (
-                                                            <View style={{ width: scaleSize(30), height: scaleSize(30), marginRight: scaleSize(30), marginTop: scaleSize(5) }} />
-                                                        ) :
+                                                        <View style={{ width: scaleSize(30), height: scaleSize(30), marginRight: scaleSize(30), marginTop: scaleSize(5) }} />
+                                                    ) :
                                                         <TouchableOpacity onPress={() => this.deleteOne(item)}>
                                                             <Image source={DELETE} style={{ width: scaleSize(30), height: scaleSize(30), marginRight: scaleSize(30), marginTop: scaleSize(5) }} />
                                                         </TouchableOpacity>
@@ -854,7 +946,7 @@ class AddCustom extends Component {
                     }
 
                     {
-                        addPhoneFlag && phoneList.length < 5 ?
+                        addPhoneFlag && phoneList.length < 3 ?
                             <View>
                                 <TouchableOpacity style={styles.addPhoneView} onPress={() => this.addPhone()}>
                                     <Image source={ADDPHONE} style={styles.addPhoneImg} />
@@ -870,68 +962,96 @@ class AddCustom extends Component {
                         form.getFieldDecorator('grade', {
 
                         })(
-                            // <Input
-                            //     label={
-                            //         <Text style={[styles.text]}>购买强度</Text>
-                            //     }
-                            //     style={{ textAlign: 'right' }}
-                            //     rightContent={
-                            //
-                            //     }
-                            // />
                             <View style={styles.gradeView}>
                                 <Text style={[styles.text]}>购买强度</Text>
                                 <BuyGrade aaa={this.getGrade} activeIndex={this.state.activeIndex} />
                             </View>
                         )
                     }
-                    {
-                        form.getFieldDecorator('sumBudget', {
+                    <View style={styles.itemBase}>
+                        {
+                            form.getFieldDecorator('sumBudget', {
 
-                        })(
-                            <Input
-                                label={
-                                    <Text style={styles.text}>客户预算</Text>
-                                }
-                                placeholder='请输入'
-                                style={{ textAlign: 'right' }}
-                                keyboardType='numeric'
-                                maxLength={11}
-                                rightContent={
-                                    <Text style={styles.yiyuan}>万</Text>
-                                }
-                            />
-                        )
-                    }
-                    {
-                        form.getFieldDecorator('sumArea', {
+                            })(
+                                <Input
+                                    viewStyle={{ flex: 5 }}
+                                    label={
+                                        <Text style={styles.text}>客户预算</Text>
+                                    }
+                                    placeholder='请输入'
+                                    style={{ textAlign: 'right' }}
+                                    keyboardType='numeric'
+                                    maxLength={7}
+                                    rightContent={
+                                        <Text style={styles.yiyuan}>&emsp;&emsp;~</Text>
+                                    }
+                                />
+                            )
+                        }
+                        {
+                            form.getFieldDecorator('maxSumBudget', {
 
-                        })(
-                            <Input
-                                label={
-                                    <Text style={styles.text}>建筑面积</Text>
-                                }
-                                placeholder='请输入'
-                                style={{ textAlign: 'right' }}
-                                keyboardType='numeric'
-                                maxLength={11}
-                                rightContent={
-                                    <Text style={styles.yiyuan}>㎡</Text>
-                                }
-                            />
-                        )
-                    }
+                            })(
+                                <Input
+                                    viewStyle={{ flex: 2 }}
+                                    placeholder='请输入'
+                                    style={{ textAlign: 'right' }}
+                                    keyboardType='numeric'
+                                    maxLength={7}
+                                    rightContent={
+                                        <Text style={styles.yiyuan}>万</Text>
+                                    }
+                                />
+                            )
+                        }
+                    </View>
+                    <View style={styles.itemBase}>
+                        {
+                            form.getFieldDecorator('sumArea', {
+
+                            })(
+                                <Input
+                                    viewStyle={{ flex: 5 }}
+                                    label={
+                                        <Text style={styles.text}>建筑面积</Text>
+                                    }
+                                    placeholder='请输入'
+                                    style={{ textAlign: 'right' }}
+                                    keyboardType='numeric'
+                                    maxLength={7}
+                                    rightContent={
+                                        <Text style={styles.yiyuan}>&emsp;&emsp;~</Text>
+                                    }
+                                />
+                            )
+                        }
+                        {
+                            form.getFieldDecorator('maxSumArea', {
+
+                            })(
+                                <Input
+                                    viewStyle={{ flex: 2 }}
+                                    placeholder='请输入'
+                                    style={{ textAlign: 'right' }}
+                                    keyboardType='numeric'
+                                    maxLength={7}
+                                    rightContent={
+                                        <Text style={styles.yiyuan}>㎡</Text>
+                                    }
+                                />
+                            )
+                        }
+                    </View>
+
                     {
                         form.getFieldDecorator('areaFullName', {
 
                         })(
                             <Picker
                                 data={cityList}
-                                cols={2}
-                                cascade={true}
-                                // onChange={v => this.areaChange(v)}
-                                // value={this.state.chooseAreaFullNameArr}
-                                onOk={v => this.Ok(v, 'chooseAreafullName')}
+                                cols={3}
+                                onOk={v => this.Ok(v, 'chooseAreafullName', 'areaFullName')}
+                                onPickerChange={this.handlePickerChange}
                             >
                                 <TouchableOpacity style={styles.pickerView}>
                                     <Text style={styles.text}>意向区域</Text>
@@ -972,8 +1092,9 @@ class AddCustom extends Component {
                         })(
                             <Picker
                                 data={cityList}
-                                cols={2}
-                                onOk={v => this.Ok(v, 'chooseResidentArea')}
+                                cols={3}
+                                onOk={v => this.Ok(v, 'chooseResidentArea', 'residentArea')}
+                                onPickerChange={this.handlePickerChange}
                             >
                                 <TouchableOpacity style={styles.pickerView}>
                                     <Text style={styles.text}>居住区域</Text>
@@ -1035,7 +1156,6 @@ class AddCustom extends Component {
                             <Picker
                                 data={this.state.toward}
                                 cols={1}
-                                setFieldsValue={this.state.towardValue}
                                 onChange={v => this.setState({ towardValue: v })}
                                 onOk={v => this.Ok(v, 'chooseTowardValue')}
                             >
@@ -1049,82 +1169,56 @@ class AddCustom extends Component {
                             </Picker>
                         )
                     }
-                    {/* {
-                    form.getFieldDecorator('matching', {
-
-                    })(
-                        <Picker
-                            data={this.state.matchingArr}
-                            cols={1}
-                            setFieldsValue={this.state.matchingArrValue}
-                            // onChange={v => this.setState({ matchingArrValue: v })}
-                            onOk={v => this.Ok(v, 'chooseMatchingValue')}
-                        >
-                            <TouchableOpacity style={styles.pickerView}>
-                                <Text style={styles.text}>配置信息</Text>
-                                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <Text style={{ color: '#CBCBCB', fontSize: scaleSize(28) }}>{chooseMatchingValue ? chooseMatchingValue : matching ? matching : '请选择'}</Text>
-                                    <Image source={ARROW} style={styles.arrowImg} />
-                                </View>
-                            </TouchableOpacity>
-                        </Picker>
-                    )
-                } */}
-                    {
-                        form.getFieldDecorator('matching', {
-
-                        })(
-                            <TouchableOpacity style={styles.gradeView} onPress={this.showMatchingModal}>
-                                <Text style={[styles.text]}>配置信息</Text>
-                                <View style={{ display: 'flex', flexDirection: 'row' }}>
-                                    <Text style={{ color: '#CBCBCB', fontSize: scaleSize(28) }}>{chooseMatchingValue ? chooseMatchingValue : '请选择'}</Text>
-                                    <Image source={ARROW} style={styles.arrowImg} />
-                                </View>
-                            </TouchableOpacity>
-                        )
-                    }
+                    <TouchableOpacity style={styles.gradeView} onPress={this.showMatchingModal}>
+                        <Text style={[styles.text]}>配置信息</Text>
+                        <View style={{ display: 'flex', flexDirection: 'row' }}>
+                            <Text
+                                style={{ color: '#CBCBCB', fontSize: scaleSize(28) }}
+                            >
+                                {chooseMatchingValue ?
+                                    chooseMatchingValue.split(',').length > 4 ?
+                                        chooseMatchingValue.split(',').slice(0, 4).join(',') + '...'
+                                        : chooseMatchingValue
+                                    : '请选择'
+                                }
+                            </Text>
+                            <Image source={ARROW} style={styles.arrowImg} />
+                        </View>
+                    </TouchableOpacity>
 
                     <View style={styles.topView}>
                         <Text style={styles.topText}>备注(选填)</Text>
                     </View>
-                    {
-                        form.getFieldDecorator('mark', {
+                    <View style={styles.inputWrap}>
+                        <TextInput
+                            onChangeText={(text) => { this.setState({ mark: text }) }}
+                            maxLength={200}
+                            multiline={true}
+                            style={styles.inputStyle}
+                            value={mark}
+                        />
+                        <Text style={{ position: 'absolute', top: scaleSize(248), right: scaleSize(53), color: '#868686' }}>{(mark && mark.length) || 0}/200</Text>
+                    </View>
 
-                        })(
+                    <MatchModal
+                        width={scaleSize(750)}
+                        height={scaleSize(470)}
+                        visible={showMatching}
+                        onClose={this.onClose}
+                        onOk={this.onOk}
+                        type='multiSelect'
+                        data={matchData}
+                        selectCode={selectCode}
+                    />
 
-                            <TextInput
-                                // value={mark}
-                                onChangeText={(e) => this.setState({ mark: e })}
-                                maxLength={200}
-                                multiline={true}
-                                // onFocus={() => this.setState({ isShowBottom: false })}
-                                // onBlur={() => this.setState({ isShowBottom: true })}
-                                style={styles.inputStyle}
-                            />
-
-                        )
-                    }
-
-
-                <MatchModal
-                    width={scaleSize(750)}
-                    height={scaleSize(470)}
-                    visible={showMatching}
-                    onClose={this.onClose}
-                    onOk={this.onOk}
-                    type='multiSelect'
-                    data={matchData}
-                    selectCode={selectCode}
-                />
-
-            </BaseContainer>
-            </KeyboardAvoidingView>
+                </BaseContainer>
+            </KeyboardAvoidingView >
         )
     }
 }
 
-const mapStateToProps = ({ config, user, dictionaries }) => {
-    return { config, user, dictionaries }
+const mapStateToProps = ({ config, user, dictionaries, location }) => {
+    return { config, user, dictionaries, location }
 }
 
 export default connect(mapStateToProps)(createForm()(AddCustom))

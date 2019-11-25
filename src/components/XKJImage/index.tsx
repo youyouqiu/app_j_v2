@@ -1,27 +1,50 @@
 // 检测图片链接是否能访问
-import { Image } from 'react-native';
-import React from 'react';
+import React, { Component } from 'react';
+import { Image, View } from 'react-native';
 
-// let imgData = {
-//     styles: styles.avatar,
-//     uri: userInfo.avatar,
-//     sex: userInfo.sex,
-// };
-
-export const XKJImage = (props: any) => {
-    console.log(props, 'props');
-    let realAvatar = require('../../images/pictures/personal_man.png');
-    Image.getSize(props.uri, (width: number, height: number) => {
-        console.log(width, height, 'width - height');
-        realAvatar = {uri: props.uri};
-    }, (error: any) => {
-        console.log(error, 'error');
-        if (props.sex === 1) {
-            realAvatar = require('../../images/pictures/personal_man.png');
-        } else {
-            realAvatar = require('../../images/pictures/personal_woman.png');
+class XKJImage extends Component {
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            imgUrl: require('../../images/pictures/personal_man.png'),
         }
-    })
-    
-    return <Image style={props.styles} source={realAvatar} />
+    }
+
+    // examineImage = (ImgData: any) => {
+    //     let realAvatar = require('../../images/pictures/personal_man.png');
+    //     Image.getSize(props.uri, () => {
+    //         setSrc({uri: props.uri});
+    //     }, () => {
+    //         if (props.sex === 1) {
+    //             realAvatar = require('../../images/pictures/personal_man.png');
+    //         } else {
+    //             realAvatar = require('../../images/pictures/personal_woman.png');
+    //         }
+    //         setSrc(realAvatar)
+    //     })
+        
+    //     return src;
+    // }
+
+    onError = (error: any) => {
+        console.log(error, 'error');
+        if (error) {
+            this.setState({
+                imgUrl: {uri: this.props.uri},
+            })
+        }
+    }
+
+    render() {
+        // let {imgUrl} = this.state;
+        console.log(this.props, 'View')
+        return (
+            // <Image alt='icon' source={imgUrl} onError={this.onError} style={this.props.styles} />
+            <View>
+
+            </View>
+        )
+    }
 }
+
+export default XKJImage;

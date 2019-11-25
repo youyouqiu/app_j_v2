@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Image, Text, TouchableOpacity, Linking} from 'react-native';
 import {connect} from 'react-redux';
-
 // 工具
 import {scaleSize} from '../../../utils/screenUtil';
 import {visitDetailDataApi, buildingDetailDataApi, buildingImageDataApi, onsiteDataApi} from './../../../services/report';
-
 // 组件
 import BaseContainer from '../../../components/Page';
 
@@ -174,7 +172,7 @@ const STYLE = StyleSheet.create({
         marginRight: scaleSize(16),
     },
     reportInfo: {
-        display: 'flex', 
+        display: 'flex',
         flexDirection: 'column',
         marginBottom: scaleSize(20),
     },
@@ -357,7 +355,11 @@ class VisitDetail extends Component {
 
         default: console.log('没有default');
         }
-
+        console.log('buildingData',((buildingData || {}).basicInfo || {}).icon);
+        let coverImg = BULIDINGIMG;
+        if (((buildingData || {}).basicInfo || {}).icon){
+            coverImg = {uri:((buildingData || {}).basicInfo || {}).icon}
+        }
         return (
             <BaseContainer
                 title='到访详情'
@@ -375,7 +377,7 @@ class VisitDetail extends Component {
                 <View>
                     <View style={STYLE.contentView}>
                         <Image
-                            source={(buildingImageData || []).length > 0 ? {uri: (buildingImageData || [])[0].original} : BULIDINGIMG}
+                            source={coverImg}
                             style={STYLE.buildingImg}
                             alt='封面'
                         />
@@ -520,7 +522,7 @@ class VisitDetail extends Component {
                                 <Text style={[STYLE.anotherText]}>{((visitData || {}).reportDetails || {}).customerName || ''}</Text>
                             </View>
                             <View style={STYLE.phones}>
-                                <Text style={STYLE.text}>报备时间：</Text>                            
+                                <Text style={STYLE.text}>报备时间：</Text>
                                 <Text style={[STYLE.anotherText]}>
                                     {(((visitData || {}).reportDetails || {}).reportTime || '').replace(/T/g, ' ').replace(/\.[\d]{1,6}/, '')}
                                 </Text>
@@ -535,7 +537,7 @@ class VisitDetail extends Component {
                                             )
                                         })
                                     }
-                                </View>                          
+                                </View>
                             </View>
                         </View>
                     </View>

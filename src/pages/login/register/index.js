@@ -123,7 +123,7 @@ class Register extends Component {
                 payload: user
             })
             Toast.success('注册成功')
-            getUserInfo().then((userInfo: any) => {
+            getUserInfo().then((userInfo) => {
                 this.props.dispatch({ // 注册成功之后要重新处理拿去用户信息数据
                     type: 'user/interfaceUpdateUserAsync',
                     payload: userInfo

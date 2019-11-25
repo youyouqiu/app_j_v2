@@ -21,7 +21,7 @@ class BuildingSearch extends React.Component {
             pageIndex: 0,
             pageSize: 10,
             keyWord: '',
-            city: props.global.cityCode || props.global.defaultCityCode
+            city: props.projectLocation.cityCode || props.projectLocation.defaultCityCode
         };
         this.common = {
             hasMore: true
@@ -100,9 +100,9 @@ class BuildingSearch extends React.Component {
     }
 }
 
-const mapStateToProps = ({config, global}) => {
+const mapStateToProps = ({config, global,projectLocation}) => {
     return {
-        requestUrl: config.requestUrl,
+        requestUrl: config.requestUrl,projectLocation,
         global
     }
 };

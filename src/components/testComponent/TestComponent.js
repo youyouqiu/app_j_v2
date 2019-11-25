@@ -3,47 +3,24 @@ import {FlatList, Text, View} from 'react-native'
 import ScrollableTabView, {ScrollableTabBar, DefaultTabBar} from 'react-native-scrollable-tab-view';
 import {XKJScrollTabView} from "../XKJScrollTabView/XKJScrollTabView";
 import FunctionDesk from "../../pages/project/shopDetail/components/functionDesk";
+import {scaleSize} from "../../utils/screenUtil";
 
 
 class TestComponent extends Component {
 
-    state = {
-        refreshing: false
+    onEndReached = () => {
+        console.log('onEndReached');
+        // @ts-ignore
+        // debounce(_setData)({..._data, pageIndex: _data.pageIndex + 1});
     };
-
-    modalToggle = () => {
-        this.setState(prev => ({
-            visible: !prev.visible
-        }))
-    };
-
-    onRefresh = ()=>{
-        this.setState({
-            refreshing:true
-        });
-        setTimeout(()=>{
-            this.setState({
-                refreshing:false
-            });
-        },3000)
-    }
 
     render() {
-        const {refreshing} = this.state;
         return (
             <View style={{paddingTop: 100, height: '100%'}}>
-
-                <ScrollableTabView style={{height:200}}>
-                    <View tabLabel='123'>
-                        <FlatList data={[1,2,3]} onRefresh={this.onRefresh} refreshing={refreshing} renderItem={()=><Text>123</Text>}/>
-                    </View>
-                    <View tabLabel='123'>
-                        <FlatList data={[1,2,3]} renderItem={()=><Text>123</Text>}/>
-                    </View>
-                    <View tabLabel='123'>
-                        <FlatList data={[1,2,3]} renderItem={()=><Text>123</Text>}/>
-                    </View>
-                </ScrollableTabView>
+                <FlatList data={[1, 2]}
+                          onEndReachedThreshold={0.1}
+                          onEndReached={this.onEndReached}
+                          renderItem={({item}) => <Text style={{height: scaleSize(50)}}>{item}</Text>}/>
             </View>
         )
     }

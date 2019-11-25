@@ -123,7 +123,19 @@ class ForgetPwd extends Component {
     }
 
     count = () => {
+        const codeTime = this.state.verifiTime;
+        const overTimeStamp = Date.now() + codeTime * 1000 + 1000;
         this.siv = setInterval(() => {
+            if (Date.now() >= (overTimeStamp - 1000)) {
+                this.siv && clearInterval(this.siv);
+                this.setState({ verfi: 'end', verifiTime: 59 })
+            } else {
+                const leftTime = parseInt((overTimeStamp - Date.now()) / 1000, 10);
+                this.setState({ verifiTime: leftTime })
+            }
+        }, 1000)
+
+        /*this.siv = setInterval(() => {
             let {verifiTime} = this.state
             this.setState({ verifiTime: (verifiTime - 1) }, () => {
                 if (verifiTime <= 0) {
@@ -131,7 +143,7 @@ class ForgetPwd extends Component {
                     this.setState({ verfi: 'end', verifiTime: 60 })
                 }
             }) 
-        }, 1000)
+        }, 1000)*/
     }
 
     componentWillUnmount () {

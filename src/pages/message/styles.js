@@ -53,11 +53,14 @@ export const newsStyles = {
     },
     contentText:{
         color:'#868686',
+        flexDirection:'row',
+        alignItems:'center',
+        flexWrap:'wrap',
         fontSize:scaleSize(28)
     },
     flagBox:{
         justifyContent:'center',
-        
+
         paddingLeft:scaleSize(8),
         paddingRight:scaleSize(8),
         paddingTop:scaleSize(4),
@@ -119,7 +122,7 @@ export const newsStyles = {
     },
     unRead:{
         width:scaleSize(14),
-        height:scaleSize(14), 
+        height:scaleSize(14),
         backgroundColor:'#FE5139',
         borderRadius:scaleSize(7),
         marginLeft:scaleSize(5),
@@ -128,4 +131,3 @@ export const newsStyles = {
 
 }
 
- 

@@ -5,11 +5,11 @@ import request from '../utils/request'
  */
 export default {
   // 重要提醒 && 业务信息
-  list: ({api}: any) => {
+  list: () => {
     return request.get(`${request.getUrl().api}/v2.0/api/message/getsysmessagelist`)
   },
   // 客户动态
-  dtInfo: (api: any): Promise<GetCustomerDynamicResponse> => {
+  dtInfo: (): Promise<GetCustomerDynamicResponse> => {
     const url = `${request.getUrl().api}/v2.0/api/customerInfo/getcustomerdynamic/`
     return request.get(url)
   },
@@ -24,6 +24,9 @@ export default {
     return request.post(`${api}/v2.0/api/message/getsysmessagedetailslist`, {
       body: params
     })
+  },
+  textDetail: (id: string) => {
+    return request.get(`${request.getUrl().api}/api/message/GetSysMessageDetails/${id}`)
   },
   // 阅读消息
   read: (api: string, params: ReadConditions): Promise<void> => {

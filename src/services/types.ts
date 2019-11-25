@@ -1,0 +1,18 @@
+/**
+ * 普通响应体
+ */
+export interface ResponseCommon<T> {
+  code: string
+  message: string | null
+  extension: T
+}
+
+/**
+ * 分页响应体
+ */
+export interface ResponsePagination<T> extends ResponseCommon<T> {
+  pageIndex: number
+  pageSize: number
+  pageCount: number
+  totalCount: number
+}

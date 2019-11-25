@@ -33,13 +33,13 @@ const guidePage: FunctionComponent<{init: any}> = props => {
           />
         }
       >
-        <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/pictures/guideOne.png')} />
-        <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/pictures/guideTwo.png')} />
-        <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/pictures/guideThree.png')} />
-        <ImageBackground imageStyle={{height: '100%', width: '100%', resizeMode: 'stretch'}} style={{height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}} source={require('../images/pictures/guideFour.png')}>
-          <Image resizeMode='contain' style={{width: scaleSize(300), height: scaleSize(300), marginBottom: scaleSize(88), marginTop: scaleSize(200)}} source={require('../images/pictures/guideFourLogo.png')}/>
+        <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/guide/guideOne.png')} />
+        <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/guide/guideTwo.png')} />
+        <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/guide/guideThree.png')} />
+        <ImageBackground imageStyle={{height: '100%', width: '100%', resizeMode: 'stretch'}} style={{height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}} source={require('../images/guide/guideFour.png')}>
+          <Image resizeMode='contain' style={{width: scaleSize(300), height: scaleSize(300), marginBottom: scaleSize(88), marginTop: scaleSize(200)}} source={require('../images/guide/guideFourLogo.png')}/>
           <TouchableOpacity onPress={jump} style={{width: scaleSize(550), height: scaleSize(142)}} activeOpacity={0.9}>
-            <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/pictures/guideFourBtn.png')}/>
+            <Image style={{width: '100%', height: '100%'}} resizeMode='contain' source={require('../images/guide/guideFourBtn.png')}/>
           </TouchableOpacity>
         </ImageBackground>
       </Carousel>

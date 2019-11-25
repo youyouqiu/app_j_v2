@@ -38,6 +38,7 @@ export default StyleSheet.create({
     },
     md_name: {
         fontSize: scaleSize(28),
+        paddingRight:scaleSize(20),
         flex: 1
     },
     md_time: {

@@ -30,7 +30,7 @@ class Screen extends Component {
             selectSort: '',
             selectOption: {},
             selectArea: {}
-        }
+        };
     }
 
 

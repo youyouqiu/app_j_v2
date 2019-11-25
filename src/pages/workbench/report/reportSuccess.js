@@ -222,7 +222,8 @@ class ReportSuccess extends Component {
         let copyText = '';
 
         if (reportSuccessInfo) {
-            copyText = '报备楼盘：' + reportSuccessInfo.buildingTreeName + '\n' + '经纪公司：' + reportSuccessInfo.companyName + '\n' + '客户姓名：' + reportSuccessInfo.customerName + '\n' + '客户电话：' + reportSuccessInfo.customerPhones.join(',') + '\n' + '经纪人：' + reportSuccessInfo.userName + '\n' + '经纪人电话：' + reportSuccessInfo.userPhone + '\n' + '业务组别：' + reportSuccessInfo.userOrganizationName;
+            const userOrganizationName = reportSuccessInfo.userOrganizationName === '' ? '\n' + '公司组别：' + reportSuccessInfo.userOrganizationName : '';
+            copyText = '报备楼盘：' + reportSuccessInfo.buildingTreeName + '\n' + '经纪公司：' + reportSuccessInfo.companyName + '\n' + '客户姓名：' + reportSuccessInfo.customerName + '\n' + '客户电话：' + reportSuccessInfo.customerPhones.join(',') + '\n' + '经纪人：' + reportSuccessInfo.userName + '\n' + '经纪人电话：' + reportSuccessInfo.userPhone + userOrganizationName;
         }
 
         Clipboard.setString(copyText);
@@ -245,7 +246,8 @@ class ReportSuccess extends Component {
         let copyText = '';
 
         if (reportSuccessInfo) {
-            copyText = '报备楼盘：' + reportSuccessInfo.buildingTreeName + '\n' + '经纪公司：' + reportSuccessInfo.companyName + '\n' + '客户姓名：' + reportSuccessInfo.customerName + '\n' + '客户电话：' + reportSuccessInfo.customerPhones.join(',') + '\n' + '经纪人：' + reportSuccessInfo.userName + '\n' + '经纪人电话：' + reportSuccessInfo.userPhone + '\n' + '业务组别：' + reportSuccessInfo.userOrganizationName;
+            const userOrganizationName = reportSuccessInfo.userOrganizationName === '' ? '\n' + '公司组别：' + reportSuccessInfo.userOrganizationName : '';
+            copyText = '报备楼盘：' + reportSuccessInfo.buildingTreeName + '\n' + '经纪公司：' + reportSuccessInfo.companyName + '\n' + '客户姓名：' + reportSuccessInfo.customerName + '\n' + '客户电话：' + reportSuccessInfo.customerPhones.join(',') + '\n' + '经纪人：' + reportSuccessInfo.userName + '\n' + '经纪人电话：' + reportSuccessInfo.userPhone + userOrganizationName;
         }
 
         WeChat.isWXAppInstalled().then(async (isInstalled) => {
@@ -273,10 +275,11 @@ class ReportSuccess extends Component {
         })
     }
 
-    // 底部导航跳转选择
+    /**
+     * @param {type} 跳转 - 返回工作台-1，查看报备列表-2，返回报备表单继续报备-3
+     */
+        // 底部导航跳转选择
     gotoSelectInfo = (type, typeId) => {
-        console.log('跳转 - 返回工作台-1，查看报备列表-2，返回报备表单继续报备-3')
-
         switch (type) {
             case 1:
                 this.props.navigation.navigate('Workbench', typeId);
@@ -285,13 +288,16 @@ class ReportSuccess extends Component {
 
             case 2:
                 this.props.navigation.navigate('reportList', typeId);
+                DeviceEventEmitter.emit('addReport', {
+                    type: 'check',
+                });
                 this.props.sendPoint.add({target: '查看_button', page: '报备成功页面'})
                 break;
 
             case 3:
                 this.props.navigation.navigate('addReport');
                 DeviceEventEmitter.emit('addReport', {
-                    type: 'continue'
+                    type: 'continue',
                 });
                 this.props.sendPoint.add({target: '继续报备', page: '报备成功页面'})
                 break;

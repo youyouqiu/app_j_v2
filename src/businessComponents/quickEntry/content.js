@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native'
+import { View, Text, Image, StyleSheet, TouchableOpacity, Animated} from 'react-native'
 import {scaleSize} from '../../utils/screenUtil'
 import navigation from '../../utils/navigation'
 import {connect} from 'react-redux'
@@ -46,6 +46,15 @@ class Content  extends Component {
 
     constructor (props) {
         super(props)
+        this.state = {
+            
+        }
+    }
+    
+    componentDidMount () {
+        Animated.parallel([
+
+        ])
     }
 
     closeQuickModal = () => {
@@ -60,14 +69,18 @@ class Content  extends Component {
             { text: '快速报备', imageSource: require('../../images/icons/kuaisubaobei2.png'), path: 'addReport'},
             { text: '公司码', imageSource: require('../../images/icons/ma2.png'), path: 'companyCode'},
             { text: '扫一扫', imageSource: require('../../images/icons/sys2.png'), path: 'businessScanPage'},
+            { text: '房贷计算器', imageSource: require('../../images/icons/entryIcon/fdjsq.png'), path: 'calculate'},
             // { text: '邀请注册', imageSource: require('../../images/icons/yaoqingzhuce.png'), path: ''},isResident
-
         ]
         let {user,weather} = this.props
         let userInfo = (user || {}).userInfo || {}
         // 公司码 必须又驻场
         if(!userInfo.isResident){
             quicks = quicks.filter((item)=>item.path !== 'companyCode')
+        }
+        // 自由经纪人 不能报备
+        if (user.status === 202) {
+            quicks = quicks.filter((item)=>item.path !== 'addReport')
         }
 
         return <View>

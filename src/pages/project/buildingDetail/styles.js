@@ -1,15 +1,138 @@
-import {StyleSheet} from 'react-native'
-import {deviceWidth, scaleSize} from "../../../utils/screenUtil";
+import { StyleSheet } from 'react-native'
+import { deviceWidth, scaleSize } from "../../../utils/screenUtil";
 import Theme from "teaset/themes/Theme";
 
 const buildingStyle = StyleSheet.create({
     detailWrapper: {
         height: '100%',
     },
+    project_block_item_left: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    summaryLabelContent: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
+    },
+    project_block_item: {
+        height: scaleSize(88),
+        display: 'flex',
+        paddingLeft: scaleSize(16),
+        paddingRight: scaleSize(16),
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
+        borderColor: '#EAEAEA',
+        borderWidth: StyleSheet.hairlineWidth,
+        borderRadius: scaleSize(8)
+    },
+    project_block_item_icon: {
+        width: scaleSize(38),
+        height: scaleSize(38)
+    },
+    project_block_item_text: {
+        fontSize: scaleSize(28),
+        color: '#000000',
+        fontWeight: '400',
+        marginLeft: scaleSize(8),
+        marginRight: scaleSize(8)
+    },
+    project_block_item_rightIcon: {
+        width: scaleSize(30),
+        height: scaleSize(30),
+    },
+    address: {
+        height: scaleSize(88),
+        flex: 1,
+        borderColor: '#EAEAEA',
+        borderTopWidth: StyleSheet.hairlineWidth,
+        marginTop: scaleSize(32),
+        borderBottomWidth: StyleSheet.hairlineWidth
+    },
+    addressImg: {
+        width: scaleSize(40),
+        height: scaleSize(40)
+    },
+    addressChoose: {
+        width: scaleSize(30),
+        height: scaleSize(30)
+    },
+    addressText: {
+        fontSize: scaleSize(26),
+        color: '#000',
+        fontWeight: '400',
+        flex: 1
+    },
+    flexRow: {
+        display: 'flex',
+        flexDirection: 'row',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'space-between'
+    },
+    bd_subWrapper: {
+        borderBottomWidth: scaleSize(24),
+        borderColor: '#F8F8F8',
+        borderStyle: 'solid',
+    },
+    bd_subContainer: {
+        padding: scaleSize(24),
+    },
+    bd_matchItem: {
+        width: '20%',
+        paddingBottom: scaleSize(24),
+        flex: 0,
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    bd_matchItemImage: {
+        width: scaleSize(50),
+        height: scaleSize(50),
+        marginBottom: scaleSize(18)
+    },
+    bd_matchItemLabel: {
+        fontSize: scaleSize(26),
+    },
+    bd_subHeader: {
+        fontSize: scaleSize(32),
+        paddingBottom: scaleSize(24),
+        fontWeight:'bold',
+        color: '#000000',
+    },
+    bd_matchItemContent: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginLeft: scaleSize(-8)
+    },
+    nameHeader: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
     header: {},
     headerImage: {
         width: deviceWidth,
         height: 550 * deviceWidth / 750
+    },
+    'more-photos': {
+        width: scaleSize(137),
+        height: scaleSize(93),
+        position: 'absolute',
+        right: scaleSize(32),
+        bottom: scaleSize(32),
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: scaleSize(8),
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    'more-photos-text': {
+        color: '#000000',
+        fontSize: scaleSize(28),
+        lineHeight: scaleSize(40),
     },
     contentLoading: {
         flex: 1,
@@ -97,11 +220,12 @@ const buildingStyle = StyleSheet.create({
         fontSize: scaleSize(32),
         textAlign: 'center'
     },
-    headerContent: {},
+    headerContent: {
+        padding: scaleSize(32)
+    },
     headerContentTop: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: scaleSize(32),
     },
     headerTitleWrap: {
         flexDirection: 'column',
@@ -110,7 +234,8 @@ const buildingStyle = StyleSheet.create({
     headerTitle: {
         fontSize: scaleSize(36),
         color: '#000000',
-        paddingBottom: scaleSize(16)
+        fontWeight: '500',
+        paddingBottom: scaleSize(23)
     },
     headerAddress: {
         color: '#868686',
@@ -118,7 +243,8 @@ const buildingStyle = StyleSheet.create({
     },
     addressWrap: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        flexWrap: 'wrap'
     },
     addressLabel: {
         backgroundColor: '#FFDDD8',
@@ -145,12 +271,13 @@ const buildingStyle = StyleSheet.create({
         alignItems: 'flex-end'
     },
     headerMapLabel: {
-        fontSize: scaleSize(24),
+        fontSize: scaleSize(32),
         color: '#000000',
     },
     headerBottom: {
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: scaleSize(56)
     },
     headerBottomItem: {
         flexDirection: 'column',
@@ -159,24 +286,29 @@ const buildingStyle = StyleSheet.create({
     },
     headerBottomItemDivision: {
         width: scaleSize(1),
-        height: scaleSize(30),
+        height: scaleSize(79),
         backgroundColor: '#EAEAEA'
     },
     bottomItemPrice: {
         color: '#FE5139',
         fontSize: scaleSize(34),
+        lineHeight: scaleSize(45),
+        fontWeight: '500'
     },
     bottomItemPriceUnit: {
         fontSize: scaleSize(20)
     },
     bottomItemValue: {
         fontSize: scaleSize(32),
-        color: '#000000'
+        color: '#000000',
+        lineHeight: scaleSize(45),
+        fontWeight: '500'
     },
     bottomItemLabel: {
         fontSize: scaleSize(24),
         color: '#CBCBCB',
-        paddingTop: scaleSize(4)
+        fontWeight: '400',
+        paddingTop: scaleSize(8)
     },
     subContent: {
         paddingLeft: scaleSize(32),
@@ -189,17 +321,17 @@ const buildingStyle = StyleSheet.create({
     subHeader: {
         fontSize: scaleSize(32),
         paddingTop: scaleSize(40),
-        paddingBottom: scaleSize(24),
-        fontWeight:'bold',
+        paddingBottom: scaleSize(29),
+        fontWeight: 'bold',
         color: '#000000',
     },
     BIDescWrap: {
         flexDirection: 'row'
     },
     BIDescContent: {
-        flex: 1,
+        // flex: 1,
         flexDirection: 'row',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         paddingRight: scaleSize(10),
         paddingBottom: scaleSize(12),
         paddingTop: scaleSize(12)
@@ -207,16 +339,17 @@ const buildingStyle = StyleSheet.create({
     BIDescLabel: {
         fontSize: scaleSize(24),
         color: '#868686',
-        minWidth:scaleSize(130)
+        minWidth: scaleSize(130)
     },
     BIDescText: {
         fontSize: scaleSize(24),
         color: '#000000',
-        flex:1,
+        flex: 1,
     },
     PIText: {
         fontSize: scaleSize(28),
         color: '#5D5D5D',
+        marginTop: scaleSize(32),
         lineHeight: scaleSize(52),
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderStyle: 'solid',
@@ -243,7 +376,7 @@ const buildingStyle = StyleSheet.create({
     },
     pi_usersRight: {
         flexDirection: 'column',
-        justifyContent:'center',
+        justifyContent: 'center',
         flex: 1,
     },
     pi_usersItem: {
@@ -280,6 +413,7 @@ const buildingStyle = StyleSheet.create({
     PIListRightIconWrap: {
         height: scaleSize(56),
         flexDirection: 'row',
+        flex: 1,
         alignItems: 'center'
     },
     PIListRightIcon: {
@@ -291,6 +425,8 @@ const buildingStyle = StyleSheet.create({
         borderColor: '#4B6AC5',
         width: scaleSize(176),
         height: scaleSize(56),
+        borderWidth: scaleSize(2),
+        borderRadius: scaleSize(8),
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
@@ -317,7 +453,7 @@ const buildingStyle = StyleSheet.create({
     SIItemRight: {
         paddingLeft: scaleSize(24),
         flexDirection: 'column',
-        flex:1
+        flex: 1
     },
     SIItemTitle: {
         fontSize: scaleSize(28),
@@ -329,20 +465,18 @@ const buildingStyle = StyleSheet.create({
         color: '#868686',
         paddingTop: scaleSize(8)
     },
-    reportRuleContent: {
-        borderBottomWidth: 0
-    },
     RRTable: {
         borderTopWidth: StyleSheet.hairlineWidth,
         borderLeftWidth: StyleSheet.hairlineWidth,
         borderColor: '#EAEAEA',
+        marginBottom: scaleSize(24),
     },
     RRTableRow: {
         flexDirection: 'row',
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderColor: '#EAEAEA',
-        paddingTop:scaleSize(10),
-        paddingBottom:scaleSize(10),
+        paddingTop: scaleSize(10),
+        paddingBottom: scaleSize(10),
         minHeight: scaleSize(72)
     },
     RRTableLabelWrap: {

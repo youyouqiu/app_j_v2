@@ -12,7 +12,7 @@ class Area extends Component {
     constructor(props) {
         super(props);
         this.common = {
-            code: props.global.cityCode || props.global.defaultCityCode,
+            code: props.projectLocation.cityCode || props.projectLocation.defaultCityCode,
         };
         this.selectArea = {
             childrenCodeOne: props.selectArea.childrenCodeOne || '',
@@ -95,11 +95,11 @@ class Area extends Component {
     }
 }
 
-const mapStateToProps = ({config, user, global}) => {
+const mapStateToProps = ({config, user, global,projectLocation}) => {
     return {
         requestUrl: config.requestUrl,
         user,
-        global
+        global,projectLocation
     }
 };
 export default connect(mapStateToProps)(Area)

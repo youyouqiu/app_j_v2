@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
-import { Platform, StatusBar, NativeModules, TextInput, Text, AppState, Linking } from 'react-native'
+import { Platform, StatusBar, NativeModules, TextInput, Text, AppState, Linking, Alert } from 'react-native'
 import { TopView } from 'teaset'
 import NetInfo, { NetInfoChangeHandler } from '@react-native-community/netinfo'
 import BuryPoint, { LogBodyData } from './utils/BuryPoint'
 // @ts-ignore
-import XGPush from 'react-native-xinge-push'
+import XGPush from '@new-space/react-native-xinge-push'
 import Index from './routers'
 import { setNavigator } from './utils/navigation'
 import { NavigationContainerComponent } from 'react-navigation'
@@ -22,7 +22,7 @@ const JAnalyticsModule = NativeModules.JAnalyticsModule
 TextInput.defaultProps = Object.assign({}, TextInput.defaultProps, { defaultProps: false })
 // @ts-ignore
 Text.defaultProps = Object.assign({}, Text.defaultProps, { allowFontScaling: false })
-
+const alert = Alert.alert
 class RealRoot extends PureComponent {
 
     state = {
@@ -46,6 +46,7 @@ class RealRoot extends PureComponent {
         this.fetchNetInfo()
         this.initStatistical() // 统计消息
         global.store.dispatch({ type: 'config/isFirst' })
+        global.store.dispatch({ type: 'config/isFirstInZczs' })
     }
 
     initStatistical = () => {
@@ -176,7 +177,7 @@ class RealRoot extends PureComponent {
         XGPush.register()
         XGPush.addEventListener('register', this._onRegister);
         XGPush.addEventListener('message', this._onMessage);  // 警告说暂时不支持，还未具体查看
-        XGPush.addEventListener('localNotification', this._onLocalNotification);  // 警告说支持localNotification
+        // XGPush.addEventListener('localNotification', this._onLocalNotification);  // 警告说支持localNotification
         XGPush.addEventListener('notification', this._onNotification);
     }
 
@@ -221,10 +222,8 @@ class RealRoot extends PureComponent {
      * @private
      */
     _onNotification(notification: any) {
-        // console.log('notification',notification)
         /* 数据埋点 */
         if (notification.clicked === true) {
-            // alert('app处于后台时收到通知' + JSON.stringify(notification));
             if (typeof (notification) == 'string') {
                 try {
                     notification = JSON.parse(notification);
@@ -241,6 +240,7 @@ class RealRoot extends PureComponent {
                 } catch (e) {
                 }
             }
+            // alert(JSON.stringify(attachData))
             global.store.dispatch({
                 type: 'config/updateNoticeInfo',
                 payload: attachData

@@ -3,6 +3,7 @@ export const CONSTANT = {
     SOURCE: {
         ARTICLE_LIST:1,
         CAROUSEL:2,
-        BANNER:3
+        BANNER:3,
+        HEADLINE:4
     }
 };

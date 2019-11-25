@@ -8,8 +8,7 @@ const dicModel: Model = {
     },
     effects: {
         * getDictionaryDefines({payload}, {call, put}) {
-            const responseData = yield call(dicService.dictionaryDefinesReq, {requestUrl: payload.requestUrl, requestData: payload.requestData});
-            console.log('getDictionaryDefinesresponseDataresponseData',responseData)
+            const responseData = yield call(dicService.dictionaryDefinesReq, {requestData: payload.requestData});
             yield put({type: 'saveSearchShopAreaDic', payload: responseData.extension})
         },
     },

@@ -71,8 +71,8 @@ export default class SubscriptionInfo  extends Component {
         let {data = {},title,isHistory,gotoHistory,titleBg,hasHistory,zhuData = {},historyText} = this.props
         // console.log(data,'rengou')
         let amount = title.indexOf('签约') !== -1? data.dealAmount : data.subScriptionAmount
-        let time = title.indexOf('签约') !== -1? data.dealTime : data.subScriptionTime
-        let rgTime = title.indexOf('签约') !== -1? moment(time).format('YYYY-MM-DD HH:mm'):moment(time).format('YYYY-MM-DD')
+        let time = title.indexOf('签约') !== -1? data.dealTime : data.markTime
+        let rgTime = title.indexOf('签约') !== -1? moment(time).format('YYYY-MM-DD HH:mm'):moment(data.subScriptionTime).format('YYYY-MM-DD')
         let text = title.indexOf('签约') !== -1?'签约':'认购'
         let customers = data.customers || []
 

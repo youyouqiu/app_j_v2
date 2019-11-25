@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { Text, View, ScrollView, ImageBackground, StyleSheet, Image, DeviceEventEmitter, TouchableOpacity, FlatList, TextInput } from 'react-native'
-import { scaleSize } from '../../../../../utils/screenUtil';
+import React, {Component} from 'react';
+import {Text, View, ScrollView, ImageBackground, StyleSheet, Image, DeviceEventEmitter, TouchableOpacity, FlatList, TextInput} from 'react-native'
+import {scaleSize} from '../../../../../utils/screenUtil';
 import Input from '../../../../../components/Form/Input'
 import ApiCustom from '../../../../../services/customManager'
-import { Toast } from 'teaset'
-import { connect } from 'react-redux'
+import {Toast} from 'teaset'
+import {connect} from 'react-redux'
 import moment from 'moment'
 import ReModal from '../../../../../components/Modal/index'
-import { selectCustomerInfoParam } from '../../../report/addReport'
+import {selectCustomerInfoParam} from '../../../report/addReport'
 
 const CHATBACK = require('../../../../../images/pictures/chastBg.png')
 const HEAD = require('../../../../../images/pictures/head.png')
@@ -136,13 +136,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         marginLeft: scaleSize(19),
         flexDirection: 'column',
-        marginBottom: scaleSize(40)
+        marginBottom: scaleSize(40),
+        padding: scaleSize(25)
     },
     timeText: {
         color: '#CBCBCB',
         fontSize: scaleSize(24),
-        // marginLeft: scaleSize(24),
-        // marginTop: scaleSize(24)
+        marginBottom: scaleSize(7),
+        lineHeight: scaleSize(40)
     },
     radioImg: {
         width: scaleSize(47),
@@ -292,7 +293,7 @@ const styles = StyleSheet.create({
     },
     itemContent: {
         // backgroundColor: 'red',
-        marginTop: scaleSize(25)
+        // marginTop: scaleSize(0),
     }
 })
 
@@ -326,7 +327,7 @@ class WechatInfo extends Component {
 
     gotoAddReport = async () => {
         const wechatInfo = this.state.wechatInfo || {}
-        let { api } = this.props.config.requestUrl
+        let {api} = this.props.config.requestUrl
         let id = wechatInfo.relationCustomerId || ''
         let params = {
             customerId: id,
@@ -339,7 +340,7 @@ class WechatInfo extends Component {
                 let customerPhones = dataInfo.customerPhones || []
                 let dataArr = []
                 customerPhones.map((item, index) => {
-                    dataArr.push({ phone: item.phone, isMain: index === 0 ? true : false })
+                    dataArr.push({phone: item.phone, isMain: index === 0 ? true : false})
                 })
 
                 let _q = new selectCustomerInfoParam()
@@ -348,7 +349,7 @@ class WechatInfo extends Component {
                 _q.customerName = dataInfo.customerName || '';
                 _q.customerId = dataInfo.id || '';
                 _q.sex = dataInfo.sex || false;
-                this.props.navigation.navigate('addReport', { customerInfo: _q })
+                this.props.navigation.navigate('addReport', {customerInfo: _q})
             } else {
                 Toast.message('报备失败' + res.message)
             }
@@ -358,7 +359,7 @@ class WechatInfo extends Component {
     }
 
     _getweChatInfo = async () => {
-        let { api } = this.props.config.requestUrl
+        let {api} = this.props.config.requestUrl
         let id = ''
         // id是交叉的
         let obj = (((this.props.navigation || {}).state || {}).params || {})
@@ -392,14 +393,30 @@ class WechatInfo extends Component {
 
     _keyExtractor = (index) => index + '';
 
-    myStep = ({ item }) => {
+    gotoBuildingDetail = (id) => {
+        this.props.navigation.navigate('buildingDetail', {buildingTreeId: id})
+    };
+
+    gotoShopDetail = (buildingTreeId, shopId) => {
+        this.props.navigation.navigate('shopDetail', {shopId, buildingTreeId})
+    };
+
+    myStep = ({item}) => {
+        console.log('myStep', item);
         let renderContent = null
         if (item.trackType === 1) {
             renderContent = (
                 <View style={styles.itemContent}>
                     <Text style={styles.timeText}>{item.createTime ? moment(item.createTime).format('YYYY-MM-DD HH:mm:ss') : null}</Text>
-                    <Text style={styles.moren}>第<Text style={styles.blueText}>{item.viewCount}</Text><Text style={styles.moren}>次浏览楼盘</Text><Text style={styles.blueText}>"{item.buildingName}"</Text>
-                        {item.shopName ? <Text style={styles.moren}>的商铺<Text style={styles.blueText}>{item.shopName}</Text></Text> : null}
+                    <Text style={styles.moren}>
+                        第<Text style={styles.blueText}>{item.viewCount}</Text>
+                        <Text style={styles.moren}>次浏览楼盘</Text>
+                        <Text style={styles.blueText} onPress={() => this.gotoBuildingDetail(item.buildingId)}>"{item.buildingName}"</Text>
+                        {item.shopName ? (
+                            <Text style={styles.moren}>的商铺
+                                <Text style={styles.blueText} onPress={() => this.gotoShopDetail(item.buildingId,item.shopId)}>{item.shopName}</Text>
+                            </Text>
+                        ) : null}
                     </Text>
                 </View>
             )
@@ -407,18 +424,29 @@ class WechatInfo extends Component {
             renderContent = (
                 <View>
                     <Text style={styles.timeText}>{item.createTime ? moment(item.createTime).format('YYYY-MM-DD HH:mm:ss') : null}</Text>
-                    <Text><Text style={styles.moren}>关注了楼盘</Text><Text style={styles.blueText}>"{item.buildingName}"</Text>
-                        {item.shopName ? <Text style={styles.moren}>的商铺<Text style={styles.blueText}>{item.shopName}</Text></Text> : null}
+                    <Text>
+                        <Text style={styles.moren}>关注了楼盘</Text>
+                        <Text style={styles.blueText} onPress={() => this.gotoBuildingDetail(item.buildingId)}>"{item.buildingName}"</Text>
+                        {item.shopName ? (
+                            <Text style={styles.moren}>的商铺
+                                <Text style={styles.blueText} onPress={() => this.gotoShopDetail(item.buildingId,item.shopId)}>{item.shopName}</Text>
+                            </Text>
+                        ) : null}
                     </Text>
                 </View>
-
             )
         } else if (item.trackType === 3) {
             renderContent = (
                 <View>
                     <Text style={styles.timeText}>{item.createTime ? moment(item.createTime).format('YYYY-MM-DD HH:mm:ss') : null}</Text>
-                    <Text><Text style={styles.moren}>取消关注了楼盘</Text><Text style={styles.blueText}>"{item.buildingName}"</Text>
-                        {item.shopName ? <Text style={styles.moren}>的商铺<Text style={styles.blueText}>{item.shopName}</Text></Text> : null}
+                    <Text>
+                        <Text style={styles.moren}>取消关注了楼盘</Text>
+                        <Text style={styles.blueText} onPress={() => this.gotoBuildingDetail(item.buildingId)}>"{item.buildingName}"</Text>
+                        {item.shopName ? (
+                            <Text style={styles.moren}>的商铺
+                                <Text style={styles.blueText} onPress={() => this.gotoShopDetail(item.buildingId,item.shopId)}>{item.shopName}</Text>
+                            </Text>
+                        ) : null}
                     </Text>
                 </View>
             )
@@ -436,38 +464,41 @@ class WechatInfo extends Component {
                     <Text style={styles.moren}>{item.dataType == 1 ? (
                         <Text>筛选了{item.wordType === 1 ? '总价' : '面积'}
                             <Text style={styles.text}>{item.word}</Text>的楼盘</Text>
-                    ) : (<Text>在楼盘<Text style={styles.text}>{item.buildingName}</Text>中筛选了{item.wordType == 1 ? '总价' : '面积'}
-                        <Text style={styles.text}>{item.word}</Text>的商铺</Text>)
-                    }
+                    ) : (
+                        <Text>在楼盘
+                            <Text style={styles.text} onPress={() => this.gotoBuildingDetail(item.buildingId)}>{item.buildingName}</Text>
+                            中筛选了{item.wordType == 1 ? '总价' : '面积'}
+                            <Text style={styles.text}>{item.word}</Text>的商铺
+                        </Text>
+                    )}
                     </Text>
                 </View>
             )
         }
 
         return <View style={styles.cardContent}>
-            {/* <Text style={styles.timeText}>2019-08-15 12:00:00</Text> */}
-            <View style={{ marginLeft: scaleSize(24), marginTop: scaleSize(7) }}>{renderContent}</View>
-
+            {renderContent}
         </View>
     }
 
-    _renderFloorItem = ({ item }) => {
+    _renderFloorItem = ({item}) => {
         let cardContent = null
         if (item.type === 'building') {
+            console.log(item.value,'item.value')
             cardContent = (
-                <View style={styles.flCard}>
-                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Image source={INSEE} style={{ width: scaleSize(30), height: scaleSize(30) }} />
+                <TouchableOpacity activeOpacity={0.8} onPress={()=>this.gotoBuildingDetail(item.value.buildingId)} style={styles.flCard}>
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <Image source={INSEE} style={{width: scaleSize(30), height: scaleSize(30)}}/>
                         <Text style={styles.bottomText}>浏览最多的楼盘</Text>
                     </View>
-                    <Text style={styles.cardText}>{item.value}</Text>
-                </View>
+                    <Text style={styles.cardText}>{item.value.buildingName}</Text>
+                </TouchableOpacity>
             )
         } else if (item.type === 'area') {
             cardContent = (
                 <View style={styles.flCard}>
-                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Image source={XINYI} style={{ width: scaleSize(30), height: scaleSize(30) }} />
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <Image source={XINYI} style={{width: scaleSize(30), height: scaleSize(30)}}/>
                         <Text style={styles.bottomText}>最心仪的区域</Text>
                     </View>
                     <Text style={styles.cardText}>{item.value}</Text>
@@ -476,8 +507,8 @@ class WechatInfo extends Component {
         } else {
             cardContent = (
                 <View style={styles.flCard}>
-                    <View style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Image source={SHANGPU} style={{ width: scaleSize(30), height: scaleSize(30) }} />
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                        <Image source={SHANGPU} style={{width: scaleSize(30), height: scaleSize(30)}}/>
                         <Text style={styles.bottomText}>最关注这样的商铺</Text>
                     </View>
                     <Text style={styles.cardText}>平均 {item.value.price} / {item.value.area}㎡上下</Text>
@@ -488,7 +519,8 @@ class WechatInfo extends Component {
     }
 
     gotodynLogger = () => {
-        this.props.navigation.navigate('dynamicLogging', { id: (((this.props.navigation || {}).state || {}).params || {}).id || '' })
+        const { id, relationCustomerId, source } = this.props.navigation.state.params
+        this.props.navigation.navigate('dynamicLogging', { id, relationCustomerId, source })
     }
 
     relaCus = () => {
@@ -512,14 +544,14 @@ class WechatInfo extends Component {
     }
 
     queryRela = async () => {
-        let { phone, number, changeBoolean, fromData } = this.state
-        let { api } = this.props.config.requestUrl
+        let {phone, number, changeBoolean, fromData} = this.state
+        let {api} = this.props.config.requestUrl
         let regPhone = /^1[3-9]{1}[\d]{5}$/;
         let regAllPhone = /^1[3-9]{1}[\d]{9}$/;
         let params = []
 
         if (changeBoolean) {
-            // 全号码 
+            // 全号码
             if (!regAllPhone.test(phone)) {
                 Toast.message('请输入正确的手机号')
                 return
@@ -591,13 +623,13 @@ class WechatInfo extends Component {
     }
 
     relationCustomer = async (va) => {
-        let { wechatInfo } = this.state
+        let {wechatInfo} = this.state
         let params = {
             wxCustomerId: wechatInfo.id,
             relationCustomerId: va.id,
             bindPhone: va.mainPhone
         }
-        let { api } = this.props.config.requestUrl
+        let {api} = this.props.config.requestUrl
         try {
             let res = await ApiCustom.relationCus(api, params)
             if (res.code === '0') {
@@ -618,13 +650,13 @@ class WechatInfo extends Component {
 
     _keyExtractor = (index) => index.toString()
 
-    _renderItems = ({ item }) => {
-        let { dataSelect } = this.state
+    _renderItems = ({item}) => {
+        let {dataSelect} = this.state
         return (
             <TouchableOpacity onPress={() => this.relationCus(item)}>
                 <View style={styles.relaDataView}>
-                    <Image source={dataSelect ? SELECT : UNSELECT} style={styles.selectImg} />
-                    <Text style={[styles.relaDataText], { width: scaleSize(200) }} numberOfLines={1}>{item.customerName}</Text>
+                    <Image source={dataSelect ? SELECT : UNSELECT} style={styles.selectImg}/>
+                    <Text style={[styles.relaDataText], {width: scaleSize(200)}} numberOfLines={1}>{item.customerName}</Text>
                     <Text style={styles.relaDataText}>{item.sex ? '男' : '女'}</Text>
                     <Text>{item.mainPhone}</Text>
                 </View>
@@ -647,7 +679,7 @@ class WechatInfo extends Component {
     }
 
     addCustomer = async () => {
-        let { banPhone, wechatInfo, phone, changeBoolean } = this.state
+        let {banPhone, wechatInfo, phone, changeBoolean} = this.state
         let params = {}
         if (changeBoolean) {
             params = {
@@ -660,7 +692,7 @@ class WechatInfo extends Component {
                 bindPhone: banPhone,
             }
         }
-        let { api } = this.props.config.requestUrl
+        let {api} = this.props.config.requestUrl
         try {
             let res = await ApiCustom.relationCus(api, params)
             if (res.code === '0') {
@@ -697,54 +729,68 @@ class WechatInfo extends Component {
         return (
             <View style={styles.inputRightWarp}>
                 <TouchableOpacity
-                    style={{ marginRight: scaleSize(8) }}
+                    style={{marginRight: scaleSize(8)}}
                     activeOpacity={0.8}
-                    onPress={() => { this.onFocusColor(num) }}
+                    onPress={() => {
+                        this.onFocusColor(num)
+                    }}
                 >
                     <Text style={[styles.textWarpSmall, valueList.length === 1 ? styles.inputYesBorder : null]}>{valueList[0]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ marginRight: scaleSize(8) }}
+                    style={{marginRight: scaleSize(8)}}
                     activeOpacity={0.8}
-                    onPress={() => { this.onFocusColor(num) }}
+                    onPress={() => {
+                        this.onFocusColor(num)
+                    }}
                 >
                     <Text style={[styles.textWarpSmall, valueList.length === 2 ? styles.inputYesBorder : null]}>{valueList[1]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ marginRight: scaleSize(8) }}
+                    style={{marginRight: scaleSize(8)}}
                     activeOpacity={0.8}
-                    onPress={() => { this.onFocusColor(num) }}
+                    onPress={() => {
+                        this.onFocusColor(num)
+                    }}
                 >
                     <Text style={[styles.textWarpSmall, valueList.length === 3 ? styles.inputYesBorder : null]}>{valueList[2]}</Text>
                 </TouchableOpacity>
 
-                <Text style={{ fontSize: scaleSize(28), color: 'rgba(0,0,0,1)', marginLeft: scaleSize(8) }}>****</Text>
+                <Text style={{fontSize: scaleSize(28), color: 'rgba(0,0,0,1)', marginLeft: scaleSize(8)}}>****</Text>
 
                 <TouchableOpacity
-                    style={{ marginRight: scaleSize(8) }}
+                    style={{marginRight: scaleSize(8)}}
                     activeOpacity={0.8}
-                    onPress={() => { this.onFocusColor(num) }}
+                    onPress={() => {
+                        this.onFocusColor(num)
+                    }}
                 >
                     <Text style={[styles.textWarpSmall, valueList.length === 4 ? styles.inputYesBorder : null]}>{valueList[3]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ marginRight: scaleSize(8) }}
+                    style={{marginRight: scaleSize(8)}}
                     activeOpacity={0.8}
-                    onPress={() => { this.onFocusColor(num) }}
+                    onPress={() => {
+                        this.onFocusColor(num)
+                    }}
                 >
                     <Text style={[styles.textWarpSmall, valueList.length === 5 ? styles.inputYesBorder : null]}>{valueList[4]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ marginRight: scaleSize(8) }}
+                    style={{marginRight: scaleSize(8)}}
                     activeOpacity={0.8}
-                    onPress={() => { this.onFocusColor(num) }}
+                    onPress={() => {
+                        this.onFocusColor(num)
+                    }}
                 >
                     <Text style={[styles.textWarpSmall, valueList.length === 6 ? styles.inputYesBorder : null]}>{valueList[5]}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={{}}
                     activeOpacity={0.8}
-                    onPress={() => { this.onFocusColor(num) }}
+                    onPress={() => {
+                        this.onFocusColor(num)
+                    }}
                 >
                     <Text style={[styles.textWarpSmall, valueList.length === 7 ? styles.inputYesBorder : null]}>{valueList[6]}</Text>
                 </TouchableOpacity>
@@ -753,9 +799,9 @@ class WechatInfo extends Component {
     }
 
     setValue = (key, value) => {
-        let { fromData } = this.state;
+        let {fromData} = this.state;
 
-        Object.assign(fromData, { [key]: value });
+        Object.assign(fromData, {[key]: value});
 
         this.setState({
             fromData,
@@ -764,17 +810,17 @@ class WechatInfo extends Component {
 
 
     render() {
-        let { wechatInfo, developData, dataAnalysis, reVisible, showReleData, relaData, addCus, phone, changeBoolean, fromData } = this.state
+        let {wechatInfo, developData, dataAnalysis, reVisible, showReleData, relaData, addCus, phone, changeBoolean, fromData} = this.state
         const Step = () => {
             return (
                 <View>
-                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: scaleSize(47) }}>
-                        <Image source={RADIO} style={styles.radioImg} />
-                        <View style={{ width: scaleSize(3), height: scaleSize(160), backgroundColor: '#EAEAEA' }}></View>
+                    <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: scaleSize(47)}}>
+                        <Image source={RADIO} style={styles.radioImg}/>
+                        <View style={{width: scaleSize(3), height: scaleSize(160), backgroundColor: '#EAEAEA'}}></View>
                     </View>
-                    <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: scaleSize(47) }}>
-                        <Image source={RADIO} style={styles.radioImg} />
-                        <View style={{ width: scaleSize(3), height: scaleSize(160), backgroundColor: '#EAEAEA' }}></View>
+                    <View style={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: scaleSize(47)}}>
+                        <Image source={RADIO} style={styles.radioImg}/>
+                        <View style={{width: scaleSize(3), height: scaleSize(160), backgroundColor: '#EAEAEA'}}></View>
                     </View>
                 </View>
             )
@@ -785,7 +831,7 @@ class WechatInfo extends Component {
                 <ImageBackground source={CHATBACK} style={styles.bgImg}>
                     <View style={styles.topView}>
                         <View style={styles.topLeftView}>
-                            <Image source={wechatInfo.headImg ? { uri: wechatInfo.headImg } : HEAD} style={styles.headImg} />
+                            <Image source={wechatInfo.headImg ? {uri: wechatInfo.headImg} : HEAD} style={styles.headImg}/>
                             <View style={styles.chatView}>
                                 <Text style={styles.nameText}>{wechatInfo.customerName}</Text>
                                 <Text style={styles.bindText}>{wechatInfo.isRelationCustomerId ? '已绑定' : '未绑定'}</Text>
@@ -805,43 +851,47 @@ class WechatInfo extends Component {
                     <View style={styles.bottomView}>
                         <View style={styles.seeView}>
                             <View style={styles.seeTop}>
-                                <Image source={SEE} style={styles.iconImg} />
+                                <Image source={SEE} style={styles.iconImg}/>
                                 <Text style={styles.text}>浏览</Text>
                             </View>
-                            <Text style={[styles.relaText, { marginLeft: scaleSize(40), marginTop: scaleSize(8) }]}>{wechatInfo.viewCount}</Text>
+                            <Text style={[styles.relaText, {marginLeft: scaleSize(40), marginTop: scaleSize(8)}]}>{wechatInfo.viewCount}</Text>
                         </View>
                         <View style={styles.seeView}>
                             <View style={styles.seeTop}>
-                                <Image source={GUANZHU} style={styles.iconImg} />
+                                <Image source={GUANZHU} style={styles.iconImg}/>
                                 <Text style={styles.text}>关注</Text>
                             </View>
-                            <Text style={[styles.relaText, { marginLeft: scaleSize(40), marginTop: scaleSize(8) }]}>{wechatInfo.likeCount}</Text>
+                            <Text style={[styles.relaText, {marginLeft: scaleSize(40), marginTop: scaleSize(8)}]}>{wechatInfo.likeCount}</Text>
                         </View>
                         <View style={[styles.seeView]}>
                             <View style={styles.seeTop}>
-                                <Image source={COMPASS} style={styles.iconImg} />
+                                <Image source={COMPASS} style={styles.iconImg}/>
                                 <Text style={styles.text}>浏览倾向</Text>
                             </View>
-                            <Text style={[styles.relaText, { marginLeft: scaleSize(40), marginTop: scaleSize(8), width: scaleSize(300) }]}>{wechatInfo.likeType || '暂无'}</Text>
+                            <Text style={[styles.relaText, {
+                                marginLeft: scaleSize(40),
+                                marginTop: scaleSize(8),
+                                width: scaleSize(300)
+                            }]}>{wechatInfo.likeType || '暂无'}</Text>
                         </View>
                     </View>
                 </ImageBackground>
                 <View style={styles.dynamic}>
                     <View style={styles.dynamicTitle}>
                         <Text style={styles.textTitle}>近期动态</Text>
-                        <TouchableOpacity style={{ display: 'flex', flexDirection: 'row' }} onPress={this.gotodynLogger}>
+                        <TouchableOpacity style={{display: 'flex', flexDirection: 'row'}} onPress={this.gotodynLogger}>
                             <Text>更多</Text>
-                            <Image source={ARROW} style={styles.arrowImg} />
+                            <Image source={ARROW} style={styles.arrowImg}/>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.dynamicMiddle}>
                         <View style={styles.step}>
                             {/* <Image source={RADIO} style={styles.radioImg}/> */}
-                            <Step />
+                            <Step/>
                         </View>
                         <View style={styles.card}>
                             <FlatList
-                                style={{ flex: 1 }}
+                                style={{flex: 1}}
                                 keyExtractor={this._keyExtractor}
                                 renderItem={this.myStep}
                                 data={developData}
@@ -860,14 +910,14 @@ class WechatInfo extends Component {
                         />
                     </View>
                 </View>
-                <View style={{ marginBottom: scaleSize(20) }}>
+                <View style={{marginBottom: scaleSize(20)}}>
                     {
                         wechatInfo.isRelationCustomerId ?
                             <TouchableOpacity style={styles.reportCus} onPress={() => this.gotoAddReport()}>
                                 <Text style={styles.reportCusText}>报备客户</Text>
                             </TouchableOpacity> :
-                            <TouchableOpacity disabled={true} style={[styles.reportCus, { backgroundColor: '#EAEAEA' }]}>
-                                <Text style={[styles.reportCusText, { color: '#CBCBCB' }]}>未关联客户 无法报备</Text>
+                            <TouchableOpacity disabled={true} style={[styles.reportCus, {backgroundColor: '#EAEAEA'}]}>
+                                <Text style={[styles.reportCusText, {color: '#CBCBCB'}]}>未关联客户 无法报备</Text>
                             </TouchableOpacity>
                     }
 
@@ -882,9 +932,11 @@ class WechatInfo extends Component {
                     title='关联已有客户'
                 >
                     <View style={styles.reView}>
-                        <View >
-                            <TouchableOpacity style={styles.allPhone} onPress={() => { this.changePhone() }}>
-                                <Image source={changeBoolean ? SELECT : UNSELECT} style={styles.selectImg} />
+                        <View>
+                            <TouchableOpacity style={styles.allPhone} onPress={() => {
+                                this.changePhone()
+                            }}>
+                                <Image source={changeBoolean ? SELECT : UNSELECT} style={styles.selectImg}/>
                                 <Text style={styles.phoneText}>{changeBoolean ? '全号码' : '半号码'}</Text>
                             </TouchableOpacity>
                         </View>
@@ -894,7 +946,7 @@ class WechatInfo extends Component {
                                     placeholder='请输入11位手机号'
                                     keyboardType='numeric'
                                     maxLength={11}
-                                    style={{ borderBottomWidth: scaleSize(1), borderBottomColor: '#EAEAEA' }}
+                                    style={{borderBottomWidth: scaleSize(1), borderBottomColor: '#EAEAEA'}}
                                     onChangeText={this.changePhoneText}
                                 /> :
                                 <Input
@@ -904,7 +956,7 @@ class WechatInfo extends Component {
                                     maxLength={7}
                                     keyboardType='numeric'
                                     elem={ref => this.inputTest0 = ref}
-                                    style={{ textAlign: 'right', paddingRight: scaleSize(32), width: 0, height: 0, padding: 2 }}
+                                    style={{textAlign: 'right', paddingRight: scaleSize(32), width: 0, height: 0, padding: 2}}
                                     rightContent={this._rightContent(0, fromData.phone)}
                                 />
                         }
@@ -925,7 +977,7 @@ class WechatInfo extends Component {
                 >
                     <FlatList
                         extraData={this.state}
-                        style={{ flex: 1 }}
+                        style={{flex: 1}}
                         keyExtractor={this._keyExtractor}
                         renderItem={this._renderItems}
                         data={relaData}
@@ -947,7 +999,7 @@ class WechatInfo extends Component {
                             <Text style={styles.relaDataText}>{wechatInfo.customerName}</Text>
                             <Text style={styles.relaDataText}>{this.state.banPhone || phone}</Text>
                         </View>
-                        <Text style={[styles.blueText], { marginTop: scaleSize(100), marginLeft: scaleSize(150) }}>是否新增客户资料</Text>
+                        <Text style={[styles.blueText], {marginTop: scaleSize(100), marginLeft: scaleSize(150)}}>是否新增客户资料</Text>
                     </View>
                 </ReModal>
             </ScrollView>
@@ -955,8 +1007,8 @@ class WechatInfo extends Component {
     }
 }
 
-const mapStateToProps = ({ config, user }) => {
-    return { config, user }
+const mapStateToProps = ({config, user}) => {
+    return {config, user}
 }
 
 export default connect(mapStateToProps)(WechatInfo)

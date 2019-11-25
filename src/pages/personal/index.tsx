@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState, useEffect } from 'react'
-import { Text, View, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator, Dimensions, NativeModules, DeviceEventEmitter } from 'react-native'
+import { Text, View, TouchableOpacity, StyleSheet, Image, ImageBackground, ActivityIndicator, Dimensions, StatusBar, NativeModules, DeviceEventEmitter } from 'react-native'
 import { connect } from 'react-redux'
 import CameraRoll from "@react-native-community/cameraroll";
 // @ts-ignore
@@ -19,7 +19,7 @@ import Theme from 'teaset/themes/Theme';
 import * as WeChat from 'xkj-react-native-wechat'
 import {checkPermission} from '../../utils/utils'
 import ViewShot,{ captureRef } from 'react-native-view-shot'
-import {XKJImage} from '../../components/XKJImage';
+// import {XKJImage} from '../../components/XKJImage';
 const Feedback = NativeModules.Feedback;
 
 const { height } = Dimensions.get("window")
@@ -46,6 +46,8 @@ const Personal: FunctionComponent<any> = props => {
     }
 
     const getUserReportData = async () => {
+        console.log('getUserReportData')
+        StatusBar.setBarStyle('light-content')
         DeviceEventEmitter.emit('initMessage') // 进入页面的时候调用获取消息  因为静默消息的原因临时处理
         let url = config.requestUrl.api;
         try {
@@ -68,7 +70,7 @@ const Personal: FunctionComponent<any> = props => {
         return function cleanup() {
             focusListener.remove()
         }
-    })
+    }, [props.user])
 
     const feedback = () => {
         console.log(Feedback)
@@ -177,16 +179,24 @@ const Personal: FunctionComponent<any> = props => {
         styles: styles.avatar,
         uri: userInfo.avatar,
         sex: userInfo.sex,
+        man: require('../../images/pictures/personal_man.png'),
+        woman: require('../../images/pictures/personal_woman.png'),
     };
-    // const realAvatar = userInfo.avatar ? {uri: userInfo.avatar} : (userInfo.sex === 1 ? require('../../images/pictures/personal_man.png') : require('../../images/pictures/personal_woman.png'))
+    const realAvatar = userInfo.avatar ? {uri: userInfo.avatar} : (userInfo.sex === 1 ? require('../../images/pictures/personal_man.png') : require('../../images/pictures/personal_woman.png'))
+    
     return <>
         <ImageBackground
             source={require('../../images/pictures/personal_bg.png')}
             style={[styles.header, { height: scaleSize(322) + Theme.statusBarHeight }]}
         >
+            <StatusBar
+                translucent={true}
+                barStyle='dark-content'
+                backgroundColor='rgba(255,255,255,0)'
+            />
             <TouchableOpacity onPress={gotoPersonalInfo} style={styles.headerLeft}>
-                {/* <Image style={styles.avatar} source={realAvatar} /> */}
-                {XKJImage(imgData)}
+                <Image style={styles.avatar} source={realAvatar} />
+                {/* <XKJImage imgData={imgData} /> */}
                 <View>
                     <Text style={styles.trueName}>{userInfo.trueName}</Text>
                     <Text style={styles.company} numberOfLines={1}>{userInfo.filialeShortName || userInfo.filiale || '暂无公司'} | {userInfo.deptName || '暂无组别'}</Text>

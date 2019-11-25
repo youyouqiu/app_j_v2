@@ -76,7 +76,7 @@ class MarketingData extends React.Component<any> {
                             <Image style={styles.md_icon} source={icons[item.fileExt.replace('.', '')]}/>
                             <View style={styles.md_right}>
                                 <View style={styles.md_dataLeft}>
-                                    <Text style={styles.md_name}>{item.fileName}</Text>
+                                    <Text style={styles.md_name} numberOfLines={1}>{item.fileName}</Text>
                                     <Text style={styles.md_time}>{moment(item.createTime).format('YYYY-MM-DD')}</Text>
                                 </View>
                                 <Text style={styles.md_size}>{transFormSize(item.fileSize)}</Text>

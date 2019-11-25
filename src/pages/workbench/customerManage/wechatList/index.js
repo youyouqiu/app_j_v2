@@ -7,7 +7,6 @@ import { Toast } from 'teaset'
 import moment from 'moment'
 import NoData from '../../../../businessComponents/noData'
 import { verifyUser } from '../../../../utils/utils'
-// import { DatePicker } from 'xkjdatepicker'
 
 const HEAD = require('../../../../images/pictures/head.png')
 
@@ -89,12 +88,14 @@ class WechatList extends Component {
             if (params) {
                 this.setState({
                     orderType: params.orderType,
+                    wechatList: [],
+                    pageIndex: 0,
                 }, () => {
                     this.getWechatList(0)
                 })
             } else { }
         })
-        this.addCustomer = DeviceEventEmitter.addListener('AddCustomer', (params) => {
+        this.addCustomer = DeviceEventEmitter.addListener('AddCustomer', () => {
             this.getWechatList(0)
         })
         if (this.props.wechatList.length === 0) {
@@ -131,12 +132,12 @@ class WechatList extends Component {
             await verifyUser()
             this.props.sendPoint.add({ target: '微信列表跳转详情_button', page: '工作台-客户管理' })
             va.fromWechat = true
-            this.props.navigation.navigate('customDetail', va)
+            this.props.navigation.navigate('customDetail', {...va,source:'weixin'})
         } catch (e) {
         }
     }
 
-    getWechatList = async (index, flag) => {
+    getWechatList = async (index) => {
         let { api } = this.props.config.requestUrl
         let { pageIndex, pageSize, searchCriteria, orderType, wechatListData } = this.state
         if (index === 0) {
@@ -198,6 +199,7 @@ class WechatList extends Component {
 
     }
 
+    // eslint-disable-next-line no-unused-vars
     _keyExtractor = (item, index) => index.toString()
 
     _renderItems = ({ item }) => {

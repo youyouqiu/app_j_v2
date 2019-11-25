@@ -1,4 +1,5 @@
 import {scaleSize} from '../../utils/screenUtil'
+import {StyleSheet} from 'react-native'
 
 export const modalStyles = {
     row:{
@@ -9,6 +10,10 @@ export const modalStyles = {
     titleBox:{
         justifyContent:'center',
         paddingBottom:scaleSize(32),
+    },
+    bottomLine: {
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderColor: '#868686'
     },
     title:{
         color:'#4D4D4D',
@@ -149,6 +154,7 @@ export const modalStyles = {
     multiSelected:{
         borderColor:'#1F3070',
         borderWidth:scaleSize(1),
+        backgroundColor:'#fff'
     },
     multiIconBox:{
         position:'absolute',

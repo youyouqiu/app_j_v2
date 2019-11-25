@@ -1,22 +1,34 @@
-import styles from "../styles";
-import {Image, Text, View} from "react-native";
-import React from "react";
-import {facilities} from "../common";
+import styles from '../styles'
+import { Image, Text, View } from 'react-native'
+import React from 'react'
+import { FACILITIES } from '../common'
 
-const MatchingInfo = ({facilitiesInfo = {},onLayout}) => {
-    console.log('facilitiesInfo',facilitiesInfo);
-    let renderContent = [];
+const MatchingInfo = ({
+    shopCategoryType,
+    facility = [],
+    ...props
+}) => {
+    let renderContent = []
 
-    for (let key in facilitiesInfo) {
-        if (facilitiesInfo.hasOwnProperty(key) && facilities.hasOwnProperty(key)) {
-            const text = facilities[key].name;
-            const icon = facilitiesInfo[key] ? facilities[key].icon_dark : facilities[key].icon_gray;
-            renderContent.push(<MatchItem key={key} text={text} icon={icon} decorationLine={facilitiesInfo[key]}/>)
+    for (let key in FACILITIES) {
+        const FACILITY = FACILITIES[key]
+        if (FACILITY.type.has(shopCategoryType)) {
+            const isValid = facility.includes(key)
+            const text = FACILITY.label
+            const icon = isValid ? FACILITY.icon1 : FACILITY.icon2
+            renderContent.push(
+                <MatchItem
+                    key={key}
+                    text={text}
+                    icon={icon}
+                    decoration={!isValid}
+                />
+            )
         }
     }
 
     return (
-        <View style={styles.bd_subWrapper} onLayout={onLayout}>
+        <View style={styles.bd_subWrapper} {...props}>
             <View style={styles.bd_subContainer}>
                 <Text style={styles.bd_subHeader}>配套信息</Text>
                 <View style={styles.bd_matchItemContent}>
@@ -25,21 +37,21 @@ const MatchingInfo = ({facilitiesInfo = {},onLayout}) => {
             </View>
         </View>
     )
-};
+}
 
-export default MatchingInfo
-
-const MatchItem = ({text = '', icon, decorationLine = false}) => {
+const MatchItem = ({ text, icon, decoration = false }) => {
 
     const textStyle = {
-        textDecorationLine: decorationLine ? 'none' : 'line-through',
-        color: decorationLine ? '#000000' : '#CBCBCB'
-    };
+        textDecorationLine: decoration ? 'line-through' : 'none',
+        color: decoration ? '#CBCBCB' : '#000000',
+    }
 
     return (
         <View style={styles.bd_matchItem}>
-            <Image style={styles.bd_matchItemImage} source={icon}/>
+            <Image style={styles.bd_matchItemImage} source={icon} />
             <Text style={[styles.bd_matchItemLabel, textStyle]}>{text}</Text>
         </View>
     )
-};
+}
+
+export default MatchingInfo

@@ -8,10 +8,13 @@ import Modal from '../../../components/Modal'
 import Input from '../../../components/Form/Input'
 import ImagePicker from '../../../components/ImagePicker'
 import { Toast } from 'teaset'
-import { updateUserBasic, updateUser, leaveCom, joinCompany } from '../../../services/auth'
+import { updateUserBasic, updateUser, leaveCom, bindWechatAsync } from '../../../services/auth'
 import Button from '../../../components/Button'
 import { getQrCodeInfo } from '../../../services/component'
-// import * as WeChat from 'xkj-react-native-wechat'
+import request from '../../../utils/request'
+//@ts-ignore
+import * as WeChat from 'xkj-react-native-wechat'
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const Segmentation: FunctionComponent<any> = props => {
     return <View style={styles.segmentation}>
@@ -38,7 +41,6 @@ const PersonalInfo: FunctionComponent<any> = props => {
         setimageModal(true)
     }
     const { sex = 1, avatar, deptName, modifyNickName, address, trueName, filialeId, userName, phoneNumber, openId, email, filiale } = userInfo
-    // console.log(filialeId)
     let loading: any
     const showLoading = () => {
         if (loading) return;
@@ -58,7 +60,6 @@ const PersonalInfo: FunctionComponent<any> = props => {
     }
 
     const onSuccess = async (file: any) => {
-        console.log(file)
         let message: string = ''
         try {
             showLoading()
@@ -81,105 +82,105 @@ const PersonalInfo: FunctionComponent<any> = props => {
     }
 
     const bindWechat = () => {
-        Toast.message('请从进入铺侦探经纪人小程序进行绑定')
-        // let scope = 'snsapi_userinfo';
-        // let state = 'wechat_sdk_demo';
-        // //判断微信是否安装
-        // WeChat.isWXAppInstalled()
-        //     .then((isInstalled: any) => {
-        //         if (isInstalled) {
-        //             //发送授权请求
-        //             WeChat.sendAuthRequest(scope, state)
-        //                 .then((responseCode: any) => {
-        //                     //返回code码，通过code获取access_token
-        //                     console.log(responseCode.code)
-        //                     getAccessToken(responseCode.code);
-        //                 })
-        //                 .catch((err: any) => {
-        //                     Alert.alert('登录授权发生错误：', err.message, [
-        //                         { text: '确定' }
-        //                     ]);
-        //                 })
-        //         } else {
-        //             Platform.OS == 'ios' ?
-        //                 Alert.alert('没有安装微信', '是否安装微信？', [
-        //                     { text: '取消' },
-        //                     { text: '确定', }
-        //                 ]) :
-        //                 Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
-        //                     { text: '确定' }
-        //                 ])
-        //         }
-        //     })
+        // Toast.message('请从进入铺侦探经纪人小程序进行绑定')
+        let scope = 'snsapi_userinfo';
+        let state = 'wechat_sdk_demo';
+        //判断微信是否安装
+        WeChat.isWXAppInstalled()
+            .then((isInstalled: any) => {
+                if (isInstalled) {
+                    //发送授权请求
+                    WeChat.sendAuthRequest(scope, state)
+                        .then((responseCode: any) => {
+                            //返回code码，通过code获取access_token
+                            getAccessToken(responseCode.code);
+                        })
+                        .catch((err: any) => {
+                            Alert.alert('登录授权发生错误：', err.message, [
+                                { text: '确定' }
+                            ]);
+                        })
+                } else {
+                    Platform.OS == 'ios' ?
+                        Alert.alert('没有安装微信', '是否安装微信？', [
+                            { text: '取消' },
+                            { text: '确定', }
+                        ]) :
+                        Alert.alert('没有安装微信', '请先安装微信客户端在进行登录', [
+                            { text: '确定' }
+                        ])
+                }
+            })
     }
     // 获取 access_token
-    const getAccessToken = (responseCode: any) => {
+    const getAccessToken = async (responseCode: any) => {
         let appid = 'wxcb4a3da46de63809'
         let secretID = '25d47177ce5f0e3b815592524e95f551'
-        let AccessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + secretID + '&code=' + responseCode + '&grant_type=authorization_code';
-        fetch(AccessTokenUrl, {
-            method: 'GET',
-            // timeout: 2000,
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-        })
-            .then((response: any) => response.json())
-            .then((responseData: any) => {
-                console.log('responseData.refresh_token=', responseData);
-                getRefreshToken(responseData.refresh_token);
-            })
-            .catch((error: any) => {
-                if (error) {
-                    console.log('error=', error);
+        try {
+            let AccessTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' + appid + '&secret=' + secretID + '&code=' + responseCode + '&grant_type=authorization_code';
+            let responseData = await request.getPure(AccessTokenUrl)
+            await bindWechatAsync({openId: responseData.openid, unionid: responseData.unionid})
+            props.dispatch({
+                type: 'user/updateUserInfo',
+                payload: {
+                    openId: responseData.openid
                 }
             })
+            Toast.message(`绑定微信成功`)
+        } catch (e) {
+            Toast.message(`绑定微信失败:${e.message}`)
+            throw new Error(e.message)
+        }
     }
+
+    // realBindWechat = () => {
+
+    // }
     //  获取 refresh_token
-    const getRefreshToken = (refreshtoken: any) => {
-        let appid = 'wxcb4a3da46de63809'
-        let getRefreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=' + appid + '&grant_type=refresh_token&refresh_token=' + refreshtoken;
-        // console.log('getRefreshTokenUrl=',getRefreshTokenUrl);
-        fetch(getRefreshTokenUrl, {
-            method: 'GET',
-            // timeout: 2000,
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-        })
-            .then((response) => response.json())
-            .then((responseData) => {
-                console.log('responseData.accesstoken=', responseData);
-                getUserInfo(responseData);
-            })
-            .catch((error) => {
-                if (error) {
-                    console.log('error=', error);
-                }
-            })
-    }
+    // const getRefreshToken = (refreshtoken: any) => {
+    //     let appid = 'wxcb4a3da46de63809'
+    //     let getRefreshTokenUrl = 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=' + appid + '&grant_type=refresh_token&refresh_token=' + refreshtoken;
+    //     // console.log('getRefreshTokenUrl=',getRefreshTokenUrl);
+    //     fetch(getRefreshTokenUrl, {
+    //         method: 'GET',
+    //         // timeout: 2000,
+    //         headers: {
+    //             'Content-Type': 'application/json; charset=utf-8',
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseData) => {
+    //             console.log('responseData.accesstoken=', responseData);
+    //             getUserInfo(responseData);
+    //         })
+    //         .catch((error) => {
+    //             if (error) {
+    //                 console.log('error=', error);
+    //             }
+    //         })
+    // }
     //获取用户信息
-    const getUserInfo = (responseData: any) => {
-        console.log(responseData);
-        var getUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + responseData.access_token + '&openid=' + responseData.openid;
-        console.log('getUserInfoUrl=', getUserInfoUrl);
-        fetch(getUserInfoUrl, {
-            method: 'GET',
-            // timeout: 2000,
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-        })
-            .then((response) => response.json())
-            .then((responseData) => {
-                console.log('getUserInfo=', responseData);
-            })
-            .catch((error) => {
-                if (error) {
-                    console.log('error=', error);
-                }
-            })
-    }
+    // const getUserInfo = (responseData: any) => {
+    //     console.log(responseData);
+    //     var getUserInfoUrl = 'https://api.weixin.qq.com/sns/userinfo?access_token=' + responseData.access_token + '&openid=' + responseData.openid;
+    //     console.log('getUserInfoUrl=', getUserInfoUrl);
+    //     fetch(getUserInfoUrl, {
+    //         method: 'GET',
+    //         // timeout: 2000,
+    //         headers: {
+    //             'Content-Type': 'application/json; charset=utf-8',
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((responseData) => {
+    //             console.log('getUserInfo=', responseData);
+    //         })
+    //         .catch((error) => {
+    //             if (error) {
+    //                 console.log('error=', error);
+    //             }
+    //         })
+    // }
 
     const setEmail = async () => {
         let message: string = ''
@@ -251,13 +252,18 @@ const PersonalInfo: FunctionComponent<any> = props => {
     }
 
     const leaveCompany = async () => {
-        // console.log(userInfo)
         let url = requestUrl.cqAuth;
         setLeaveLoading(true)
         let message: string = ''
         try {
             let res = await leaveCom(url, userInfo.id)
-            props.navigation.navigate('login')
+            const resetAction = StackActions.reset({
+                index: 0,
+                key: 'AuthRouter',
+                actions: [NavigationActions.navigate({ routeName: 'login' })],
+            });
+            props.navigation.dispatch(resetAction)
+            // props.navigation.navigate('login')
         } catch (e) {
             message = e.message || '退出经济公司失败'
         } finally {
@@ -270,10 +276,7 @@ const PersonalInfo: FunctionComponent<any> = props => {
     }
 
     const scanPage = () => {
-        // console.log(userInfo)
-        // return
         props.navigation.navigate('businessScanPage') // 使用另外一个页面。不需要在我这处理逻辑
-        // props.navigation.navigate('businessScanPage', { getInfo })
     }
 
     const realAvatar = avatar ? { uri: avatar } : (sex === 1 ? require('../../../images/pictures/personal_man.png') : require('../../../images/pictures/personal_woman.png'))
@@ -287,7 +290,7 @@ const PersonalInfo: FunctionComponent<any> = props => {
             <FlexItem leftTextStyle={styles.leftTextStyle} title='真实姓名' disabled={!modifyNickName} hideIcon={!modifyNickName} onPress={() => setVisible('trueName')} right={trueName} rightTextStyle={styles.rightTextStyle}/>
             <FlexItem leftTextStyle={styles.leftTextStyle} title='用户名' right={userName} disabled hideIcon={true} rightTextStyle={styles.rightTextStyle} />
             <FlexItem leftTextStyle={styles.leftTextStyle} title='手机号' right={phoneNumber} hideIcon={true} rightTextStyle={styles.rightTextStyle} />
-            {/* <FlexItem onPress={bindWechat} disabled={openId} leftTextStyle={styles.leftTextStyle} title='绑定微信' right={openId ? '已绑定' : '未绑定'} hideIcon={openId} /> */}
+            <FlexItem onPress={bindWechat} disabled={openId} leftTextStyle={styles.leftTextStyle} title='绑定微信' right={openId ? '已绑定' : '未绑定'} hideIcon={openId} />
             <FlexItem leftTextStyle={styles.leftTextStyle} title='邮箱' onPress={() => { setVisible('email') }} rightTextStyle={styles.rightTextStyle} right={email} />
             <Segmentation title='公司信息' />
 

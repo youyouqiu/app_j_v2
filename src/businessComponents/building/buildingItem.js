@@ -99,7 +99,7 @@ const BuildingItem = (props) => {
     let {name, saleStatus, areaFullName, minPrice, maxPrice, shopsStock, writeShopsNumber, gotoProjectDetail} = props;
     let {maxArea, minArea, buildingType, buildingId, buildingTreeId} = props;
     let areaText = minArea + '㎡ - ' + maxArea + '㎡';
-    let priceText = minPrice + ' - ' + maxPrice + '万';
+    let priceText = (minPrice || 0) + ' - ' + (maxPrice || 0) + '万';
     let shopNum = shopsStock + '/' + writeShopsNumber + '房源';
     return (
         <TouchableOpacity activeOpacity={0.8} style={styles.item} onPress={() => gotoProjectDetail(buildingId, buildingTreeId)}>

@@ -3,13 +3,14 @@ import AsyncStorage from '@react-native-community/async-storage'
 import DeviceInfo from 'react-native-device-info'
 import { logout } from './utils'
 import UUIDGenerator from 'react-native-uuid-generator'
+import {Platform} from 'react-native'
 
 let reLoginStatus = false
 let reloginList = []
 //获取设备信息
 function getDeviceInfo() {
   const deviceinfo = {
-    Source: 3,
+    Source: Platform.OS === 'ios' ? 1 : 2, // 1 ios 2 android 3 web
     DeviceId: DeviceInfo.getUniqueID(),
     VersionCode: DeviceInfo.getVersion(),
     Timestamp: parseInt(new Date().getTime() / 1000),
@@ -23,7 +24,7 @@ function getDeviceInfo() {
 
 //刷新token
 export async function reLogin() {
-  
+
   let store = global.store
   let url = `${store.getState().config.requestUrl.auth}/connect/token`
   let userInfo = store.getState().user
@@ -81,7 +82,7 @@ export async function reLogin() {
 
 //检查登录状态
 async function checkLoginStatue(res, pUrl, pData) {
-  
+
   let store = global.store
   if (res.status === 401) {
     let res1 = await reLogin()
@@ -96,6 +97,8 @@ async function checkLoginStatue(res, pUrl, pData) {
     }
   } else if ((res.status === 405 || res.status === 406) && store.getState().user.status === 200) { //异地登录 //密码修改
     // DeviceEventEmitter.emit('setChange', res.status)
+    logout()
+    throw new Error('登录过期，请重新登录！')
   } else if (res.status === 403) {
     logout()
     throw new Error('登录过期，请重新登录！')
@@ -108,16 +111,16 @@ async function checkLoginStatue(res, pUrl, pData) {
 
 const request = {
   getUrl: () => {
-      const {api, upload, public: common, buryPoint, cqAuth, auth, label} = global.store.getState().config.requestUrl;
-      return {
-          api: api,
-          upload: upload,
-          public: common,
-          buryPoint: buryPoint,
-          cqAuth: cqAuth,
-          auth: auth,
-          label: label,
-      }
+    const {api, upload, public: common, buryPoint, cqAuth, auth, label} = global.store.getState().config.requestUrl;
+    return {
+      api: api,
+      upload: upload,
+      public: common,
+      buryPoint: buryPoint,
+      cqAuth: cqAuth,
+      auth: auth,
+      label: label,
+    }
   },
   get(url, useToken = true, qs, stoken) {
     let rc = {}
@@ -156,32 +159,32 @@ const request = {
     rc.url = url
     return new Promise((resolve, reject) => {
       fetch(url, options)
-        .then(res => {
-          return checkLoginStatue(res, url, options)
-        })
-        .then((res) => {
-          let endTime = Date.now().valueOf()
-          rc.cost = endTime - startTime
-          rc.responseStatus = res.status.toString()
-          rc.responseStatusText = res.statusText
-          if (res.ok) {
-            return res.json()
-          } else {
-            reject({ code: res.status.toString(), message: '' })
-          }
-        }).then(data => {
-          if (data.code === '0') { // 后端返回体的code为0的时候为正常请求
-            resolve(data)
-          } else if (data.code === '401') {
-            data.message = '登录已过期'
-            reject(data)
-          } else {
-            reject(data)
-          }
-        }).catch(e => {
-          let message = e.message === 'Network request failed' ? '暂无网络，请稍后再试' : e.message
-          reject({ code: '500', message: message })
-        })
+          .then(res => {
+            return checkLoginStatue(res, url, options)
+          })
+          .then((res) => {
+            let endTime = Date.now().valueOf()
+            rc.cost = endTime - startTime
+            rc.responseStatus = res.status.toString()
+            rc.responseStatusText = res.statusText
+            if (res.ok) {
+              return res.json()
+            } else {
+              reject({ code: res.status.toString(), message: '' })
+            }
+          }).then(data => {
+        if (data.code === '0') { // 后端返回体的code为0的时候为正常请求
+          resolve(data)
+        } else if (data.code === '401') {
+          data.message = '登录已过期'
+          reject(data)
+        } else {
+          reject(data)
+        }
+      }).catch(e => {
+        let message = e.message === 'Network request failed' ? '暂无网络，请稍后再试' : e.message
+        reject({ code: '500', message: message })
+      })
     })
   },
   post(url, { body, method = 'POST' } = {}, stoken) {
@@ -218,32 +221,32 @@ const request = {
     rc.url = url
     return new Promise((resolve, reject) => {
       fetch(url, options)
-        .then(res => {
-          return checkLoginStatue(res, url, options)
-        })
-        .then((res) => {
-          let endTime = Date.now().valueOf()
-          rc.cost = endTime - startTime
-          rc.responseStatus = res.status.toString()
-          rc.responseStatusText = res.statusText
-          if (res.ok) {
-            return res.json()
-          } else {
-            reject({ code: res.status.toString(), message: '' })
-          }
-        }).then(data => {
-          if (data.code === '0') { // 后端返回体的code为0的时候为正常请求
-            resolve(data)
-          } else if (data.code === '401') {
-            data.message = '登录已过期'
-            reject(data)
-          } else {
-            reject(data)
-          }
-        }).catch(e => {
-          let message = e.message === 'Network request failed' ? '暂无网络，请稍后再试' : e.message
-          reject({ code: '500', message: message })
-        })
+          .then(res => {
+            return checkLoginStatue(res, url, options)
+          })
+          .then((res) => {
+            let endTime = Date.now().valueOf()
+            rc.cost = endTime - startTime
+            rc.responseStatus = res.status.toString()
+            rc.responseStatusText = res.statusText
+            if (res.ok) {              
+              return res.json()
+            } else {
+              reject({ code: res.status.toString(), message: '' })
+            }
+          }).then(data => {
+            if (data.code === '0') { // 后端返回体的code为0的时候为正常请求
+              resolve(data)
+            } else if (data.code === '401') {
+              data.message = '登录已过期'
+              reject(data)
+            } else {
+              reject(data)
+            }
+          }).catch(e => {
+            let message = e.message === 'Network request failed' ? '暂无网络，请稍后再试' : e.message
+            reject({ code: '500', message: message })
+          })
     })
   },
 
@@ -273,19 +276,19 @@ const request = {
     }
     return new Promise((resolve, reject) => {
       fetch(url, options)
-        .then((res) => {
-          return res.json()
-        }).then(data => {
-          if (data.error) {
-            let {error_description = ''} = data
-            reject({ code: '500', message: error_description.includes('invalid') ? '账号名或者密码错误' : error_description})
-          } else {
-            resolve(data)
-          }
-        }).catch(e => {
-          let message = e.message === 'Network request failed' ? '暂无网络，请稍后再试' : e.message
-          reject({ code: '500', message: message })
-        })
+          .then((res) => {
+            return res.json()
+          }).then(data => {
+        if (data.error) {
+          let {error_description = ''} = data
+          reject({ code: '500', message: error_description.includes('invalid') ? '账号名或者密码错误' : error_description})
+        } else {
+          resolve(data)
+        }
+      }).catch(e => {
+        let message = e.message === 'Network request failed' ? '暂无网络，请稍后再试' : e.message
+        reject({ code: '500', message: message })
+      })
     })
   },
   async upload(url, file) {
@@ -305,36 +308,37 @@ const request = {
     }
     return new Promise((resolve, reject) => {
       fetch(url, options)
-        .then((res) => {
-          if (res.ok) {
-            return res.json()
-          } else {
-            reject({ code: res.status.toString(), message: '' })
-          }
-        }).then(data => {
-          if (data.code === '0') { // 后端返回体的code为0的时候为正常请求
-            resolve(data)
-          } else {
-            reject(data)
-          }
-        }).catch(e => {
-          resolve({ data: { code: '500', message: e.message } })
-        })
+          .then((res) => {
+            if (res.ok) {
+              return res.json()
+            } else {
+              reject({ code: res.status.toString(), message: '' })
+            }
+          }).then(data => {
+        if (data.code === '0') { // 后端返回体的code为0的时候为正常请求
+          resolve(data)
+        } else {
+          reject(data)
+        }
+      }).catch(e => {
+        resolve({ data: { code: '500', message: e.message } })
+      })
     })
   },
   getPure: url => {
     return fetch(url)
-      .then(res => {
-        if (res.ok) {
-          return res.json()
-        }
-        return {
-          requestError: true,
-          code: res.status.toString(),
-          message: res.statusText
-        }
-      })
-      .catch(e => ({ code: '500', message: e.message || '网络异常' }))
+        .then(res => {
+          console.log(res)
+          if (res.ok) {
+            return res.json()
+          }
+          return {
+            requestError: true,
+            code: res.status.toString(),
+            message: res.statusText
+          }
+        })
+        .catch(e => ({ code: '500', message: e.message || '网络异常' }))
   },
 }
 

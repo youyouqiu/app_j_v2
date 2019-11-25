@@ -1,57 +1,100 @@
 import {Image, Text, View, Linking, TouchableOpacity} from "react-native";
 import React, {useState} from "react";
 import styles from "../styles";
-import {Button, Label} from "teaset";
+import {Label} from "teaset";
 import Modal from '../../../../components/Modal/index'
-import {verifyUser} from '../../../../utils/utils'
+import {ProjectBlockItem} from './detailInfo'
+import {Descriptions} from './baseInfo'
+import buildJson from '../buildJson'
+import moment from 'moment'
 
-const ProjectInfo = ({onLayout, projectInfo = {}, navigation}) => {
+const ProjectInfo = ({onLayout, buildingDetail = {}}) => {
     const [visible, setVisible] = useState(false);
     const [phone, setPhone] = useState('');
-    const [] = useState();
-    const {residentUserInfo = []} = projectInfo;
+    // console.log(buildingDetail)
+    const {residentUserInfo = [], treeCategory = 1} = buildingDetail;
+    // const residentUserFirst = residentUserInfo[0] // 驻场只展示第一个  这里不做非空。需要用它判断是否显示   产品后续又说要展示完
+    let {basicInfo = {}, buildingNos = []} = buildingDetail
+    let qfList = buildingNos.filter(item => item.wyzt === '1') // 期房
+    let xfList = buildingNos.filter(item => item.wyzt === '2') // 现房
+    let qfNames = qfList.map(item => item.storied) // 
+    let xfNames = xfList.map(item => item.storied)
+    buildingNos.sort((a,b) => a.openDate > b.openDate)
+    let lastOpenData = {...(buildingNos[0] || {})} // 最新的开盘时间Item
+    buildingNos.sort((a,b) => a.deliveryDate > b.deliveryDate)
+    let lastDeliveryDate = {...(buildingNos[0] || {})} // 最新的交房时间item
     const visibleToggle = (item) => {
         item ? setPhone(item.phone) : null;
         setVisible(!visible)
     };
-    const gotoMarket = async () => {
-        try {
-            await verifyUser('weak', '加入公司之后即可查看楼盘实时信息')
-            navigation.navigate('marketingData', {buildingTreeId: projectInfo.buildingTreeId})
-        } catch (e) {
-        }
-    };
-    const renderRight1 = (
-        <View style={styles.PIListRightIconWrap}>
-            <Image style={styles.PIListRightIcon} source={require('../../../../images/icons/chose.png')}/>
-        </View>
-    );
-    const renderRight2 = ({item}) => {
+    const renderRight2 = () => {
         return (
-            <Button style={styles.PIListBtn} onPress={() => visibleToggle(item)}>
+            <View style={styles.PIListBtn}>
                 <Image style={styles.PIListBtnIcon}
                        source={require('../../../../images/icons/phone.png')}/>
                 <Label style={styles.PIListBtnText} text='电话咨询'/>
-            </Button>
+            </View>
         )
     };
 
     const onOk = () => {
         Linking.openURL('tel:' + phone);
         setVisible(false)
-    };
+    }
 
+    const lableList = [{
+        label: buildJson[treeCategory].status[1],
+        value: qfNames.join(',')
+    }, {
+        label: buildJson[treeCategory].status[2],
+        value: xfNames.join(',')
+    }, {
+        label: '产权年限',
+        value: basicInfo.propertyTerm,
+        unit: '年'
+    }, {
+        label: '产权到期',
+        value: basicInfo.landExpireDate,
+        moment: 'YYYY-MM'
+    }, {
+        label: '最新开盘',
+        value: lastOpenData.openDate,
+        moment: 'YYYY-MM'
+    }, {
+        label: '最近交房',
+        value: lastDeliveryDate.deliveryDate,
+        moment: 'YYYY-MM'
+    }, {
+        label: '优惠政策',
+        value: basicInfo.preferentialPolicies
+    }, ]
     return (
         <View style={styles.subContent} onLayout={onLayout}>
-            <Text style={styles.subHeader}>项目信息</Text>
-            <Text style={styles.PIText}>
-                {projectInfo.summary}
-            </Text>
-            <ListItem leftIcon={require('../../../../images/icons/material.png')} onPress={gotoMarket}
-                      RenderRight={renderRight1} rightData={[{id: 0, trueName: '销讲资料'}]}/>
-            <ListItem leftIcon={require('../../../../images/icons/user.png')}
-                      RenderRight={renderRight2}
-                      rightData={residentUserInfo}/>
+            <Text style={styles.subHeader}>销售信息</Text>
+            {
+                lableList.map(item => {
+                    let value = item.value
+                    if (!value) return null
+                    if (item.moment) {
+                        value = moment(value).format(item.moment)
+                    }
+                    if (item.unit) {
+                        value = value + item.unit
+                    }
+                    return <Descriptions label={item.label} children={value}/>
+                })
+            }
+            <View>
+                {
+                    residentUserInfo.length 
+                    ?
+                    residentUserInfo.map(item => {
+                        return <ProjectBlockItem type='space-between' onPress={() => {visibleToggle(item)}} icon={require('../../../../images/icons/user.png')} text={`项目经理-${item.trueName || ''}`} right={renderRight2} />
+                    })
+                    :
+                    null
+                }
+            </View>
             <Modal visible={visible} onOk={onOk}
                    transparent={true}
                    onClose={visibleToggle}

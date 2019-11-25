@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, Image, DeviceEventEmitter, ActivityIndicator} from 'react-native';
 import {connect, MapStateToProps} from 'react-redux';
 import {Toast} from 'teaset';
-import {DatePicker} from 'xkjdatepicker';
+import {DatePicker} from '@new-space/date-picker';
 import moment from 'moment';
 import { NavigationScreenProps } from 'react-navigation';
 // 工具
@@ -209,12 +209,14 @@ class VisitInfo extends Component<propsTypes & NavigationScreenProps> {
         if (this.state.loading) return;
         try {
             await this.setState({loading: true});
-            const {sex, files, name, phoneList, visitTime} = this.state;
+            const {sex, files, phoneList, visitTime} = this.state;
+            let {name} = this.state
             const {api} = this.props.config.requestUrl;
             if (!name) {
                 Toast.message('请输入客户姓名');
                 return
             }
+            name && (name = name.trim())
             if (!/^[\u4e00-\u9fa5]{1,10}$/.test(name)) {
                 Toast.message('姓名为10位以内的汉字');
                 return

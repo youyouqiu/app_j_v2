@@ -333,7 +333,7 @@ class CustomerList extends Component {
                 <ScrollableTabView
                     locked={true}
                     // initialPage={0}
-                    tabBarTextStyle={{ color: '#868686', fontSize: scaleSize(28), fontWeight: '500', marginTop: scaleSize(15) }}
+                    tabBarTextStyle={{ fontSize: scaleSize(28), fontWeight: '400', marginTop: scaleSize(15) }}
                     tabBarUnderlineStyle={{ backgroundColor: '#1F3070', height: scaleSize(5), width: scaleSize(55) }}
                     tabBarActiveTextColor='#1F3070'
                     tabBarInactiveTextColor='#868686'

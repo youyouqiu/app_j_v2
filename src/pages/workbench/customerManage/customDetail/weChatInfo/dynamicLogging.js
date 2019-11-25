@@ -1,13 +1,13 @@
 // 微信客户动态日志
 
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import BaseContainer from '../../../../../components/Page'
-import { connect } from 'react-redux'
-import { View, StyleSheet, Image, Text, FlatList, RefreshControl } from 'react-native'
-import { scaleSize } from '../../../../../utils/screenUtil';
-import LoggerStep from './logger'
+import {connect} from 'react-redux'
+import {View, StyleSheet, Image, Text, FlatList, RefreshControl} from 'react-native'
+import {scaleSize} from '../../../../../utils/screenUtil';
+// import LoggerStep from './logger'
 import ApiCustom from '../../../../../services/customManager'
-import { Toast } from 'teaset'
+import {Toast} from 'teaset'
 import storage from '../../../../../utils/storage'
 import moment from 'moment'
 
@@ -31,15 +31,6 @@ const styles = StyleSheet.create({
         color: '#868686',
         fontSize: scaleSize(24),
         marginLeft: scaleSize(16)
-    },
-    middle: {
-        height: scaleSize(33),
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        width: scaleSize(700),
-        justifyContent: 'space-between',
-        flex: 1
     },
     middleLine: {
         width: scaleSize(228),
@@ -111,7 +102,6 @@ const styles = StyleSheet.create({
 })
 
 
-
 const WARNING = require('../../../../../images/icons/warning.png')
 
 class DynamicLogging extends Component {
@@ -135,13 +125,15 @@ class DynamicLogging extends Component {
     getCusDevelop = async (index) => {
         let { pageSize, pageIndex, history, listData } = this.state
         let { api } = this.props.config.requestUrl
+        let { id, relationCustomerId, source } = this.props.navigation.state.params
         if (index === 0) {
             pageIndex = index
-        }        
+        }
+        let _id = source === 'weixin' ? id : relationCustomerId
         let params = {
             pageIndex,
             pageSize,
-            id: (((this.props.navigation || {}).state || {}).params || {}).id || ''
+            id: _id
         }
         try {
             let res = await ApiCustom.weChatDev(api, params)
@@ -164,11 +156,11 @@ class DynamicLogging extends Component {
                 })
             } else {
                 Toast.message('获取动态失败' + res.message || '')
-                this.setState({ refreshing: false })
+                this.setState({refreshing: false})
             }
         } catch (e) {
             Toast.message('获取动态失败')
-            this.setState({ refreshing: false })
+            this.setState({refreshing: false})
         }
     }
 
@@ -181,7 +173,7 @@ class DynamicLogging extends Component {
             let index = 0
             if (lookTime) {
                 history.map((item, key) => {
-                    if (item.createTime = lookTime) {
+                    if (item.createTime === lookTime) {
                         index = key - 1
                     }
                 })
@@ -213,25 +205,46 @@ class DynamicLogging extends Component {
         })
     }
 
-    _keyExtractor = (item) => item.toString()
+    _keyExtractor = (item) => item.toString();
 
-    _renderItems = ({ item, index }) => {
+    gotoBuildingDetail = (id) => {
+        this.props.navigation.navigate('buildingDetail', {buildingTreeId: id})
+    };
+
+    gotoShopDetail = (buildingTreeId, shopId) => {
+        this.props.navigation.navigate('shopDetail', {shopId, buildingTreeId})
+    };
+
+    _renderItems = ({item, index}) => {
         let renderContent = null
         if (item.trackType === 1) {
             renderContent = (
                 <View style={styles.morenView}>
-                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD')}</Text>
-                    <Text style={styles.moren}><Text style={styles.text}>{item.customName}</Text>第<Text style={styles.text}>{item.viewCount}</Text>次浏览楼盘<Text style={styles.text}>{item.buildingName}</Text>
-                        {item.shopNumber ? <Text>的商铺<Text style={styles.text}>{item.shopNumber}</Text></Text> : null}
+                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</Text>
+                    <Text style={styles.moren}>
+                        <Text style={styles.text}>{item.customName}</Text>
+                        第<Text style={styles.text}>{item.viewCount}</Text>次浏览楼盘
+                        <Text style={styles.text} onPress={() => this.gotoBuildingDetail(item.buildingId)}>{item.buildingName}</Text>
+                        {item.shopNumber ? (
+                            <Text>
+                                的商铺<Text style={styles.text} onPress={() => this.gotoShopDetail(item.buildingId,item.shopId)}>{item.shopNumber}</Text>
+                            </Text>
+                        ) : null}
                     </Text>
                 </View>
             )
         } else if (item.trackType === 2) {
             renderContent = (
                 <View style={styles.morenView}>
-                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD')}</Text>
-                    <Text style={styles.moren}><Text style={styles.text}>{item.customName}</Text>关注了楼盘<Text style={styles.text}>{item.buildingName}</Text>
-                        {item.shopNumber ? <Text>的商铺<Text style={styles.text}>{item.shopNumber}</Text></Text> : null}
+                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</Text>
+                    <Text style={styles.moren}>
+                        <Text style={styles.text}>{item.customName}</Text>
+                        关注了楼盘<Text style={styles.text} onPress={() => this.gotoBuildingDetail(item.buildingId)}>{item.buildingName}</Text>
+                        {item.shopNumber ? (
+                            <Text>
+                                的商铺<Text style={styles.text} onPress={() => this.gotoShopDetail(item.buildingId,item.shopId)}>>{item.shopNumber}</Text>
+                            </Text>
+                        ) : null}
                     </Text>
                 </View>
 
@@ -239,28 +252,39 @@ class DynamicLogging extends Component {
         } else if (item.trackType === 3) {
             renderContent = (
                 <View style={styles.morenView}>
-                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD')}</Text>
-                    <Text style={styles.moren}><Text style={styles.text}>{item.customName}</Text>取消关注了楼盘<Text style={styles.text}>{item.buildingName}</Text>
-                        {item.shopNumber ? <Text>的商铺<Text style={styles.text}>{item.shopNumber}</Text></Text> : null}
+                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</Text>
+                    <Text style={styles.moren}>
+                        <Text style={styles.text}>{item.customName}</Text>
+                        取消关注了楼盘<Text style={styles.text} onPress={() => this.gotoBuildingDetail(item.buildingId)}>{item.buildingName}</Text>
+                        {item.shopNumber ? (
+                            <Text>
+                                的商铺<Text style={styles.text} onPress={() => this.gotoShopDetail(item.buildingId,item.shopId)}>{item.shopNumber}</Text>
+                            </Text>
+                        ) : null}
                     </Text>
                 </View>
             )
         } else if (item.trackType === 4) {
             renderContent = (
                 <View style={styles.morenView}>
-                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD')}</Text>
-                    <Text style={styles.moren}><Text style={styles.text}>{item.customName}</Text> 搜索了<Text style={styles.text}> &quot;{item.word}&quot;</Text></Text>
+                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</Text>
+                    <Text style={styles.moren}><Text style={styles.text}>{item.customName}</Text> 搜索了<Text
+                        style={styles.text}> &quot;{item.word}&quot;</Text></Text>
                 </View>
             )
         } else {
             renderContent = (
                 <View style={styles.morenView}>
-                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD')}</Text>
+                    <Text style={styles.timeText}>{moment(item.createTime).format('YYYY-MM-DD HH:mm:ss')}</Text>
                     <Text style={styles.moren}>{item.dataType == 1 ? (
-                        <Text>筛选了{item.wordType === 1 ? '总价' : '面积'}
-                            <Text style={styles.text}>{item.word}</Text>的楼盘</Text>
-                    ) : (<Text>在楼盘<Text style={styles.text}>{item.buildingName}</Text>中筛选了{item.wordType == 1 ? '总价' : '面积'}
-                        <Text style={styles.text}>{item.word}</Text>的商铺</Text>)
+                        <Text>
+                            筛选了{item.wordType === 1 ? '总价' : '面积'}<Text style={styles.text}>{item.word}</Text>的楼盘
+                        </Text>
+                    ) : (
+                        <Text>
+                            在楼盘<Text style={styles.text} onPress={() => this.gotoBuildingDetail(item.buildingId)}>{item.buildingName}</Text>
+                            中筛选了{item.wordType == 1 ? '总价' : '面积'}<Text style={styles.text}>{item.word}</Text>的商铺
+                        </Text>)
                     }
                     </Text>
                 </View>
@@ -272,7 +296,7 @@ class DynamicLogging extends Component {
                     item.isShowNew ?
                         <View style={styles.middle}>
                             <View style={styles.middleLine}></View>
-                            <Text style={{ color: '#CBCBCB', fontSize: scaleSize(24) }}>以上为新动态</Text>
+                            <Text style={{color: '#CBCBCB', fontSize: scaleSize(24)}}>以上为新动态</Text>
                             <View style={styles.middleLine}></View>
                         </View> :
                         <View style={styles.loggerView}>
@@ -291,11 +315,11 @@ class DynamicLogging extends Component {
 
     _onEndReached = async () => {
         if (this.state.refreshing) return
-        let { totalCount, pageIndex, pageSize } = this.state
+        let {totalCount, pageIndex, pageSize} = this.state
         pageIndex++
         if (totalCount / pageSize < pageIndex) return
 
-        await this.setState({ pageIndex, refreshing: true }, () => {
+        await this.setState({pageIndex, refreshing: true}, () => {
             this.getCusDevelop(pageIndex)
         })
     }
@@ -311,20 +335,21 @@ class DynamicLogging extends Component {
     }
 
     render() {
-        let { refreshing } = this.state
+        let {refreshing} = this.state
         return (
             <BaseContainer
-                title='微信客户动态日志'
+                title='
+                微信客户动态日志'
                 scroll={false}
-                bodyStyle={{ padding: 0 }}
+                bodyStyle={{padding: 0}}
             >
                 <View style={styles.topView}>
-                    <Image source={WARNING} style={styles.warnImg} />
+                    <Image source={WARNING} style={styles.warnImg}/>
                     <Text style={styles.warnText}>本数据为客户敏感数据，请不要轻易展示或透露相关信息</Text>
                 </View>
                 <FlatList
                     extraData={this.state}
-                    style={{ flex: 1 }}
+                    style={{flex: 1}}
                     keyExtractor={this._keyExtractor}
                     data={this.state.history}
                     renderItem={this._renderItems}
@@ -342,8 +367,9 @@ class DynamicLogging extends Component {
         )
     }
 }
-const mapStateToProps = ({ config, user }) => {
-    return { config, user }
+
+const mapStateToProps = ({config, user}) => {
+    return {config, user}
 }
 
 export default connect(mapStateToProps)(DynamicLogging)
