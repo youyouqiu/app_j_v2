@@ -59,7 +59,7 @@ export default class App extends Component {
           }}
           allowFileAccess={true}
           scalesPageToFit={false}
-          source={(Platform.OS == 'ios') ? require('./tpl.html') : {uri: 'file:///android_asset/a.html'}}
+          source={(Platform.OS == 'ios') ? require('./tpl.html') : {uri: 'file:///android_asset/tpl.html'}}
           // source={{baseUrl: '', html: html}}
           onMessage={event => this.props.onPress ? this.props.onPress(JSON.parse(event.nativeEvent.data)) : null}
         />

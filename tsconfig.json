@@ -12,16 +12,14 @@
         "sourceMap": true,
         "noEmit": true,
         "strict": true,
-        "target": "esnext"
-        // "baseUrl": ".",
-        // "paths": {
-        //     "@component/*": [
-        //         "./src/component/*"
-        //     ],
-        //     "@utils/*": [
-        //         "./src/utils/*"
-        //     ]
-        // }
+        "target": "esnext",
+        "experimentalDecorators": true,
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "./src/*"
+            ]
+        }
     },
     "exclude": [
         "node_modules",

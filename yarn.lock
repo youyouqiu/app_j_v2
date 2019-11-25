@@ -9,7 +9,7 @@
   dependencies:
     "@babel/highlight" "^7.0.0"
 
-"@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@^7.5.5":
+"@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@~7.5.5":
   version "7.5.5"
   resolved "http://192.168.100.162:4873/@babel%2fcore/-/core-7.5.5.tgz#17b2686ef0d6bc58f963dddd68ab669755582c30"
   integrity sha1-F7JobvDWvFj5Y93daKtml1VYLDA=
@@ -76,6 +76,18 @@
   version "7.5.5"
   resolved "http://192.168.100.162:4873/@babel%2fhelper-create-class-features-plugin/-/helper-create-class-features-plugin-7.5.5.tgz#401f302c8ddbc0edd36f7c6b2887d8fa1122e5a4"
   integrity sha1-QB8wLI3bwO3Tb3xrKIfY+hEi5aQ=
+  dependencies:
+    "@babel/helper-function-name" "^7.1.0"
+    "@babel/helper-member-expression-to-functions" "^7.5.5"
+    "@babel/helper-optimise-call-expression" "^7.0.0"
+    "@babel/helper-plugin-utils" "^7.0.0"
+    "@babel/helper-replace-supers" "^7.5.5"
+    "@babel/helper-split-export-declaration" "^7.4.4"
+
+"@babel/helper-create-class-features-plugin@^7.6.0":
+  version "7.6.0"
+  resolved "http://192.168.100.162:4873/@babel%2fhelper-create-class-features-plugin/-/helper-create-class-features-plugin-7.6.0.tgz#769711acca889be371e9bc2eb68641d55218021f"
+  integrity sha1-dpcRrMqIm+Nx6bwutoZB1VIYAh8=
   dependencies:
     "@babel/helper-function-name" "^7.1.0"
     "@babel/helper-member-expression-to-functions" "^7.5.5"
@@ -253,6 +265,15 @@
     "@babel/helper-create-class-features-plugin" "^7.5.5"
     "@babel/helper-plugin-utils" "^7.0.0"
 
+"@babel/plugin-proposal-decorators@~7.6.0":
+  version "7.6.0"
+  resolved "http://192.168.100.162:4873/@babel%2fplugin-proposal-decorators/-/plugin-proposal-decorators-7.6.0.tgz#6659d2572a17d70abd68123e89a12a43d90aa30c"
+  integrity sha1-ZlnSVyoX1wq9aBI+iaEqQ9kKoww=
+  dependencies:
+    "@babel/helper-create-class-features-plugin" "^7.6.0"
+    "@babel/helper-plugin-utils" "^7.0.0"
+    "@babel/plugin-syntax-decorators" "^7.2.0"
+
 "@babel/plugin-proposal-export-default-from@^7.0.0":
   version "7.5.2"
   resolved "http://192.168.100.162:4873/@babel%2fplugin-proposal-export-default-from/-/plugin-proposal-export-default-from-7.5.2.tgz#2c0ac2dcc36e3b2443fead2c3c5fc796fb1b5145"
@@ -297,6 +318,13 @@
   version "7.2.0"
   resolved "http://192.168.100.162:4873/@babel%2fplugin-syntax-class-properties/-/plugin-syntax-class-properties-7.2.0.tgz#23b3b7b9bcdabd73672a9149f728cd3be6214812"
   integrity sha1-I7O3ubzavXNnKpFJ9yjNO+YhSBI=
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
+
+"@babel/plugin-syntax-decorators@^7.2.0":
+  version "7.2.0"
+  resolved "http://192.168.100.162:4873/@babel%2fplugin-syntax-decorators/-/plugin-syntax-decorators-7.2.0.tgz#c50b1b957dcc69e4b1127b65e1c33eef61570c1b"
+  integrity sha1-xQsblX3MaeSxEntl4cM+72FXDBs=
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
@@ -617,7 +645,7 @@
     core-js "^2.5.3"
     regenerator-runtime "^0.11.1"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.5.5", "@babel/runtime@~7.5.5":
   version "7.5.5"
   resolved "http://192.168.100.162:4873/@babel%2fruntime/-/runtime-7.5.5.tgz#74fba56d35efbeca444091c7850ccd494fd2f132"
   integrity sha1-dPulbTXvvspEQJHHhQzNSU/S8TI=
@@ -895,19 +923,54 @@
     "@types/istanbul-reports" "^1.1.1"
     "@types/yargs" "^13.0.0"
 
-"@react-native-community/async-storage@^1.6.1":
-  version "1.6.1"
-  resolved "http://192.168.100.162:4873/@react-native-community%2fasync-storage/-/async-storage-1.6.1.tgz#19be07fc1d65c77bdeb20f46108ba12076aad1c5"
-  integrity sha1-Gb4H/B1lx3vesg9GEIuhIHaq0cU=
+"@new-space/date-picker@1.0.7":
+  version "1.0.7"
+  resolved "http://192.168.100.162:4873/@new-space%2fdate-picker/-/date-picker-1.0.7.tgz#ccdf9b9c1299f117e7492eeddc12fa88b088bd2e"
+  integrity sha512-p3Sxqr1Hsd4YzFlhGMHdqN5pZ3RvVi2hHrEjLBSmxVKQ8oKBPoxYEDF275VMz8c7zVFe8nOpRhKROPP7Yi/9Gg==
+  dependencies:
+    array-tree-filter "2.1.0"
+    prop-types "15.7.2"
+    utility-types "2.1.0"
 
-"@react-native-community/blur@^3.3.1":
+"@new-space/native-echarts@~0.5.3":
+  version "0.5.3"
+  resolved "http://192.168.100.162:4873/@new-space%2fnative-echarts/-/native-echarts-0.5.3.tgz#97d0788080399bcbaa4c969a106dbc330be4067f"
+  integrity sha512-gp1kUw1KYeNhTgX7SoBmQJNlEE7BKyHj0lsqPW4lTSw6mBH7tXTt7a3oik7SMwwZFF3CQwAy/yCX8nAFLM0/SQ==
+  dependencies:
+    echarts "3.2.3"
+
+"@new-space/react-native-scrollable-tab-view@~0.10.8":
+  version "0.10.8"
+  resolved "http://192.168.100.162:4873/@new-space%2freact-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.10.8.tgz#0ccd42a6da1352eb9354386ab3462a6ceb85a3d5"
+  integrity sha512-h0D8DqF28SL6RS2UdlJbtxfXLEFv51h005jTt2IZuhEy0dtNnyCeWKtUDjSmmuoC7HO3/g1ktL/1MgPelDv/Bw==
+  dependencies:
+    create-react-class "^15.6.2"
+    prop-types "^15.6.0"
+    react-timer-mixin "^0.13.3"
+
+"@new-space/react-native-xinge-push@~0.8.1":
+  version "0.8.1"
+  resolved "http://192.168.100.162:4873/@new-space%2freact-native-xinge-push/-/react-native-xinge-push-0.8.1.tgz#5ea4a4ad27b350d2b17f15c7282d502335093267"
+  integrity sha512-mbGWvbfX3JlwWZ89DBy+u03TrIF5kMmo/F63x7dt6+/nRwXYAetDaB3OxlQrSN1sBPEIDVRE8uy3RoAmlazqQw==
+
+"@ptomasroos/react-native-multi-slider@~1.0.0":
+  version "1.0.0"
+  resolved "http://192.168.100.162:4873/@ptomasroos%2freact-native-multi-slider/-/react-native-multi-slider-1.0.0.tgz#a4ea27b1320b93a1db9f696c24789695df6c9f30"
+  integrity sha1-pOonsTILk6Hbn2lsJHiWld9snzA=
+
+"@react-native-community/async-storage@~1.6.1":
+  version "1.6.3"
+  resolved "http://192.168.100.162:4873/@react-native-community%2fasync-storage/-/async-storage-1.6.3.tgz#1a713e8c5cacd543ab8539080a5ce57ad917da88"
+  integrity sha1-GnE+jFys1UOrhTkIClzletkX2og=
+
+"@react-native-community/blur@~3.3.1":
   version "3.3.1"
   resolved "http://192.168.100.162:4873/@react-native-community%2fblur/-/blur-3.3.1.tgz#bc9ecd6d85d89739d8180138716535ac7cfa4680"
   integrity sha1-vJ7NbYXYlznYGAE4cWU1rHz6RoA=
   dependencies:
     prop-types "^15.5.10"
 
-"@react-native-community/cameraroll@^1.2.1":
+"@react-native-community/cameraroll@~1.2.1":
   version "1.2.1"
   resolved "http://192.168.100.162:4873/@react-native-community%2fcameraroll/-/cameraroll-1.2.1.tgz#68ae3a1de07dd5db8ce9d898057f30c1585c7f1d"
   integrity sha1-aK46HeB91duM6diYBX8wwVhcfx0=
@@ -983,7 +1046,7 @@
     shell-quote "1.6.1"
     ws "^1.1.0"
 
-"@react-native-community/eslint-config@^0.0.5":
+"@react-native-community/eslint-config@~0.0.5":
   version "0.0.5"
   resolved "http://192.168.100.162:4873/@react-native-community%2feslint-config/-/eslint-config-0.0.5.tgz#584f6493258202a57efc22e7be66966e43832795"
   integrity sha1-WE9kkyWCAqV+/CLnvmaWbkODJ5U=
@@ -1000,7 +1063,7 @@
     eslint-plugin-react-native "3.6.0"
     prettier "1.16.4"
 
-"@react-native-community/netinfo@^4.2.2":
+"@react-native-community/netinfo@~4.2.2":
   version "4.2.2"
   resolved "http://192.168.100.162:4873/@react-native-community%2fnetinfo/-/netinfo-4.2.2.tgz#15035730a230e743b2e5429f2bbd75b0851a4b98"
   integrity sha1-FQNXMKIw50Oy5UKfK711sIUaS5g=
@@ -1010,20 +1073,20 @@
   resolved "http://192.168.100.162:4873/@react-native-community%2fviewpager/-/viewpager-1.1.7.tgz#7d3b1631f1ec91145db92a8e25c80d53027e96ba"
   integrity sha1-fTsWMfHskRRduSqOJcgNUwJ+lro=
 
-"@react-navigation/core@~3.4.1":
-  version "3.4.2"
-  resolved "http://192.168.100.162:4873/@react-navigation%2fcore/-/core-3.4.2.tgz#bec563e94fde40fbab3730cdc97f22afbb2a1498"
-  integrity sha1-vsVj6U/eQPurNzDNyX8ir7sqFJg=
+"@react-navigation/core@~3.5.1":
+  version "3.5.1"
+  resolved "http://192.168.100.162:4873/@react-navigation%2fcore/-/core-3.5.1.tgz#7a2339fca3496979305fb3a8ab88c2ca8d8c214d"
+  integrity sha1-eiM5/KNJaXkwX7Ooq4jCyo2MIU0=
   dependencies:
     hoist-non-react-statics "^3.3.0"
     path-to-regexp "^1.7.0"
     query-string "^6.4.2"
     react-is "^16.8.6"
 
-"@react-navigation/native@~3.5.0":
-  version "3.5.0"
-  resolved "http://192.168.100.162:4873/@react-navigation%2fnative/-/native-3.5.0.tgz#f5d16e0845ac26d1147d1caa481f18a00740e7ae"
-  integrity sha1-9dFuCEWsJtEUfRyqSB8YoAdA564=
+"@react-navigation/native@~3.6.2":
+  version "3.6.2"
+  resolved "http://192.168.100.162:4873/@react-navigation%2fnative/-/native-3.6.2.tgz#3634697b6350cc5189657ae4551f2d52b57fbbf0"
+  integrity sha1-NjRpe2NQzFGJZXrkVR8tUrV/u/A=
   dependencies:
     hoist-non-react-statics "^3.0.1"
     react-native-safe-area-view "^0.14.1"
@@ -1105,17 +1168,12 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/jest-diff@*":
-  version "20.0.1"
-  resolved "http://192.168.100.162:4873/@types%2fjest-diff/-/jest-diff-20.0.1.tgz#35cc15b9c4f30a18ef21852e255fdb02f6d59b89"
-  integrity sha1-NcwVucTzChjvIYUuJV/bAvbVm4k=
-
-"@types/jest@^24.0.18":
-  version "24.0.18"
-  resolved "http://192.168.100.162:4873/@types%2fjest/-/jest-24.0.18.tgz#9c7858d450c59e2164a8a9df0905fc5091944498"
-  integrity sha1-nHhY1FDFniFkqKnfCQX8UJGURJg=
+"@types/jest@~24.0.18":
+  version "24.0.23"
+  resolved "http://192.168.100.162:4873/@types%2fjest/-/jest-24.0.23.tgz#046f8e2ade026fe831623e361a36b6fb9a4463e4"
+  integrity sha1-BG+OKt4Cb+gxYj42Gja2+5pEY+Q=
   dependencies:
-    "@types/jest-diff" "*"
+    jest-diff "^24.3.0"
 
 "@types/json-schema@^7.0.3":
   version "7.0.3"
@@ -1132,23 +1190,23 @@
   resolved "http://192.168.100.162:4873/@types%2fprop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
   integrity sha1-8aEee6uww8rWgQC+OB0eBkxo8fY=
 
-"@types/qs@^6.5.3":
+"@types/qs@~6.5.3":
   version "6.5.3"
   resolved "http://192.168.100.162:4873/@types%2fqs/-/qs-6.5.3.tgz#1c3b71b091eaeaf5924538006b7f70603ce63d38"
   integrity sha1-HDtxsJHq6vWSRTgAa39wYDzmPTg=
 
-"@types/react-native@^0.60.9":
-  version "0.60.10"
-  resolved "http://192.168.100.162:4873/@types%2freact-native/-/react-native-0.60.10.tgz#cd227c95d04368c896d35eb3ae4cf8d7ad92407f"
-  integrity sha1-zSJ8ldBDaMiW016zrkz4162SQH8=
+"@types/react-native@~0.60.9":
+  version "0.60.22"
+  resolved "http://192.168.100.162:4873/@types%2freact-native/-/react-native-0.60.22.tgz#ba199a441cb0612514244ffb1d0fe6f04c878575"
+  integrity sha1-uhmaRBywYSUUJE/7HQ/m8EyHhXU=
   dependencies:
     "@types/prop-types" "*"
     "@types/react" "*"
 
-"@types/react-redux@^7.1.2":
-  version "7.1.2"
-  resolved "http://192.168.100.162:4873/@types%2freact-redux/-/react-redux-7.1.2.tgz#02303b77d87e54f327c09507cf80ee3ca3063898"
-  integrity sha1-AjA7d9h+VPMnwJUHz4DuPKMGOJg=
+"@types/react-redux@~7.1.2":
+  version "7.1.5"
+  resolved "http://192.168.100.162:4873/@types%2freact-redux/-/react-redux-7.1.5.tgz#c7a528d538969250347aa53c52241051cf886bd3"
+  integrity sha1-x6Uo1TiWklA0eqU8UiQQUc+Ia9M=
   dependencies:
     "@types/hoist-non-react-statics" "^3.3.0"
     "@types/react" "*"
@@ -1182,17 +1240,25 @@
     "@types/history" "*"
     "@types/react" "*"
 
-"@types/react-test-renderer@^16.9.0":
-  version "16.9.0"
-  resolved "http://192.168.100.162:4873/@types%2freact-test-renderer/-/react-test-renderer-16.9.0.tgz#d60f530ecf4c906721511603cca711b4fa830d41"
-  integrity sha1-1g9TDs9MkGchURYDzKcRtPqDDUE=
+"@types/react-test-renderer@~16.9.0":
+  version "16.9.1"
+  resolved "http://192.168.100.162:4873/@types%2freact-test-renderer/-/react-test-renderer-16.9.1.tgz#9d432c46c515ebe50c45fa92c6fb5acdc22e39c4"
+  integrity sha1-nUMsRsUV6+UMRfqSxvtazcIuOcQ=
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@^16.9.2":
+"@types/react@*":
   version "16.9.2"
   resolved "http://192.168.100.162:4873/@types%2freact/-/react-16.9.2.tgz#6d1765431a1ad1877979013906731aae373de268"
   integrity sha1-bRdlQxoa0Yd5eQE5BnMarjc94mg=
+  dependencies:
+    "@types/prop-types" "*"
+    csstype "^2.2.0"
+
+"@types/react@~16.9.2":
+  version "16.9.11"
+  resolved "http://192.168.100.162:4873/@types%2freact/-/react-16.9.11.tgz#70e0b7ad79058a7842f25ccf2999807076ada120"
+  integrity sha1-cOC3rXkFinhC8lzPKZmAcHatoSA=
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
@@ -1319,6 +1385,13 @@ acorn@^7.0.0:
   version "7.0.0"
   resolved "http://192.168.100.162:4873/acorn/-/acorn-7.0.0.tgz#26b8d1cd9a9b700350b71c0905546f64d1284e7a"
   integrity sha1-JrjRzZqbcANQtxwJBVRvZNEoTno=
+
+add-dom-event-listener@^1.1.0:
+  version "1.1.0"
+  resolved "http://192.168.100.162:4873/add-dom-event-listener/-/add-dom-event-listener-1.1.0.tgz#6a92db3a0dd0abc254e095c0f1dc14acbbaae310"
+  integrity sha1-apLbOg3Qq8JU4JXA8dwUrLuq4xA=
+  dependencies:
+    object-assign "4.x"
 
 agent-base@4, agent-base@^4.2.0, agent-base@^4.3.0:
   version "4.3.0"
@@ -1615,19 +1688,19 @@ babel-eslint@10.0.1:
     eslint-scope "3.7.1"
     eslint-visitor-keys "^1.0.0"
 
-babel-eslint@^10.0.2:
-  version "10.0.2"
-  resolved "http://192.168.100.162:4873/babel-eslint/-/babel-eslint-10.0.2.tgz#182d5ac204579ff0881684b040560fdcc1558456"
-  integrity sha1-GC1awgRXn/CIFoSwQFYP3MFVhFY=
+babel-eslint@~10.0.2:
+  version "10.0.3"
+  resolved "http://192.168.100.162:4873/babel-eslint/-/babel-eslint-10.0.3.tgz#81a2c669be0f205e19462fed2482d33e4687a88a"
+  integrity sha1-gaLGab4PIF4ZRi/tJILTPkaHqIo=
   dependencies:
     "@babel/code-frame" "^7.0.0"
     "@babel/parser" "^7.0.0"
     "@babel/traverse" "^7.0.0"
     "@babel/types" "^7.0.0"
-    eslint-scope "3.7.1"
     eslint-visitor-keys "^1.0.0"
+    resolve "^1.12.0"
 
-babel-jest@^24.9.0:
+babel-jest@^24.9.0, babel-jest@~24.9.0:
   version "24.9.0"
   resolved "http://192.168.100.162:4873/babel-jest/-/babel-jest-24.9.0.tgz#3fc327cb8467b89d14d7bc70e315104a783ccd54"
   integrity sha1-P8Mny4RnuJ0U17xw4xUQSng8zVQ=
@@ -1664,7 +1737,7 @@ babel-plugin-jest-hoist@^24.9.0:
   dependencies:
     "@types/babel__traverse" "^7.0.6"
 
-babel-plugin-module-resolver@^3.2.0:
+babel-plugin-module-resolver@~3.2.0:
   version "3.2.0"
   resolved "http://192.168.100.162:4873/babel-plugin-module-resolver/-/babel-plugin-module-resolver-3.2.0.tgz#ddfa5e301e3b9aa12d852a9979f18b37881ff5a7"
   integrity sha1-3fpeMB47mqEthSqZefGLN4gf9ac=
@@ -2469,7 +2542,7 @@ domexception@^1.0.1:
   dependencies:
     webidl-conversions "^4.0.2"
 
-dva-core@^1.4.0:
+dva-core@^1.4.0, dva-core@~1.4.0:
   version "1.4.0"
   resolved "http://192.168.100.162:4873/dva-core/-/dva-core-1.4.0.tgz#30aed800b97f07f768e42049094ee3150f48c5d3"
   integrity sha1-MK7YALl/B/do5CBJCU7jFQ9IxdM=
@@ -2483,14 +2556,14 @@ dva-core@^1.4.0:
     redux-saga "^0.16.0"
     warning "^3.0.0"
 
-dva-loading@^3.0.12:
-  version "3.0.12"
-  resolved "http://192.168.100.162:4873/dva-loading/-/dva-loading-3.0.12.tgz#f87542cb5309dd5d2d40599b84ce1982d9e8f00f"
-  integrity sha1-+HVCy1MJ3V0tQFmbhM4Zgtno8A8=
+dva-loading@~3.0.12:
+  version "3.0.17"
+  resolved "http://192.168.100.162:4873/dva-loading/-/dva-loading-3.0.17.tgz#773239e36cba273c2b00ce50e792c9cc5d5b2b9b"
+  integrity sha1-dzI542y6JzwrAM5Q55LJzF1bK5s=
   dependencies:
     "@babel/runtime" "^7.0.0"
 
-dva@^2.4.1:
+dva@~2.4.1:
   version "2.4.1"
   resolved "http://192.168.100.162:4873/dva/-/dva-2.4.1.tgz#a3eeb07bb8bc6e2ff9ffe31799d03cb69e45f5fd"
   integrity sha1-o+6we7i8bi/5/+MXmdA8tp5F9f0=
@@ -2516,6 +2589,13 @@ ecc-jsbn@~0.1.1:
   dependencies:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
+
+echarts@3.2.3:
+  version "3.2.3"
+  resolved "http://192.168.100.162:4873/echarts/-/echarts-3.2.3.tgz#4f01e15bfda3352fcd8ef9049f13d8448971a258"
+  integrity sha1-TwHhW/2jNS/NjvkEnxPYRIlxolg=
+  dependencies:
+    zrender "^3.1.3"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -2609,7 +2689,12 @@ escape-html@~1.0.3:
   resolved "http://192.168.100.162:4873/escape-html/-/escape-html-1.0.3.tgz#0258eae4d3d0c0974de1c169188ef0051d1d1988"
   integrity sha1-Aljq5NPQwJdN4cFpGI7wBR0dGYg=
 
-escape-string-regexp@1.0.5, escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
+escape-string-regexp@2.0.0:
+  version "2.0.0"
+  resolved "http://192.168.100.162:4873/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz#a30304e99daa32e23b2fd20f51babd07cffca344"
+  integrity sha1-owME6Z2qMuI7L9IPUbq9B8/8o0Q=
+
+escape-string-regexp@^1.0.2, escape-string-regexp@^1.0.5:
   version "1.0.5"
   resolved "http://192.168.100.162:4873/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
@@ -2727,7 +2812,7 @@ eslint-visitor-keys@^1.0.0, eslint-visitor-keys@^1.1.0:
   resolved "http://192.168.100.162:4873/eslint-visitor-keys/-/eslint-visitor-keys-1.1.0.tgz#e2a82cea84ff246ad6fb57f9bde5b46621459ec2"
   integrity sha1-4qgs6oT/JGrW+1f5veW0ZiFFnsI=
 
-eslint@^6.3.0:
+eslint@~6.3.0:
   version "6.3.0"
   resolved "http://192.168.100.162:4873/eslint/-/eslint-6.3.0.tgz#1f1a902f67bfd4c354e7288b81e40654d927eb6a"
   integrity sha1-HxqQL2e/1MNU5yiLgeQGVNkn62o=
@@ -3053,7 +3138,7 @@ fbjs@^0.8.9, fbjs@~0.8.9:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
-fbjs@^1.0.0:
+fbjs@^1.0.0, fbjs@~1.0.0:
   version "1.0.0"
   resolved "http://192.168.100.162:4873/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
   integrity sha1-UsIV4Ig6PIavKnp3btUVJa6OClo=
@@ -3997,12 +4082,12 @@ istanbul-reports@^2.2.6:
   dependencies:
     handlebars "^4.1.2"
 
-janalytics-react-native@^1.5.1:
+janalytics-react-native@~1.5.1:
   version "1.5.1"
   resolved "http://192.168.100.162:4873/janalytics-react-native/-/janalytics-react-native-1.5.1.tgz#dc7943c1ae8017b5334bbc5589486cf661d45ce8"
   integrity sha512-CViVxcp0ZdJz3hYLI4+ZqExRcw6DM03GCxtDsYzNjaJRDXml9T5O9M36E8l3QHnW1HV7gf4mq7Id8i8quvhnxw==
 
-jcore-react-native@^1.4.7:
+jcore-react-native@~1.4.7:
   version "1.4.7"
   resolved "http://192.168.100.162:4873/jcore-react-native/-/jcore-react-native-1.4.7.tgz#e5b0abed74f2eb443ebb0c5e6017ba9c401f233d"
   integrity sha512-wRyUCXTjOzIhjzTXgrNjt6PytZGLGr+H7iM5F3litZfmm0xKhcbC+rapdujNnXO5jzPMhl+Z5yg9TPjtAIHGbQ==
@@ -4058,7 +4143,7 @@ jest-config@^24.9.0:
     pretty-format "^24.9.0"
     realpath-native "^1.1.0"
 
-jest-diff@^24.9.0:
+jest-diff@^24.3.0, jest-diff@^24.9.0:
   version "24.9.0"
   resolved "http://192.168.100.162:4873/jest-diff/-/jest-diff-24.9.0.tgz#931b7d0d5778a1baf7452cb816e325e3724055da"
   integrity sha1-kxt9DVd4obr3RSy4FuMl43JAVdo=
@@ -4451,7 +4536,7 @@ jest-worker@^24.9.0:
     merge-stream "^2.0.0"
     supports-color "^6.1.0"
 
-jest@^24.9.0:
+jest@~24.9.0:
   version "24.9.0"
   resolved "http://192.168.100.162:4873/jest/-/jest-24.9.0.tgz#987d290c05a08b52c56188c1002e368edb007171"
   integrity sha1-mH0pDAWgi1LFYYjBAC42jtsAcXE=
@@ -4459,7 +4544,7 @@ jest@^24.9.0:
     import-local "^2.0.0"
     jest-cli "^24.9.0"
 
-jetifier@^1.6.2, jetifier@^1.6.4:
+jetifier@^1.6.2, jetifier@~1.6.4:
   version "1.6.4"
   resolved "http://192.168.100.162:4873/jetifier/-/jetifier-1.6.4.tgz#6159db8e275d97980d26162897a0648b6d4a3222"
   integrity sha1-YVnbjiddl5gNJhYol6Bki21KMiI=
@@ -4839,6 +4924,11 @@ mem@^4.0.0:
     mimic-fn "^2.0.0"
     p-is-promise "^2.0.0"
 
+memoize-one@~5.1.1:
+  version "5.1.1"
+  resolved "http://192.168.100.162:4873/memoize-one/-/memoize-one-5.1.1.tgz#047b6e3199b508eaec03504de71229b8eb1d75c0"
+  integrity sha1-BHtuMZm1COrsA1BN5xIpuOsddcA=
+
 merge-stream@^1.0.1:
   version "1.0.1"
   resolved "http://192.168.100.162:4873/merge-stream/-/merge-stream-1.0.1.tgz#4041202d508a342ba00174008df0c251b8c135e1"
@@ -4980,10 +5070,10 @@ metro-react-native-babel-preset@0.54.1:
     metro-babel7-plugin-react-transform "0.54.1"
     react-transform-hmr "^1.0.4"
 
-metro-react-native-babel-preset@^0.56.0:
-  version "0.56.0"
-  resolved "http://192.168.100.162:4873/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.56.0.tgz#fa47dfd5f7678e89cffd1249020b8add6938fc48"
-  integrity sha1-+kff1fdnjonP/RJJAguK3Wk4/Eg=
+metro-react-native-babel-preset@~0.56.0:
+  version "0.56.3"
+  resolved "http://192.168.100.162:4873/metro-react-native-babel-preset/-/metro-react-native-babel-preset-0.56.3.tgz#5a1097c2f94e8ee0797a8ba2ab8f86d096f4c093"
+  integrity sha1-WhCXwvlOjuB5eouiq4+G0Jb0wJM=
   dependencies:
     "@babel/plugin-proposal-class-properties" "^7.0.0"
     "@babel/plugin-proposal-export-default-from" "^7.0.0"
@@ -5251,7 +5341,7 @@ mkdirp@^0.5.0, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.24.0:
+moment@~2.24.0:
   version "2.24.0"
   resolved "http://192.168.100.162:4873/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
   integrity sha1-DQVdU/UFKqZTyfbraLtdEr9cK1s=
@@ -5502,7 +5592,7 @@ ob1@0.55.0:
   resolved "http://192.168.100.162:4873/ob1/-/ob1-0.55.0.tgz#e393b4ae786ef442b3ef2a298ab70d6ec353dbdd"
   integrity sha1-45O0rnhu9EKz7yopircNbsNT290=
 
-object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
+object-assign@4.x, object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "http://192.168.100.162:4873/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
@@ -6051,7 +6141,7 @@ prompts@^2.0.1:
     kleur "^3.0.3"
     sisteransi "^1.0.3"
 
-prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2:
+prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@~15.7.2:
   version "15.7.2"
   resolved "http://192.168.100.162:4873/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha1-UsQedbjIfnK52TYOAga5ncv/psU=
@@ -6122,7 +6212,7 @@ qrcode@^1.2.0:
     pngjs "^3.3.0"
     yargs "^13.2.4"
 
-qs@^6.7.0, qs@^6.8.0:
+qs@^6.7.0, qs@~6.8.0:
   version "6.8.0"
   resolved "http://192.168.100.162:4873/qs/-/qs-6.8.0.tgz#87b763f0d37ca54200334cd57bb2ef8f68a1d081"
   integrity sha1-h7dj8NN8pUIAM0zVe7Lvj2ih0IE=
@@ -6156,10 +6246,10 @@ raw-body@^2.2.0:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-rc-form@^2.4.8:
-  version "2.4.8"
-  resolved "http://192.168.100.162:4873/rc-form/-/rc-form-2.4.8.tgz#79a1f124d4fa81dff2af2992e94aa3e58cad683c"
-  integrity sha1-eaHxJNT6gd/yrymS6Uqj5YytaDw=
+rc-form@~2.4.8:
+  version "2.4.10"
+  resolved "http://192.168.100.162:4873/rc-form/-/rc-form-2.4.10.tgz#8bf7260a4c9a1d5b82621cee5f82d8daa4ecb84e"
+  integrity sha1-i/cmCkyaHVuCYhzuX4LY2qTsuE4=
   dependencies:
     async-validator "~1.11.3"
     babel-runtime "6.x"
@@ -6167,7 +6257,19 @@ rc-form@^2.4.8:
     dom-scroll-into-view "1.x"
     hoist-non-react-statics "^3.3.0"
     lodash "^4.17.4"
+    rc-util "^4.15.3"
     warning "^4.0.3"
+
+rc-util@^4.15.3:
+  version "4.15.6"
+  resolved "http://192.168.100.162:4873/rc-util/-/rc-util-4.15.6.tgz#cd36c82b44504052df054f991846820073a57ee0"
+  integrity sha1-zTbIK0RQQFLfBU+ZGEaCAHOlfuA=
+  dependencies:
+    add-dom-event-listener "^1.1.0"
+    babel-runtime "6.x"
+    prop-types "^15.5.10"
+    react-lifecycles-compat "^3.0.4"
+    shallowequal "^1.1.0"
 
 rc@^1.2.7:
   version "1.2.8"
@@ -6192,7 +6294,7 @@ react-devtools-core@^3.6.1:
     shell-quote "^1.6.1"
     ws "^3.3.1"
 
-react-dom@^16.9.0:
+react-dom@~16.9.0:
   version "16.9.0"
   resolved "http://192.168.100.162:4873/react-dom/-/react-dom-16.9.0.tgz#5e65527a5e26f22ae3701131bcccaee9fb0d3962"
   integrity sha1-XmVSel4m8irjcBExvMyu6fsNOWI=
@@ -6207,19 +6309,31 @@ react-is@^16.7.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   resolved "http://192.168.100.162:4873/react-is/-/react-is-16.9.0.tgz#21ca9561399aad0ff1a7701c01683e8ca981edcb"
   integrity sha1-IcqVYTmarQ/xp3AcAWg+jKmB7cs=
 
+react-is@^16.9.0:
+  version "16.12.0"
+  resolved "http://192.168.100.162:4873/react-is/-/react-is-16.12.0.tgz#2cc0fe0fba742d97fd527c42a13bec4eeb06241c"
+  integrity sha1-LMD+D7p0LZf9UnxCoTvsTusGJBw=
+
 react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "http://192.168.100.162:4873/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
 
-react-native-baidumap-sdk@^0.6.3:
+react-native-animatable@^1.3.1:
+  version "1.3.3"
+  resolved "http://192.168.100.162:4873/react-native-animatable/-/react-native-animatable-1.3.3.tgz#a13a4af8258e3bb14d0a9d839917e9bb9274ec8a"
+  integrity sha1-oTpK+CWOO7FNCp2DmRfpu5J07Io=
+  dependencies:
+    prop-types "^15.7.2"
+
+react-native-baidumap-sdk@~0.6.3:
   version "0.6.3"
   resolved "http://192.168.100.162:4873/react-native-baidumap-sdk/-/react-native-baidumap-sdk-0.6.3.tgz#e92325e02a540a9c6d0194ce36656a7c7e2f936a"
   integrity sha512-L6Q1rLAzdIGNILGhzstQUTWTWqD76TILRSczx1e9IcdYxPLHbVDt5DpNCSqNwnTWSiaxe+CFdXRuMOKqMdWdlg==
   dependencies:
     supercluster "^3.0.2"
 
-react-native-code-push@^5.7.0:
+react-native-code-push@~5.7.0:
   version "5.7.0"
   resolved "http://192.168.100.162:4873/react-native-code-push/-/react-native-code-push-5.7.0.tgz#38667c1ba5a5e1a6dd1b4271468c6ef6284b3ca4"
   integrity sha1-OGZ8G6Wl4abdG0JxRoxu9ihLPKQ=
@@ -6243,7 +6357,7 @@ react-native-code-push@^5.7.0:
     react-timer-mixin "^0.13.2"
     rebound "^0.0.13"
 
-react-native-device-info@^2.3.2:
+react-native-device-info@~2.3.2:
   version "2.3.2"
   resolved "http://192.168.100.162:4873/react-native-device-info/-/react-native-device-info-2.3.2.tgz#db2b8f135aaf2515583e367ab791dcc7d2f0d14c"
   integrity sha1-2yuPE1qvJRVYPjZ6t5Hcx9Lw0Uw=
@@ -6262,24 +6376,24 @@ react-native-gesture-handler@1.3.0:
     invariant "^2.2.2"
     prop-types "^15.5.10"
 
-react-native-image-crop-picker@^0.25.0:
-  version "0.25.0"
-  resolved "http://192.168.100.162:4873/react-native-image-crop-picker/-/react-native-image-crop-picker-0.25.0.tgz#858fa6fdc857255fe5250252a38d58db347f9067"
-  integrity sha1-hY+m/chXJV/lJQJSo41Y2zR/kGc=
+react-native-image-crop-picker@~0.25.0:
+  version "0.25.3"
+  resolved "http://192.168.100.162:4873/react-native-image-crop-picker/-/react-native-image-crop-picker-0.25.3.tgz#46ee28b4a0a187240e388bd28a44cf8c274caec6"
+  integrity sha1-Ru4otKChhyQOOIvSikTPjCdMrsY=
 
 react-native-image-pan-zoom@^2.1.9:
   version "2.1.11"
   resolved "http://192.168.100.162:4873/react-native-image-pan-zoom/-/react-native-image-pan-zoom-2.1.11.tgz#61bcb69219d95e76a9797d23e4a2e8e0bd654ae9"
   integrity sha1-Yby2khnZXnapeX0j5KLo4L1lSuk=
 
-react-native-image-zoom-viewer@^2.2.26:
+react-native-image-zoom-viewer@~2.2.26:
   version "2.2.26"
   resolved "http://192.168.100.162:4873/react-native-image-zoom-viewer/-/react-native-image-zoom-viewer-2.2.26.tgz#c6f070abb094cfbe1b3b7d8a38ad979a5facbdc5"
   integrity sha1-xvBwq7CUz74bO32KOK2Xml+svcU=
   dependencies:
     react-native-image-pan-zoom "^2.1.9"
 
-react-native-linear-gradient@^2.5.6:
+react-native-linear-gradient@~2.5.6:
   version "2.5.6"
   resolved "http://192.168.100.162:4873/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
   integrity sha1-liFcvF7HoBJHogiQiIqnW4NNRKA=
@@ -6289,15 +6403,23 @@ react-native-local-barcode-recognizer@0.0.2:
   resolved "http://192.168.100.162:4873/react-native-local-barcode-recognizer/-/react-native-local-barcode-recognizer-0.0.2.tgz#e59716623d8a851705637fe241cf749ea186119c"
   integrity sha1-5ZcWYj2KhRcFY3/iQc90nqGGEZw=
 
-react-native-open-settings@^1.0.1:
+react-native-modal@~11.4.0:
+  version "11.4.0"
+  resolved "http://192.168.100.162:4873/react-native-modal/-/react-native-modal-11.4.0.tgz#29f2fd241aed864f3c7ce25a941498ebe2ab217a"
+  integrity sha1-KfL9JBrthk88fOJalBSY6+KrIXo=
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-animatable "^1.3.1"
+
+react-native-open-settings@~1.0.1:
   version "1.0.1"
   resolved "http://192.168.100.162:4873/react-native-open-settings/-/react-native-open-settings-1.0.1.tgz#1c0ae3d25fd3fd6de94b6d538333d47245cc5a0c"
   integrity sha1-HArj0l/T/W3pS21TgzPUckXMWgw=
 
-react-native-permissions@^1.2.0:
-  version "1.2.0"
-  resolved "http://192.168.100.162:4873/react-native-permissions/-/react-native-permissions-1.2.0.tgz#0deb616bf1565c17c91f1cb1f953809b2892c29e"
-  integrity sha1-Detha/FWXBfJHxyx+VOAmyiSwp4=
+react-native-permissions@~1.2.0:
+  version "1.2.1"
+  resolved "http://192.168.100.162:4873/react-native-permissions/-/react-native-permissions-1.2.1.tgz#cb1f6e53b8992b3912de5a4cfc1553ac2e82d0f6"
+  integrity sha1-yx9uU7iZKzkS3lpM/BVTrC6C0PY=
 
 react-native-picker@4.3.7:
   version "4.3.7"
@@ -6319,7 +6441,7 @@ react-native-qrcode-svg@5.2.0:
     prop-types "^15.5.10"
     qrcode "^1.2.0"
 
-react-native-reanimated@^1.2.0:
+react-native-reanimated@~1.2.0:
   version "1.2.0"
   resolved "http://192.168.100.162:4873/react-native-reanimated/-/react-native-reanimated-1.2.0.tgz#9219227a52a5dfa4d34c324596d6726ccd874293"
   integrity sha1-khkielKl36TTTDJFltZybM2HQpM=
@@ -6338,7 +6460,7 @@ react-native-safe-area-view@^0.14.1:
   dependencies:
     debounce "^1.2.0"
 
-react-native-scrollable-tab-view@^0.10.8:
+react-native-scrollable-tab-view@~0.10.8:
   version "0.10.8"
   resolved "http://192.168.100.162:4873/react-native-scrollable-tab-view/-/react-native-scrollable-tab-view-0.10.8.tgz#3417fef66b4babc38fa1fbbda378b3a540a10538"
   integrity sha512-GhpS1Yd5xoY+tTR0S5sOY+J/opuGRiqkp+I94Aj7jY9CP376Lb7DY+lPavjJouqds0ME45q4bnHgDNyQflyUng==
@@ -6352,19 +6474,19 @@ react-native-smart-barcode@1.0.7:
   resolved "http://192.168.100.162:4873/react-native-smart-barcode/-/react-native-smart-barcode-1.0.7.tgz#0d918f733238c3796e278ba6a2abecc95dd8df3f"
   integrity sha512-fMM7DTPdb8xYpJlZcAniDwAguMuYx9y5+GVcFpXwuk539SIHDQrhVMoAT6H3EQuhHiR0a1+aPEYHuYMEhqMVKw==
 
-react-native-splash-screen@^3.2.0:
+react-native-splash-screen@~3.2.0:
   version "3.2.0"
   resolved "http://192.168.100.162:4873/react-native-splash-screen/-/react-native-splash-screen-3.2.0.tgz#d47ec8557b1ba988ee3ea98d01463081b60fff45"
   integrity sha1-1H7IVXsbqYjuPqmNAUYwgbYP/0U=
 
-react-native-steps@^1.3.0:
+react-native-steps@~1.3.0:
   version "1.3.0"
   resolved "http://192.168.100.162:4873/react-native-steps/-/react-native-steps-1.3.0.tgz#e3ee4bc716538e523a0c150dc9a7275b8c575c42"
   integrity sha1-4+5LxxZTjlI6DBUNyacnW4xXXEI=
   dependencies:
     prop-types "^15.7.2"
 
-react-native-storage@^1.0.1:
+react-native-storage@~1.0.1:
   version "1.0.1"
   resolved "http://192.168.100.162:4873/react-native-storage/-/react-native-storage-1.0.1.tgz#2c493875ff76ec301987c951a8302f3a54381241"
   integrity sha1-LEk4df927DAZh8lRqDAvOlQ4EkE=
@@ -6372,10 +6494,10 @@ react-native-storage@^1.0.1:
     opencollective "^1.0.3"
     opencollective-postinstall "^2.0.2"
 
-react-native-svg@^9.9.4:
-  version "9.9.4"
-  resolved "http://192.168.100.162:4873/react-native-svg/-/react-native-svg-9.9.4.tgz#31070eeb68fb6e8dc0c0828c87687da3e0679102"
-  integrity sha1-MQcO62j7bo3AwIKMh2h9o+BnkQI=
+react-native-svg@~9.9.4:
+  version "9.9.9"
+  resolved "http://192.168.100.162:4873/react-native-svg/-/react-native-svg-9.9.9.tgz#67c83b56d7a292162762a6d389dc78512558c2ca"
+  integrity sha1-Z8g7VteikhYnYqbTidx4USVYwso=
 
 react-native-tab-view@^1.2.0, react-native-tab-view@^1.4.1:
   version "1.4.1"
@@ -6394,18 +6516,13 @@ react-native-view-shot@3.0.2:
   resolved "http://192.168.100.162:4873/react-native-view-shot/-/react-native-view-shot-3.0.2.tgz#daccaec5b8038a680b17533ff7e72876e68c7d0d"
   integrity sha1-2syuxbgDimgLF1M/9+coduaMfQ0=
 
-react-native-webview@^7.0.1:
-  version "7.0.1"
-  resolved "http://192.168.100.162:4873/react-native-webview/-/react-native-webview-7.0.1.tgz#ea2650d30acaa1fd443595d9f7f2a2648f54e0b5"
-  integrity sha1-6iZQ0wrKof1ENZXZ9/KiZI9U4LU=
+react-native-webview@~7.0.1:
+  version "7.0.7"
+  resolved "http://192.168.100.162:4873/react-native-webview/-/react-native-webview-7.0.7.tgz#38915091b012de63e625d455bbf074f7dd89efad"
+  integrity sha1-OJFQkbAS3mPmJdRVu/B0992J760=
   dependencies:
-    escape-string-regexp "1.0.5"
+    escape-string-regexp "2.0.0"
     invariant "2.2.4"
-
-react-native-xinge-push@^0.7.0:
-  version "0.7.0"
-  resolved "http://192.168.100.162:4873/react-native-xinge-push/-/react-native-xinge-push-0.7.0.tgz#35ecf028b95ffa71cdf60ec71cc357b0c9319812"
-  integrity sha1-NezwKLlf+nHN9g7HHMNXsMkxmBI=
 
 react-native@0.60.5:
   version "0.60.5"
@@ -6441,26 +6558,19 @@ react-native@0.60.5:
     stacktrace-parser "^0.1.3"
     whatwg-fetch "^3.0.0"
 
-react-navigation-drawer@~1.2.1:
-  version "1.2.1"
-  resolved "http://192.168.100.162:4873/react-navigation-drawer/-/react-navigation-drawer-1.2.1.tgz#7bd5efeee7d2f611d3ebb0933e0c8e8eb7cafe52"
-  integrity sha1-e9Xv7ufS9hHT67CTPgyOjrfK/lI=
+react-navigation-drawer@~1.4.0:
+  version "1.4.0"
+  resolved "http://192.168.100.162:4873/react-navigation-drawer/-/react-navigation-drawer-1.4.0.tgz#70f3dd83e3da9cd4ea6e2739526502c823d466b9"
+  integrity sha1-cPPdg+PanNTqbic5UmUCyCPUZrk=
   dependencies:
     react-native-tab-view "^1.2.0"
 
-react-navigation-stack@~1.4.0:
-  version "1.4.0"
-  resolved "http://192.168.100.162:4873/react-navigation-stack/-/react-navigation-stack-1.4.0.tgz#69cdb029ea4ee5877d7e933b3117dc90bc841eb2"
-  integrity sha1-ac2wKepO5Yd9fpM7MRfckLyEHrI=
-
-react-navigation-tabs@^1.1.4:
-  version "1.2.0"
-  resolved "http://192.168.100.162:4873/react-navigation-tabs/-/react-navigation-tabs-1.2.0.tgz#602c147029bb4f1c569b26479ddba534fe3ebb19"
-  integrity sha1-YCwUcCm7TxxWmyZHndulNP4+uxk=
+react-navigation-stack@1.5.3:
+  version "1.5.3"
+  resolved "http://192.168.100.162:4873/react-navigation-stack/-/react-navigation-stack-1.5.3.tgz#cdc9f5a6dbdc55509a15f60d765722573dec1997"
+  integrity sha1-zcn1ptvcVVCaFfYNdlciVz3sGZc=
   dependencies:
-    hoist-non-react-statics "^2.5.0"
-    prop-types "^15.6.1"
-    react-native-tab-view "^1.4.1"
+    prop-types "^15.7.2"
 
 react-navigation-tabs@~1.1.4:
   version "1.1.4"
@@ -6472,16 +6582,25 @@ react-navigation-tabs@~1.1.4:
     react-lifecycles-compat "^3.0.4"
     react-native-tab-view "^1.4.1"
 
-react-navigation@^3.11.1:
-  version "3.11.1"
-  resolved "http://192.168.100.162:4873/react-navigation/-/react-navigation-3.11.1.tgz#ba696ad6b512088a97a20cc7e6a250c53dbddd26"
-  integrity sha1-umlq1rUSCIqXogzH5qJQxT293SY=
+react-navigation-tabs@~1.2.0:
+  version "1.2.0"
+  resolved "http://192.168.100.162:4873/react-navigation-tabs/-/react-navigation-tabs-1.2.0.tgz#602c147029bb4f1c569b26479ddba534fe3ebb19"
+  integrity sha1-YCwUcCm7TxxWmyZHndulNP4+uxk=
   dependencies:
-    "@react-navigation/core" "~3.4.1"
-    "@react-navigation/native" "~3.5.0"
-    react-navigation-drawer "~1.2.1"
-    react-navigation-stack "~1.4.0"
-    react-navigation-tabs "~1.1.4"
+    hoist-non-react-statics "^2.5.0"
+    prop-types "^15.6.1"
+    react-native-tab-view "^1.4.1"
+
+react-navigation@~3.11.1:
+  version "3.11.3"
+  resolved "http://192.168.100.162:4873/react-navigation/-/react-navigation-3.11.3.tgz#8318aaa9c91e00080b2be4cc33eaccc2e828968e"
+  integrity sha1-gxiqqckeAAgLK+TMM+rMwugolo4=
+  dependencies:
+    "@react-navigation/core" "~3.5.1"
+    "@react-navigation/native" "~3.6.2"
+    react-navigation-drawer "~1.4.0"
+    react-navigation-stack "1.5.3"
+    react-navigation-tabs "~1.2.0"
 
 react-proxy@^1.1.7:
   version "1.1.8"
@@ -6503,17 +6622,17 @@ react-redux@5.0.7:
     loose-envify "^1.1.0"
     prop-types "^15.6.0"
 
-react-redux@^7.1.0:
-  version "7.1.0"
-  resolved "http://192.168.100.162:4873/react-redux/-/react-redux-7.1.0.tgz#72af7cf490a74acdc516ea9c1dd80e25af9ea0b2"
-  integrity sha1-cq989JCnSs3FFuqcHdgOJa+eoLI=
+react-redux@~7.1.0:
+  version "7.1.3"
+  resolved "http://192.168.100.162:4873/react-redux/-/react-redux-7.1.3.tgz#717a3d7bbe3a1b2d535c94885ce04cdc5a33fc79"
+  integrity sha1-cXo9e746Gy1TXJSIXOBM3Foz/Hk=
   dependencies:
-    "@babel/runtime" "^7.4.5"
+    "@babel/runtime" "^7.5.5"
     hoist-non-react-statics "^3.3.0"
     invariant "^2.2.4"
     loose-envify "^1.4.0"
     prop-types "^15.7.2"
-    react-is "^16.8.6"
+    react-is "^16.9.0"
 
 react-refresh@^0.4.0:
   version "0.4.0"
@@ -6665,7 +6784,7 @@ rebound@^0.0.13:
   resolved "http://192.168.100.162:4873/rebound/-/rebound-0.0.13.tgz#4a225254caf7da756797b19c5817bf7a7941fac1"
   integrity sha1-SiJSVMr32nVnl7GcWBe/enlB+sE=
 
-rebound@^0.1.0:
+rebound@~0.1.0:
   version "0.1.0"
   resolved "http://192.168.100.162:4873/rebound/-/rebound-0.1.0.tgz#0638c61a93666bb515a58a03e1cfb34021e88b72"
   integrity sha1-BjjGGpNma7UVpYoD4c+zQCHoi3I=
@@ -6680,7 +6799,7 @@ reduce-reducers@^0.4.3:
   resolved "http://192.168.100.162:4873/reduce-reducers/-/reduce-reducers-0.4.3.tgz#8e052618801cd8fc2714b4915adaa8937eb6d66c"
   integrity sha1-jgUmGIAc2PwnFLSRWtqok3621mw=
 
-redux-actions@^2.6.5:
+redux-actions@~2.6.5:
   version "2.6.5"
   resolved "http://192.168.100.162:4873/redux-actions/-/redux-actions-2.6.5.tgz#bdca548768ee99832a63910c276def85e821a27e"
   integrity sha1-vcpUh2jumYMqY5EMJ23vheghon4=
@@ -6696,12 +6815,12 @@ redux-saga@^0.16.0:
   resolved "http://192.168.100.162:4873/redux-saga/-/redux-saga-0.16.2.tgz#993662e86bc945d8509ac2b8daba3a8c615cc971"
   integrity sha1-mTZi6GvJRdhQmsK42ro6jGFcyXE=
 
-redux-thunk@^2.3.0:
+redux-thunk@~2.3.0:
   version "2.3.0"
   resolved "http://192.168.100.162:4873/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha1-UcLBmhhe1Rh6qpotCLZm0NZGdiI=
 
-"redux@>= 3.7.2", redux@^4.0.0, redux@^4.0.4:
+"redux@>= 3.7.2", redux@^4.0.0, redux@~4.0.4:
   version "4.0.4"
   resolved "http://192.168.100.162:4873/redux/-/redux-4.0.4.tgz#4ee1aeb164b63d6a1bcc57ae4aa0b6e6fa7a3796"
   integrity sha1-TuGusWS2PWobzFeuSqC25vp6N5Y=
@@ -6899,7 +7018,7 @@ resolve@1.1.7:
   resolved "http://192.168.100.162:4873/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
   integrity sha1-IDEU2CrSxe2ejgQRs5ModeiJ6Xs=
 
-resolve@^1.10.0, resolve@^1.3.2, resolve@^1.4.0, resolve@^1.5.0, resolve@^1.8.1, resolve@^1.9.0:
+resolve@^1.10.0, resolve@^1.12.0, resolve@^1.3.2, resolve@^1.4.0, resolve@^1.5.0, resolve@^1.8.1, resolve@^1.9.0:
   version "1.12.0"
   resolved "http://192.168.100.162:4873/resolve/-/resolve-1.12.0.tgz#3fc644a35c84a48554609ff26ec52b66fa577df6"
   integrity sha1-P8ZEo1yEpIVUYJ/ybsUrZvpXffY=
@@ -7136,6 +7255,11 @@ setprototypeof@1.1.1:
   version "1.1.1"
   resolved "http://192.168.100.162:4873/setprototypeof/-/setprototypeof-1.1.1.tgz#7e95acb24aa92f5885e0abef5ba131330d4ae683"
   integrity sha1-fpWsskqpL1iF4KvvW6ExMw1K5oM=
+
+shallowequal@^1.1.0:
+  version "1.1.0"
+  resolved "http://192.168.100.162:4873/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
+  integrity sha1-GI1SHelbkIdAT9TctosT3wrk5/g=
 
 shebang-command@^1.2.0:
   version "1.2.0"
@@ -7604,7 +7728,7 @@ tar@^4:
     safe-buffer "^5.1.2"
     yallist "^3.0.3"
 
-teaset@^0.6.3:
+teaset@~0.6.3:
   version "0.6.3"
   resolved "http://192.168.100.162:4873/teaset/-/teaset-0.6.3.tgz#eaeaedbb6586c53707b6c0a38c631ad6ca8c57e7"
   integrity sha1-6urtu2WGxTcHtsCjjGMa1sqMV+c=
@@ -7820,10 +7944,10 @@ typedarray@^0.0.6:
   resolved "http://192.168.100.162:4873/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.6.2:
-  version "3.6.2"
-  resolved "http://192.168.100.162:4873/typescript/-/typescript-3.6.2.tgz#105b0f1934119dde543ac8eb71af3a91009efe54"
-  integrity sha1-EFsPGTQRnd5UOsjrca86kQCe/lQ=
+typescript@~3.6.2:
+  version "3.6.4"
+  resolved "http://192.168.100.162:4873/typescript/-/typescript-3.6.4.tgz#b18752bb3792bc1a0281335f7f6ebf1bbfc5b91d"
+  integrity sha1-sYdSuzeSvBoCgTNff26/G7/FuR0=
 
 ua-parser-js@^0.7.18:
   version "0.7.20"
@@ -8193,7 +8317,7 @@ xkj-react-native-wechat@1.10.3:
   dependencies:
     events "1.0.2"
 
-xkjdatepicker@^1.0.3:
+xkjdatepicker@~1.0.3:
   version "1.0.3"
   resolved "http://192.168.100.162:4873/xkjdatepicker/-/xkjdatepicker-1.0.3.tgz#a33b2d92302cc35d72c47aab025a8eda6481c6ca"
   integrity sha512-Gl570YW7R3t40nZ/V/vhayDsA2pQlmHCn4TLoyTJAGJjgBTCUG8KTnRfsZWjY/fR0UwXPBJyMPTUnXNS9OiSHQ==
@@ -8346,3 +8470,8 @@ yazl@^2.4.1:
   integrity sha1-o9ZdPdZZpbCTeFDoYJ8i//orXDU=
   dependencies:
     buffer-crc32 "~0.2.3"
+
+zrender@^3.1.3:
+  version "3.7.4"
+  resolved "http://192.168.100.162:4873/zrender/-/zrender-3.7.4.tgz#f847d53948481ef6d42906d1ea9aeec7acbefdf2"
+  integrity sha1-+EfVOUhIHvbUKQbR6prux6y+/fI=

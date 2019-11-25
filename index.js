@@ -15,6 +15,7 @@ import weatherModel from './src/models/weather'
 import point from './src/models/point'
 import getLastNews from './src/models/getLastNews'
 import { setJSExceptionHandler } from 'react-native-exception-handler';
+import {projectLocation} from "@/pages/project/ProjectLocation";
 
 const errorHandler = (e, isFatal) => {
   if (isFatal) {
@@ -36,7 +37,6 @@ const errorHandler = (e, isFatal) => {
 setJSExceptionHandler(errorHandler, true)
 
 try {
-  console.log('初始化百度地图');
   Initializer.init('EubmlR0HLgCDFUClm8lQMjGn3ZHeDLct').catch(e => console.error('百度地图初始化失败', e));
 } catch (e) {
   console.error('百度地图初始化失败', e)
@@ -49,7 +49,7 @@ Toast.defaultPosition = 'center';
 // 初始化dva容器
 const app = dva({
   initialState: {},
-  models: [userModel, configModel, globalModel, searchModel, dicModel, locationModel, weatherModel, point,getLastNews],
+  models: [userModel, configModel, globalModel, searchModel, dicModel, locationModel, weatherModel, point,getLastNews,projectLocation],
   onError: (e) => console.log('onError', e)
 });
 const App = () => app.start(<Index />);
