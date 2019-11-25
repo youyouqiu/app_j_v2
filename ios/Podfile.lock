@@ -99,7 +99,7 @@ PODS:
     - React
   - react-native-view-shot (3.0.2):
     - React
-  - react-native-webview (7.1.0):
+  - react-native-webview (7.0.1):
     - React
   - react-native-wechat (1.9.10):
     - React
@@ -209,7 +209,7 @@ SPEC REPOS:
     - AlicloudUT
     - AlicloudUTDID
     - AlicloudUtils
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - BaiduMapKit
     - Base64
     - boost-for-react-native
@@ -342,7 +342,7 @@ SPEC CHECKSUMS:
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-uuid-generator: 997d9848f07081ce7200a05b76e3f8c7b309963c
   react-native-view-shot: a94dce9b44d7846edd1204ad6f0bd88f64c29cc0
-  react-native-webview: bebe3ee631f5cb6d627c50c8c19e88a4b5f9d6c5
+  react-native-webview: b59469634752e8b227f56994119f1b2a25075432
   react-native-wechat: d864e3f5e526fb21fee7db42fbc1ef69e3ec420d
   React-RCTActionSheet: b0f1ea83f4bf75fb966eae9bfc47b78c8d3efd90
   React-RCTAnimation: 359ba1b5690b1e87cc173558a78e82d35919333e
@@ -371,4 +371,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 4a63f59fd92064873d30ecfacb17f3990cf05a99
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.3
