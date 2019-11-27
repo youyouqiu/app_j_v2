@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PureComponent } from 'react';
 import { StyleSheet, FlatList, View, Text } from 'react-native';
 import { NavigationScreenProps } from 'react-navigation';
 import {scaleSize} from '../../../../utils/screenUtil';
@@ -26,7 +26,11 @@ interface totalCountTypes {
     subCount: number
 }
 
-class SingItem extends Component<propsTypes & NavigationScreenProps> {
+interface isEndReachedType {
+    [index: number]: any
+}
+
+class SingItem extends PureComponent<propsTypes & NavigationScreenProps> {
     constructor(props: any) {
         super(props);
     }
@@ -36,16 +40,28 @@ class SingItem extends Component<propsTypes & NavigationScreenProps> {
         tabsItemIsNull: false,
         page: 0,
         totalCount: {} as totalCountTypes,
+        isEndReached: {} as isEndReachedType, // 是否触发上拉加载
     }
 
     componentDidMount() {}
 
     componentWillReceiveProps(newProps: any) {
+        let isEndReached: any = {};
         if (((newProps || {}).totalCount || {}).subCount >= 0) {
+            if (newProps.page === 0) {
+                isEndReached[0] = newProps.tabsItem.length < (newProps.totalCount || {}).subCount;
+            }
+            if (newProps.page === 1) {
+                isEndReached[1] = newProps.tabsItem.length < (newProps.totalCount || {}).dealCount;
+            }
+            if (newProps.page === 2) {
+                isEndReached[2] = newProps.tabsItem.length < (newProps.totalCount || {}).returnCount;
+            }
             this.setState({
                 tabsItem: newProps.tabsItem,
                 page: newProps.page,
                 totalCount: newProps.totalCount,
+                isEndReached,
             })
         }
         if (newProps.totalCount) {
@@ -67,11 +83,25 @@ class SingItem extends Component<propsTypes & NavigationScreenProps> {
         }
     }
 
+    // ! 提升性能，阻止render做多余渲染（非必要不要使用）
+    // shouldComponentUpdate(nextProps: any, nextState: any) {
+    //     console.log(nextProps, 'nextProps')
+    //     console.log(nextState, 'nextState')
+    //     return nextState.tabsItem !== this.state.tabsItem;
+    // }
+
     // 下拉刷新
     refreshData = (page: number) => {
         const {initSingData, initSingCount} = this.props;
         initSingData(page); // 下拉刷新时即时请求数据
         initSingCount(); // 下拉刷新时即时请求数量
+    }
+
+    // 上拉加载
+    endReachedData = (page: number) => {
+        const {initSingData, initSingCount} = this.props;
+        initSingData(page); // 下拉刷新时即时请求数据
+        // initSingCount(); // 下拉刷新时即时请求数量
     }
 
     // renderItem
@@ -87,7 +117,7 @@ class SingItem extends Component<propsTypes & NavigationScreenProps> {
     // ListFooterComponent
     handleRenderFooter = () => {
         const {totalCount, tabsItem, page} = this.state;
-        let text = '～ 没有了 ～';
+        let text: string = '～ 没有了 ～';
         if (page === 0) {
             text = tabsItem.length < (totalCount || {}).subCount ? '数据正在加载中...' : '～ 没有了 ～';
         }
@@ -105,7 +135,7 @@ class SingItem extends Component<propsTypes & NavigationScreenProps> {
     }
 
     render() {
-        const {tabsItem, page, tabsItemIsNull} = this.state;
+        const {tabsItem, page, tabsItemIsNull, isEndReached} = this.state;
         if (tabsItem) {
             newRefreshing = false;
         }
@@ -121,6 +151,8 @@ class SingItem extends Component<propsTypes & NavigationScreenProps> {
                         renderItem={({item}) => this.handTabsContent(item)}
                         refreshing={newRefreshing}
                         onRefresh={() => {this.refreshData(page)}}
+                        onEndReached={() => {isEndReached[page] ? this.endReachedData(page) : null}}
+                        onEndReachedThreshold={0.2}
                         ListFooterComponent={tabsItem.length > 0 ? this.handleRenderFooter : null}
                         ListEmptyComponent={tabsItemIsNull ? <NoData tips='抱歉，暂无数据'/> : null}
                     /> 
