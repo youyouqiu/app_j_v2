@@ -4,11 +4,11 @@ import { Text, View, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import { scaleSize } from '../../utils/screenUtil'
 
 const FlexItem: FunctionComponent<{
-    title?: string | object, 
-    icon?: any, 
-    rightIcon?: any, 
-    hideIcon?: boolean, 
-    right?: any, 
+    title?: string | object,
+    icon?: any,
+    rightIcon?: any,
+    hideIcon?: boolean,
+    right?: any,
     path?: string,
     desc?: string,
     disabled?: boolean,
@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
         paddingLeft: scaleSize(32),
         paddingRight: scaleSize(32),
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1)
+        // borderBottomWidth: StyleSheet.hairlineWidth
+        borderBottomWidth: 1
     }
 })
 

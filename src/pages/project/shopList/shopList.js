@@ -189,9 +189,8 @@ class ShopList extends React.Component {
         return (
             <TouchableOpacity onPress={() => this.gotoShopDetail(item)} activeOpacity={0.8} key={item.id} style={styles.roomItemWrap}>
                 <View style={[styles.roomNumWrap, {backgroundColor: backgroundColor}]}>
-                    {/*<Text style={[styles.roomNum, { backgroundColor: backgroundColor, color: color }]} numberOfLines={1}>{item.number}</Text>*/}
                     <View style={[styles.roomNumContainer, {backgroundColor: backgroundColor}]}>
-                        <Text style={[styles.roomNum,{color: color}]} numberOfLines={1}>{item.number}</Text>
+                        <Text style={[styles.roomNum, {color: color}]} numberOfLines={1}>{item.number}</Text>
                     </View>
                     {item.saleStatus === '4' || item.saleStatus === '3' ? (
                         <View style={styles.roomLockWrap}>
@@ -200,12 +199,14 @@ class ShopList extends React.Component {
                     ) : null}
                 </View>
                 <Text style={[styles.roomArea, {backgroundColor: backgroundColor, color: color}]}>{item.buildingArea}㎡</Text>
-                {saleStatus !== 10?(
+                {saleStatus !== 10 ? (
                     <Text style={[styles.roomPrise, {backgroundColor: priceBackgroundColor}]}
                           numberOfLines={1}>
                         {saleStatus !== 10 ? item.totalPrice + '万' : ' '}
                     </Text>
-                ):<Text style={[styles.roomPrise, {backgroundColor: priceBackgroundColor}]}>&emsp;</Text>}
+                ) : (
+                    <Text style={[styles.roomPrise, {backgroundColor: priceBackgroundColor,borderTopWidth:0}]}>&emsp;</Text>
+                )}
 
             </TouchableOpacity>
         )

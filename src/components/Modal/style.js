@@ -68,7 +68,7 @@ export const modalStyles = {
         height:scaleSize(72),
         borderRadius:scaleSize(44),
         borderColor:'#CBCBCB',
-        borderWidth:scaleSize(1),
+        borderWidth:1,
         backgroundColor:'#ffffff',
         display: 'flex',
         flexDirection: 'row',
@@ -89,7 +89,7 @@ export const modalStyles = {
         height:scaleSize(90),
         boxShadow:'0px -1px 0px 0px rgba(203,203,203,1)',
         borderColor:'#CBCBCB',
-        borderTopWidth:scaleSize(1)
+        borderTopWidth:1
     },
     confirmCancel:{
         width:'45%',
@@ -129,8 +129,8 @@ export const modalStyles = {
     selectedOne:{
         backgroundColor:'#F5F8FF',
         borderColor:'#C7D5FF',
-        borderTopWidth:scaleSize(1),
-        borderBottomWidth:scaleSize(1)
+        borderTopWidth:1,
+        borderBottomWidth:1
     },
     selectedOneText:{
         color:'#000000',
@@ -153,7 +153,7 @@ export const modalStyles = {
     },
     multiSelected:{
         borderColor:'#1F3070',
-        borderWidth:scaleSize(1),
+        borderWidth:1,
         backgroundColor:'#fff'
     },
     multiIconBox:{

@@ -1,14 +1,18 @@
-import React, { Component } from 'react';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import React, { Component, PureComponent } from 'react';
+import { StyleSheet, TouchableOpacity, View, Text, FlatList } from 'react-native';
 import { scaleSize } from '../../../../utils/screenUtil';
 import { NavigationScreenProps } from 'react-navigation';
-import ReportItem from './_tabsItem';
+import TabsReportItem from '../_components/_tabsReportItem';
+import TabsBeltLookItem from '../_components/_tabsBeltLookItem';
+import TabsLapseItem from '../_components/_tabsLapseItem';
+import NoData from '../../../../businessComponents/noData';
 
-const tabsTitles: any = [
-    {name: '报备', id: '001'},
-    {name: '到访', id: '002'},
-    {name: '失效', id: '003'},
+const tabsTitles: any = [ // ! tabs-title
+    { name: '报备', id: '001' },
+    { name: '到访', id: '002' },
+    { name: '失效', id: '003' },
 ];
+let newRefreshing: boolean = true; // ! FlatList-refreshing
 
 interface propsTypes {
     reportData: any
@@ -22,75 +26,68 @@ interface propsTypes {
     sendPoint: any
 };
 
-interface reportDataTypes {
+interface isTabsItemIsNullType {
     [index: number]: any
 };
 
-interface totalCountTypes {
-    reportTotal: number
-    beltLookTotal: number
-    lapseTotal: number
+interface isEndReachedType {
+    [index: number]: any
 };
 
-class ReportList extends Component<propsTypes & NavigationScreenProps> {
+class ReportList extends PureComponent<propsTypes & NavigationScreenProps> {
     constructor(props: any) {
         super(props);
     }
 
     state = {
         page: 0, // ! 初始tab页
-        reportData: {} as reportDataTypes, // ! 初始报备列表
-        totalCount: {} as totalCountTypes, // ! 初始报备总数
-    }
-
-    componentDidMount() {
-        // this.getReportList();
+        tabsItemIsNull: {} as isTabsItemIsNullType, // ! 暂无数据页面是否显示
+        isEndReached: {} as isEndReachedType, // ! 上拉加载是否触发
     }
 
     componentWillReceiveProps(newProps: any) {
-        if (((newProps || {}).totalCount || {}).reportTotal >= 0) {
+        let isEndReached: any = {};
+        let tabsItemIsNull: any = {};
+        if (((newProps || {}).reportData || {})[newProps.page || 0]) {
+            if (newProps.page === 0) {
+                isEndReached[0] = newProps.reportData[0].length < (newProps.totalCount || {}).reportTotal;
+            }
+            if (newProps.page === 1) {
+                isEndReached[1] = newProps.tabsItem[1].length < (newProps.totalCount || {}).beltLookTotal;
+            }
+            if (newProps.page === 2) {
+                isEndReached[2] = newProps.tabsItem[2].length < (newProps.totalCount || {}).lapseTotal;
+            }
             this.setState({
-                reportData: newProps.reportData,
-                totalCount: newProps.totalCount,
-            }, () => {
-                this.getReportList();
+                isEndReached,
+            })
+        }
+        if (newProps.totalCount) {
+            if (newProps.totalCount.reportTotal === 0) {
+                tabsItemIsNull[0] = true;
+            }
+            if (newProps.totalCount.beltLookTotal === 0) {
+                tabsItemIsNull[1] = true;
+            }
+            if (newProps.totalCount.lapseTotal === 0) {
+                tabsItemIsNull[2] = true;
+            }
+            this.setState({
+                tabsItemIsNull,
             })
         }
     }
 
-    // ? 报备列表数据请求
-    getReportList = () => {
-        console.log('getReportList');
-        const {reportData, totalCount} = this.props;
-        // if (!reportData[0]) {
-        //     Toast.message('网络连接失败！');
-        //     return;
-        // }
-        this.setState({
-            reportData,
-            totalCount,
-        }, () => {
-            this.dataProcessing();
-        })
-    }
-
-    // ? 数据处理
-    dataProcessing = () => {
-        console.log('dataProcessing');
-        const {reportData, totalCount} = this.state;
-        let newReportData: any = {...reportData};
-        let newTotalCount: any = {...totalCount};
-        // ?
-        this.setState({
-            reportData: newReportData,
-            totalCount: newTotalCount,
-        });
+    // ! 提升性能，阻止render做多余渲染（非必要不要使用）
+    shouldComponentUpdate(nextProps: any, nextState: any) {
+        console.log(nextProps, 'nextProps')
+        console.log(nextState, 'nextState')
+        return nextState.isEndReached !== this.state.isEndReached;
     }
 
     // ? tabs页面改变时
     onChangeTabs = (page: number) => {
-        console.log('onChangeTabs', page);
-        const {initReportData, initReportCount} = this.props;
+        const { initReportData, initReportCount } = this.props;
         initReportData(page); // 切换tabsTitle时即时请求数据
         initReportCount(); // 切换tabsTitle时即时请求数量
         this.setState({
@@ -98,10 +95,67 @@ class ReportList extends Component<propsTypes & NavigationScreenProps> {
         })
     }
 
+    // ? renderItem
+    handTabsContent = (item: any, page: number) => {
+        if (page === 0) {
+            return (
+                <TabsReportItem {...this.props} contentList={item} />
+            )
+        } else if (page === 1) {
+            return (
+                <TabsBeltLookItem {...this.props} contentList={item} />
+            )
+        } else {
+            return (
+                <TabsLapseItem {...this.props} contentList={item} />
+            )
+        }
+    }
+
+    // ? ListFooterComponent
+    handleRenderFooter = (tabsItem: any, page: number) => {
+        const { totalCount } = this.props;
+        let text: string = '～ 没有了 ～';
+        if (page === 0) {
+            text = tabsItem.length < (totalCount || {}).reportTotal ? '数据正在加载中...' : '～ 没有了 ～';
+        }
+        if (page === 1) {
+            text = tabsItem.length < (totalCount || {}).beltLookTotal ? '数据正在加载中...' : '～ 没有了 ～';
+        }
+        if (page === 2) {
+            text = tabsItem.length < (totalCount || {}).lapseTotal ? '数据正在加载中...' : '～ 没有了 ～';
+        }
+        return (
+            <View style={styles['footer']}>
+                <Text>{text}</Text>
+            </View>
+        )
+    }
+
+    // ? 下拉刷新
+    refreshData = (page: number) => {
+        const { initReportData, initReportCount } = this.props;
+        initReportData(page); // 下拉刷新时即时请求数据
+        initReportCount(); // 下拉刷新时即时请求数量
+    }
+
+    // ? 上拉加载
+    endReachedData = (page: number) => {
+        const { initReportData, initReportCount } = this.props;
+        initReportData(page); // 上拉加载时即时请求数据
+        // initReportCount(); // 上拉加载时无需即时请求数量
+    }
+
     render() {
-        const {page, reportData, totalCount} = this.state;
+        const { reportData, totalCount } = this.props;
+        let { page, tabsItemIsNull, isEndReached } = this.state;
+        let tabsItem = ((reportData || {})[page] || []);
+        if (tabsItem) {
+            newRefreshing = false;
+        }
         return (
             <View style={styles['wrap']}>
+                {/**tabs-title */}
                 <View style={styles['title-wrap']}>
                     {
                         tabsTitles.map((item: any, index: number) => {
@@ -121,7 +175,7 @@ class ReportList extends Component<propsTypes & NavigationScreenProps> {
                                     onPress={() => this.onChangeTabs(index)}
                                 >
                                     <Text style={page === index ? styles['title-text'] : null}>
-                                        {item.name + (newTotalCount[index] > 0 ?`（${newTotalCount[index]}）`: '')}
+                                        {item.name + (newTotalCount[index] > 0 ? `（${newTotalCount[index]}）` : '')}
                                     </Text>
                                     <View style={page === index ? styles['title-textBottom'] : null}></View>
                                 </TouchableOpacity>
@@ -129,12 +183,24 @@ class ReportList extends Component<propsTypes & NavigationScreenProps> {
                         })
                     }
                 </View>
-                <View style={{backgroundColor: '#F8F8F8', flex: 1}}>
-                    <ReportItem
-                        tabsItem={((reportData || {})[page] || [])}
-                        page={page}
-                        {...this.props}
-                    />
+                {/**tabs-item */}
+                <View style={{ backgroundColor: '#F8F8F8', flex: 1 }}>
+                    {
+                        tabsItem.length === 0 && !tabsItemIsNull[page]
+                            ? <View style={styles['footer']}><Text>数据正在加载中...</Text></View>
+                            : <FlatList
+                                style={{ height: '100%' }}
+                                data={tabsItem}
+                                extraData={this.state}
+                                renderItem={({ item }) => this.handTabsContent(item, page)}
+                                refreshing={newRefreshing}
+                                onRefresh={() => { this.refreshData(page) }}
+                                onEndReached={() => { isEndReached[page] ? this.endReachedData(page) : null }}
+                                onEndReachedThreshold={0.1}
+                                ListFooterComponent={tabsItem.length > 0 ? this.handleRenderFooter(tabsItem, page) : null}
+                                ListEmptyComponent={tabsItemIsNull[page] ? <NoData tips='抱歉，暂无数据' /> : null}
+                            />
+                    }
                 </View>
             </View>
         )
@@ -170,6 +236,12 @@ const styles = StyleSheet.create({
         width: scaleSize(55),
         height: scaleSize(5),
         backgroundColor: '#1F3070',
+    },
+    'footer': {
+        height: 50,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 });
 

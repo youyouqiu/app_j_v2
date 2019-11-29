@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import ImageViewer from 'react-native-image-zoom-viewer';
+import ImageViewer from '@new-space/react-native-image-zoom-viewer';
 import {Image,TouchableOpacity,Modal} from 'react-native'
 import {scaleSize} from '../../utils/screenUtil';
 

@@ -36,7 +36,7 @@ export default class BasicModal extends Component {
         let {onChange,onClose} = this.props
         onClose()
         onChange && onChange(item)
-        onClose() 
+        onClose()
     }
 
     // 多选
@@ -201,7 +201,7 @@ export default class BasicModal extends Component {
                             <Text style={{color:'#4D4D4D',fontSize:scaleSize(28)}}>{cancelText || '取消'}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[modalStyles.confirmCancel,{borderLeftWidth:scaleSize(1)}]}
+                            style={[modalStyles.confirmCancel,{borderLeftWidth:1}]}
                             activeOpacity={0.8}
                             onPress={onOk}
                         >
@@ -231,9 +231,9 @@ export default class BasicModal extends Component {
             }]}>
                 <View style={[modalStyles.selectWrap,{height:scaleSize(height)},contentStyle]}>
                     {
-                        title 
+                        title
                         ?
-                        (typeof title === 'string' 
+                        (typeof title === 'string'
                         ?
                         <View
                             style={[modalStyles.selectOne, modalStyles.bottomLine]}

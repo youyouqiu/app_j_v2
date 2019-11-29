@@ -25,7 +25,7 @@ const TextDetail: FunctionComponent<NavigationScreenProps> = ({
             })
         }
     }, [])
-    
+
     return <Page  topBarStyle={styles.stationPage} scroll={false} title='活动推荐' loading={loading}>
         <View style={styles.content}>
             <Text style={styles.title}>{messageInfo.title}</Text>
@@ -33,7 +33,7 @@ const TextDetail: FunctionComponent<NavigationScreenProps> = ({
                 <Text style={styles.time}>{setTimeFormat(messageInfo.sendTime)}</Text>
             </View>
             <Text style={styles.contentText}>
-                {messageInfo.contents} 
+                {messageInfo.contents}
             </Text>
         </View>
     </Page>
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
         fontWeight: '400'
     },
     stationPage: {
-        borderBottomColor: '#EAEAEA', 
-        borderBottomWidth: scaleSize(1)
+        borderBottomColor: '#EAEAEA',
+        borderBottomWidth: 1
     },
 })
 

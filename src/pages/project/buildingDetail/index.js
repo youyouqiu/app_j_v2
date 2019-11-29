@@ -256,9 +256,9 @@ class BuildingDetail extends React.PureComponent {
             const { buildingTreeId } = this.common
             let {tabs} = this.state
             const response = await projectService.buildingDetailReq(buildingTreeId)
+            console.log(response)
             const { extension = {} } = response
             const {basicInfo, treeCategory} = extension
-            console.log(extension)
             // 只会放一次 3 和4的类型需要加入基础设施
             if (treeCategory === 3 || treeCategory === 4 && (tabs.findIndex(item => item.key === 'jcss') === -1)) {
                 tabs.splice(3,0,{ label: '基础设施', key: 'jcss' })

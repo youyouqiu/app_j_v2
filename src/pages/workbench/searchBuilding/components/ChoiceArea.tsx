@@ -70,7 +70,7 @@ const ChoiceArea = (props: any) => {
         } else if (type === 'submit') {
             setSelectArea({...temporaryArea});
             const {city, district, area, showText} = temporaryArea;
-            const _district = district.includes('_0') ? '' : district.includes('_0');
+            const _district = district.includes('_0') ? '' : district;
             const _area = area.filter((item: any) => {
                 return !item.includes('_0');
             });
@@ -123,8 +123,9 @@ const ChoiceArea = (props: any) => {
             areaRef.scrollTo({x: 0, y: 0, animated: false});
         } else if (type === 'area') {
             if (area.includes(code)) {
-                area.splice(area.indexOf(code), 1);
-                showText.splice(area.indexOf(code), 1);
+                const idx = area.indexOf(code);
+                area.splice(idx, 1);
+                showText.splice(idx, 1);
                 _temporaryArea = {
                     city,
                     cityName,
@@ -134,7 +135,7 @@ const ChoiceArea = (props: any) => {
                     showText
                 }
             } else {
-                if (area.length >= 5) {
+                if (!code.includes('_0') && area.length >= 5) {
                     Toast.message('最多可选5个区域');
                     return
                 }

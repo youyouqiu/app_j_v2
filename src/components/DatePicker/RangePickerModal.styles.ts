@@ -55,7 +55,7 @@ export default StyleSheet.create({
     paddingTop: scaleSize(13),
     paddingBottom: scaleSize(9),
     borderColor: '#EAEAEA',
-    borderBottomWidth: scaleSize(1),
+    borderBottomWidth: 1,
     backgroundColor: '#FFF',
   },
   'calendar-title-text': {
@@ -68,7 +68,7 @@ export default StyleSheet.create({
   },
   'ok-container': {
     borderColor: '#EAEAEA',
-    borderTopWidth: scaleSize(1),
+    borderTopWidth: 1,
   },
   'ok': {
     marginHorizontal: scaleSize(32),

@@ -3,7 +3,7 @@ import { scaleSize } from '../../utils/screenUtil'
 
 export default StyleSheet.create({
   'topBar': {
-    borderBottomWidth: scaleSize(1),
+    borderBottomWidth: 1,
     borderBottomColor: '#EAEAEA',
   },
   'topBar-left': {
@@ -84,7 +84,7 @@ export default StyleSheet.create({
     height: scaleSize(93),
     paddingLeft: scaleSize(32),
     paddingVertical: scaleSize(24),
-    borderBottomWidth: scaleSize(1),
+    borderBottomWidth: 1,
     borderBottomColor: '#EAEAEA',
   },
   'history-item-text': {

@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     line: {
-        width: scaleSize(1),
+        width: 1,
         height: scaleSize(33),
         backgroundColor: '#CBCBCB',
         marginLeft: scaleSize(20)

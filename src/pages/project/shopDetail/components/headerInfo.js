@@ -4,7 +4,7 @@ import {
     Modal, StatusBar, Platform,
 } from 'react-native'
 import { Carousel } from 'teaset'
-import ImageViewer from 'react-native-image-zoom-viewer'
+import ImageViewer from '@new-space/react-native-image-zoom-viewer'
 import { Label } from '@/components/new-space'
 import projectService from '@/services/projectService'
 import { checkBlank } from '@/utils/utils'

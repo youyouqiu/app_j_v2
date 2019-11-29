@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import { NavigationScreenProps } from 'react-navigation'
 import service, { BuildingTreePictures } from './service'
-import ImageViewer from 'react-native-image-zoom-viewer'
+import ImageViewer from '@new-space/react-native-image-zoom-viewer'
 import Page from '@/components/Page/index'
 import NoData from '@/businessComponents/noData'
 import styles from './styles'

@@ -506,31 +506,32 @@ class AddReport extends Component<propsTypes & NavigationScreenProps> {
                         placeholder='请输入客户名'
                         style={{textAlign: 'right', paddingRight: scaleSize(16)}}
                         rightContent={
-                            <TouchableOpacity
-                                style={[STYLE.bigBtns, {paddingRight: scaleSize(32)}]}
-                                activeOpacity={0.8}
-                                onPress={this._customerChoice}
-                            >
-                                <Image
-                                    style={{width: scaleSize(40), height: scaleSize(40)}}
-                                    source={require('../../../images/icons/kehu2.png')}
-                                />
-                            </TouchableOpacity>
+                            <View style={{alignContent: 'center', flexDirection: 'row'}}>
+                                {
+                                    isChooseCus && <TouchableOpacity
+                                        style={{padding: 10}}
+                                        activeOpacity={0.8}
+                                        onPress={() => {this.cleanUser()}}
+                                    >
+                                        <Image
+                                            style={{width: scaleSize(30), height: scaleSize(30)}}
+                                            source={require('../../../images/icons/delelte2.png')}
+                                        />
+                                    </TouchableOpacity>
+                                }
+                                <TouchableOpacity
+                                    style={[STYLE.bigBtns, {paddingRight: scaleSize(32)}]}
+                                    activeOpacity={0.8}
+                                    onPress={this._customerChoice}
+                                >
+                                    <Image
+                                        style={{width: scaleSize(40), height: scaleSize(40)}}
+                                        source={require('../../../images/icons/kehu2.png')}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         }
                     />
-                    {
-                        isChooseCus && <TouchableOpacity
-                            style={{position: 'absolute', left: '30%', top: '19%', padding: 10}}
-                            activeOpacity={0.8}
-                            onPress={() => {this.cleanUser()}}
-                        >
-                            <Image
-                                style={{width: scaleSize(30), height: scaleSize(30)}}
-                                source={require('../../../images/icons/delelte2.png')}
-                            />
-                        </TouchableOpacity>
-                        }
-
                 </View>
 
                 <Input

@@ -18,9 +18,9 @@ const Profile: FC<UserInfo> = ({
     if (pAvatar) {
       return { uri: pAvatar }
     }
-    return pSex === 1
-      ? require('../../../images/defaultImage/avatar.man.png')
-      : require('../../../images/defaultImage/avatar.woman.png')
+    return pSex === 0 // 优先判断0。除开0之外默认都展示男
+      ? require('../../../images/defaultImage/avatar.woman.png')
+      : require('../../../images/defaultImage/avatar.man.png')
   }
   return (
     <Shadow style={styles['container']}>

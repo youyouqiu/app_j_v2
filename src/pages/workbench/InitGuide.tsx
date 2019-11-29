@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     paddingLeft: scaleSize(112),
     paddingRight: scaleSize(112),
     borderColor: '#FFF',
-    borderWidth: scaleSize(1),
+    borderWidth: 1,
     borderRadius: scaleSize(8),
   },
   'text': {

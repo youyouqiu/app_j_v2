@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
         marginTop: scaleSize(13),
         paddingLeft: scaleSize(40),
         paddingBottom: scaleSize(24),
-        borderBottomWidth: scaleSize(1),
+        borderBottomWidth: 1,
         borderColor: '#EAEAEA'
     },
     current_cityName: {

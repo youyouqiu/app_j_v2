@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1)
+        borderBottomWidth: 1
     },
     selectedOneText: {
         color: '#1F3070',

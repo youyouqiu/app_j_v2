@@ -3,14 +3,17 @@
  * 
  */
 import React, { Component } from 'react'
-import { View, Text, Image,TouchableOpacity} from 'react-native'
+import { View, Text, Image,TouchableOpacity, Platform, StatusBar} from 'react-native'
 import { scaleSize } from '../../utils/screenUtil'
 import {screenStyles} from './style'
 
 export default class Sort extends Component {
     constructor(){
         super()
-        this.state = {}
+        let height = Platform.OS ==='android' ? StatusBar.currentHeight : 30
+        this.state = {
+            height
+        }
     }
 
     initIcon = (item = {}) =>{
@@ -32,7 +35,7 @@ export default class Sort extends Component {
 
 
     render(){
-        let {onChange,sortData = [],selectSort ,marginTop} = this.props
+        let {onChange,sortData = [],selectSort} = this.props
         sortData = sortData.map((item)=>{
             if(selectSort && item.value == selectSort){
                 item.isSelect = true
@@ -43,9 +46,10 @@ export default class Sort extends Component {
             return item
         })
 
+        let {height} = this.state
         
         return(
-            <View style={{marginTop: marginTop, flex: 1}}>
+            <View style={{marginTop: height, flex: 1}}>
                 <View style={{backgroundColor: '#FFF'}}>
                     <Text style={[screenStyles.titleText,{paddingBottom:scaleSize(32),paddingTop:scaleSize(24),paddingLeft:scaleSize(32)}]}>排序方式</Text>
                     {

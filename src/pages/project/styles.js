@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
         marginTop: scaleSize(20),
         paddingBottom: scaleSize(24),
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1)
+        borderBottomWidth: 1
     },
     fy_buildingItem: {
         borderBottomWidth: scaleSize(2),

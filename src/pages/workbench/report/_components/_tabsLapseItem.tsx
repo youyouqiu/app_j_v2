@@ -10,7 +10,6 @@ interface propsTypes {
     totalCount: any
     gotoSelectInfo: any
     callPhone: any
-    tabsItem: any
     contentList: any
     config: any
     user: any
@@ -49,29 +48,9 @@ class TabsLapseItem extends Component<propsTypes & NavigationScreenProps> {
     constructor(props: any) {
         super(props);
     };
-    
-    state = {
-        contentList: {} as contentListTypes,
-        visitTime: '',
-        reportTime: '',
-        grade: '',
-    }
-
-    componentDidMount() {}
-
-    componentWillReceiveProps(newProps: any) {
-        if (((newProps || {}).contentList || {}).id) {
-            this.setState({
-                contentList: newProps.contentList,
-            }, () => {
-                this.tabItemComponent();
-            })
-        }
-    }
 
     // 报备数据处理
-    tabItemComponent = () => {
-        const { contentList } = this.state;
+    tabItemComponent = (contentList: any) => {
         let reportYear = moment(contentList.reportTime).format('YYYY');
         let nowReportYear = moment().format('YYYY');
         let visitTime = moment(contentList.visitTime).format('YYYY-MM-DD HH:mm:ss');
@@ -106,16 +85,16 @@ class TabsLapseItem extends Component<propsTypes & NavigationScreenProps> {
             default:
                 console.log('没有default')
         }
-        this.setState({
+        return {
             visitTime,
             reportTime,
             grade,
-        })
+        }
     }
 
     render() {
-        const { contentList, visitTime, reportTime, grade } = this.state;
-        const {gotoSelectInfo, user} = this.props;
+        const { gotoSelectInfo, user, contentList } = this.props;
+        let content = this.tabItemComponent(contentList);
         let userType = ((user || {}).userInfo || {}).isResident;
         let userId = ((user || {}).userInfo || {}).id;
         let type = 3;
@@ -124,7 +103,7 @@ class TabsLapseItem extends Component<propsTypes & NavigationScreenProps> {
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={STYLE.click}
-                onPress={() => {gotoSelectInfo(type, invalidId)}}
+                onPress={() => { gotoSelectInfo(type, invalidId) }}
             >
                 <View style={STYLE.warp}>
                     <View style={STYLE.top}>
@@ -136,7 +115,7 @@ class TabsLapseItem extends Component<propsTypes & NavigationScreenProps> {
                                 style={STYLE.topImg}
                                 source={require('../../../../images/icons/time2.png')}
                             />
-                            <Text style={STYLE.topRightFont}>{reportTime}</Text>
+                            <Text style={STYLE.topRightFont}>{content.reportTime}</Text>
                         </View>
                     </View>
                     <View style={STYLE.line}></View>
@@ -155,7 +134,7 @@ class TabsLapseItem extends Component<propsTypes & NavigationScreenProps> {
                                         />
                                 }
                                 <Text style={STYLE.contentFont}>{contentList.customerName || ''}</Text>
-                                <Text style={[STYLE.contentFont, { marginLeft: scaleSize(8), fontSize: scaleSize(24) }]}>{grade}</Text>
+                                <Text style={[STYLE.contentFont, { marginLeft: scaleSize(8), fontSize: scaleSize(24) }]}>{content.grade}</Text>
                             </View>
                             <View style={STYLE.contentPhones}>
                                 {
@@ -186,7 +165,7 @@ class TabsLapseItem extends Component<propsTypes & NavigationScreenProps> {
                                 </View>
                                 <Text style={STYLE.contentTime}>
                                     到访时间：
-                                    <Text style={{ color: 'rgba(0,0,0,1)' }}>{visitTime}</Text>
+                                    <Text style={{ color: '#000000' }}>{content.visitTime}</Text>
                                 </Text>
                             </View>
                             <View style={{}}>
@@ -199,26 +178,26 @@ class TabsLapseItem extends Component<propsTypes & NavigationScreenProps> {
                     </View>
                     {
                         userType && userId !== contentList.userId
-                        ? <View>
-                            <View style={STYLE.line}></View>
-                            <View style={[STYLE.top, { alignItems: 'center' }]}>
-                                <Text
-                                    style={[STYLE.fontMiddle, { width: scaleSize(420) }]}
-                                    numberOfLines={1}
-                                    ellipsizeMode={'middle'}
-                                >
-                                    {contentList.userTrueName || '暂无数据'}<Text> | </Text>{contentList.userDeptName || '暂无数据'}
-                                </Text>
-                                <View style={[STYLE.noPhoneWarp, STYLE.topRight]}>
-                                    <Image
-                                        style={STYLE.topImg}
-                                        source={require('../../../../images/icons/nophone2.png')}
-                                    />
-                                    <Text style={{ fontSize: scaleSize(24), color: 'rgba(134,134,134,1)' }}>拨打电话</Text>
+                            ? <View>
+                                <View style={STYLE.line}></View>
+                                <View style={[STYLE.top, { alignItems: 'center' }]}>
+                                    <Text
+                                        style={[STYLE.fontMiddle, { width: scaleSize(420) }]}
+                                        numberOfLines={1}
+                                        ellipsizeMode={'middle'}
+                                    >
+                                        {contentList.userTrueName || '暂无数据'}<Text> | </Text>{contentList.userDeptName || '暂无数据'}
+                                    </Text>
+                                    <View style={[STYLE.noPhoneWarp, STYLE.topRight]}>
+                                        <Image
+                                            style={STYLE.topImg}
+                                            source={require('../../../../images/icons/nophone2.png')}
+                                        />
+                                        <Text style={{ fontSize: scaleSize(24), color: '#868686' }}>拨打电话</Text>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                        : null
+                            : null
                     }
                 </View>
             </TouchableOpacity>

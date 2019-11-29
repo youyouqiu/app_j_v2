@@ -141,7 +141,7 @@ export const IndexStyle = StyleSheet.create({
         // marginRight: scaleSize(24),
         paddingTop: scaleSize(24),
         paddingBottom: scaleSize(24),
-        borderTopWidth: scaleSize(1),
+        borderTopWidth: 1,
         borderTopColor: 'rgba(223,223,223,1)'
     },
     ywySection: {
@@ -268,7 +268,7 @@ export const IndexStyle = StyleSheet.create({
         borderRadius: scaleSize(8),
         flexDirection: 'row',
         alignItems: 'center',
-        borderWidth: scaleSize(1),
+        borderWidth: 1,
         borderStyle: 'solid',
         borderColor: '#CBCBCB'
     },
@@ -383,7 +383,7 @@ export const IndexStyle = StyleSheet.create({
     },
     topBorder: {
         borderColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1),
+        borderBottomWidth: 1,
     },
     topSmall: {
         marginTop: scaleSize(34),

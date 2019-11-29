@@ -31,18 +31,24 @@ class Report extends Component {
             reportInfo: {}, // 选中的报备信息
             // qCoderContent: '' // 二维码信息
         }
-        this.listener = '';
+        this.listenerAddReport = ''; // ! 监听新增报备数据刷新
+        this.listenerRefreshReportData = ''; // ! 监听新增到访数据刷新
     }
 
     componentDidMount() {
         this.initReportData(0); // 报备
-        // this.initReportData(1); // 到访
-        // this.initReportData(2); // 失效
         this.initReportCount(); // 数量
-        this.addListener = DeviceEventEmitter.addListener('addReport', (params) => { // 监听页面刷新
+        this.listenerAddReport = DeviceEventEmitter.addListener('addReport', (params) => { // 监听页面刷新
             console.log(params, 'params');
             if ((params || {}).type === 'check') {
                 this.initReportData(0); // 报备
+                this.initReportCount(); // 数量
+            }
+        });
+        this.listenerRefreshReportData = DeviceEventEmitter.addListener('refreshReportData', (params) => { // 监听页面刷新
+            console.log(params, 'params');
+            if (params  === 1) {
+                this.initReportData(0); // ! 因为到访确认后依然跳转报备列表项，所以继续刷新报备列表
                 this.initReportCount(); // 数量
             }
         });
@@ -50,19 +56,18 @@ class Report extends Component {
     }
 
     componentWillUnmount() {
-        this.listener && this.listener.remove();
+        this.listenerAddReport && this.listenerAddReport.remove();
+        this.listenerRefreshReportData && this.listenerRefreshReportData.remove();
     }
 
     // 报备列表数据
-    initReportData = async(type) => {
-        console.log(type, 'type');
-        const {pageSize, reportData} = this.state;
+    initReportData = async (type) => {
+        const { pageSize, reportData } = this.state;
+        let newReportData = { ...reportData };
         let oneData = []; // 报备
         let twoData = []; // 到访
         let threeData = []; // 失效
-        let newReportData = {...reportData}; // 数据阵列
-        // let newTotalCount = {...totalCount}; // 数量阵列
-        let {api} = this.props.config.requestUrl;
+        let { api } = this.props.config.requestUrl;
         let body = {
             type: type + 1,
             filterContent: '',
@@ -95,14 +100,14 @@ class Report extends Component {
                     reportData: newReportData,
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error, 'error');
         }
     }
 
     // 报备列表数量
-    initReportCount = async() => {
-        let {api} = this.props.config.requestUrl;
+    initReportCount = async () => {
+        let { api } = this.props.config.requestUrl;
         try {
             let res = await reportCountApi(api);
             console.log(res, 'initReportCount');
@@ -112,7 +117,7 @@ class Report extends Component {
                     totalCount: data,
                 })
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error, 'error');
         }
     }
@@ -259,12 +264,12 @@ class Report extends Component {
                 <View style={{ height: '100%' }}>
                     <MyselfTabs
                         {...this.props}
+                        reportData={reportData}
+                        totalCount={totalCount}
                         gotoSelectInfo={this.gotoSelectInfo}
                         callPhone={this.callPhone}
-                        reportData={reportData}
                         initReportData={this.initReportData}
                         initReportCount={this.initReportCount}
-                        totalCount={totalCount}
                     />
                 </View>
                 <Modal

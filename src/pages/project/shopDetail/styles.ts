@@ -238,7 +238,7 @@ export default {
         paddingTop: scaleSize(6)
     },
     bd_separator: {
-        width: scaleSize(1),
+        width: 1,
         height: scaleSize(38),
         backgroundColor: '#CBCBCB',
     },

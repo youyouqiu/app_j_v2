@@ -19,7 +19,7 @@ const dicModel: Model = {
                 dicList[item.groupId.toLocaleLowerCase()] = item.dictionaryDefines;
                 let obj: any = {};
                 item.dictionaryDefines.map((item2: any) => {
-                    obj[item2.value] = item2.key
+                    obj[item2.value] = item2.key;
                 });
                 dicList[item.groupId.toLocaleLowerCase() + '_obj'] = obj
             });

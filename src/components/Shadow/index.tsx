@@ -21,8 +21,8 @@ const Shadow: FunctionComponent<ViewProps> = ({
     android: {
       backgroundColor: '#FFF',
       borderColor: '#00000024',
-			borderWidth: scaleSize(1),
-			elevation: 10, 
+			borderWidth: 1,
+			elevation: 10,
 			shadowColor: '#000',
       shadowOpacity: 0.1,
       shadowOffset: {

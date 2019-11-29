@@ -16,7 +16,7 @@ export const newsStyles = {
         width:'100%',
         height:scaleSize(167),
         borderColor:'#EAEAEA',
-        borderBottomWidth:scaleSize(1),
+        borderBottomWidth:1,
         paddingLeft:scaleSize(32),
         paddingRight:scaleSize(32)
     },

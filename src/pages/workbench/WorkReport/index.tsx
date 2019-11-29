@@ -174,7 +174,7 @@ class WorkReport extends PureComponent<WorkReportProps, WorkReportState> {
   render() {
     const { userInfo } = this.props
     const { cube, table, rate, chart, record, loading } = this.state
-
+    console.log(userInfo)
     // StatisticTable -> dataSource
     const dataSource = [
       { label: '报备', value: table.bb || 0 },

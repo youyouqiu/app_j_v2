@@ -22,7 +22,7 @@ const subInfoStyles = {
     },
     titleBox:{
         height:scaleSize(88),
-        borderBottomWidth:scaleSize(1),
+        borderBottomWidth:1,
         borderColor:'#EAEAEA',
         justifyContent:'center'
     },

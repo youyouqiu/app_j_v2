@@ -9,6 +9,7 @@ import ChoiceArea from "../components/ChoiceArea";
 import {XKJImage} from "../../../../components/XKJImage/XKJImage";
 import {scaleSize} from "../../../../components/new-space/utils/screenUtil";
 import BuryingPoint from "@/utils/BuryPoint";
+import LabelGroupDB from "@/pages/workbench/searchBuilding/components/LabelGroupDB";
 
 
 const buildingFacilities = {
@@ -45,7 +46,7 @@ const SearchBuilding = (props: any) => {
 
     const {dictionaries, config, dispatch, navigation, user, global,location} = props;
     const _public = config.requestUrl.public;
-    const {search_shops_area_obj, house_type_obj, shop_configuration_obj} = dictionaries;
+    const {search_shops_area_obj, house_type_obj, shop_configuration_obj,search_shops_area} = dictionaries;
 
     const [commonData, setCommonData] = useState(defaultCommonData);
 
@@ -112,9 +113,9 @@ const SearchBuilding = (props: any) => {
         }
     };
 
-    const areaSubmit = ({city, area, district, showText}: any) => {
-        const requestData = {...commonData.requestData, city, area, district, showText};
-        setCommonData({...commonData, requestData, city, area, district, showText});
+    const areaSubmit = ({city, _area, _district, showText}: any) => {
+        const requestData = {...commonData.requestData, city, area:_area, district:_district, showText};
+        setCommonData({...commonData, requestData, city, area:_area, district:_district, showText});
     };
 
     const onScroll = (e: any) => {
@@ -231,7 +232,7 @@ const SearchBuilding = (props: any) => {
                     <View style={{position: 'relative', zIndex: -1}}>
                         <View style={styles.sb_contentItem}>
                             <Text style={styles.sb_subTitle}>期望的面积？</Text>
-                            <LabelGroup data={search_shops_area_obj}
+                            <LabelGroupDB data={search_shops_area}
                                         flex={true}
                                         labelSelectedOnchange={(selectValues: any) => labelSelectedOnchange(selectValues, 'area')}/>
                         </View>

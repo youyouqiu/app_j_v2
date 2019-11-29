@@ -71,8 +71,8 @@ export default StyleSheet.create({
         top: 0,
         zIndex: 100,
         borderColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1),
-        borderTopWidth: scaleSize(1),
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
         justifyContent: 'flex-end',
         textAlign: 'center',
     },
@@ -137,7 +137,7 @@ export default StyleSheet.create({
 
     },
     line: {
-        width: scaleSize(1),
+        width: 1,
         height: scaleSize(33),
         backgroundColor: '#EAEAEA',
         // marginRight: scaleSize(34),
@@ -177,7 +177,7 @@ export default StyleSheet.create({
         alignItems: 'center',
         borderRadius: scaleSize(8),
         borderColor: '#CBCBCB',
-        borderWidth: scaleSize(1),
+        borderWidth: 1,
         justifyContent: 'space-between',
         paddingVertical: scaleSize(10),
         paddingHorizontal: scaleSize(15)
@@ -304,7 +304,7 @@ export default StyleSheet.create({
     },
     stationPage: {
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1)
+        borderBottomWidth: 1
     },
     projectRight: {
         marginLeft: scaleSize(24),
@@ -362,7 +362,7 @@ export default StyleSheet.create({
         paddingLeft: scaleSize(112),
         paddingRight: scaleSize(112),
         borderColor: '#FFF',
-        borderWidth: scaleSize(1),
+        borderWidth: 1,
         borderRadius: scaleSize(8),
     },
     'text': {

@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     },
     nameView: {
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1)
+        borderBottomWidth: 1
     },
     text: {
         color: '#868686',
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderColor: '#CBCBCB',
-        borderWidth: scaleSize(1),
+        borderWidth: 1,
         borderRadius: scaleSize(22),
         backgroundColor: '#F8F8F8'
     },
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1),
+        borderBottomWidth: 1,
         justifyContent: 'space-between'
     },
     grade: {
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1)
+        borderBottomWidth: 1
     },
     inputWrap: {
         padding: scaleSize(32)
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     inputStyle: {
         backgroundColor: '#F8F8F8',
         borderColor: '#CBCBCB',
-        borderWidth: scaleSize(1),
+        borderWidth: 1,
         width: '100%',
         height: scaleSize(272),
         padding: scaleSize(20),

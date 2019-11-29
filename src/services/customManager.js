@@ -21,7 +21,7 @@ const ApiCustom = {
 
     // 微信客户详情
     wechatCusDetail: (api, params) => {
-        return request.post(`${api}/v2.0/api/customer/getwxcustomer`, {
+        return request.post(`${api}/v2.0/api/customer/getwxcustomernew`, {
             method: 'POST',
             body: params
         })

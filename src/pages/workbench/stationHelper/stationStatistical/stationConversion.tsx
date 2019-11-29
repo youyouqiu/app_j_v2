@@ -10,7 +10,7 @@ const StationConversion: FunctionComponent<{info: customerInfoProps, user: UserI
     const {companyBusiness = [], ptBusiness = [], companyReport = 0, allReport = 0} = info
     let progressList = [
         { text: '报备', dataType: 1, val: 0, colors: '#4B6AC5', pztVal: 0, progress: '0%', pztProgress: '0%'},
-        { text: '带看', dataType: 2, val: 0, colors: '#3AD047', pztVal: 0, progress: '0%', pztProgress: '0%'},
+        { text: '来访', dataType: 2, val: 0, colors: '#3AD047', pztVal: 0, progress: '0%', pztProgress: '0%'},
         { text: '认购', dataType: 3, val: 0, colors: '#49A1FF', pztVal: 0, progress: '0%', pztProgress: '0%'},
         { text: '签约', dataType: 4, val: 0, colors: '#FE5139', pztVal: 0, progress: '0%', pztProgress: '0%'},
     ]

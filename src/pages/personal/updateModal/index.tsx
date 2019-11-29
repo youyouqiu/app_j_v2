@@ -1,30 +1,22 @@
-import React, { FunctionComponent, useState, useEffect } from 'react'
-import { Modal, View, ImageBackground, Text, ScrollView, StyleSheet, DeviceEventEmitter } from 'react-native'
+import React, { FunctionComponent, useState } from 'react'
+import { Modal, View, ImageBackground, Text, ScrollView, StyleSheet } from 'react-native'
 import { scaleSize } from '../../../utils/screenUtil'
 import * as Progress from 'react-native-progress';
 import Button from '../../../components/Button'
 import codePush from "react-native-code-push";
 import storage from '../../../utils/storage'
-import { connect, MapStateToProps } from 'react-redux'
-import { ConfigState } from '../../../models/types'
 
 
 interface updateType {
     updateInfo: any
     setUpdateModa: any
     visible: boolean
-    dispatch: any
-    config: ConfigState
 }
 
-const updateModal: FunctionComponent<updateType> = ({ updateInfo, setUpdateModa, visible, dispatch, config }) => {
+const updateModal: FunctionComponent<updateType> = ({ updateInfo, setUpdateModa, visible }) => {
     const [immediateUpdate, setImmediateUpdate] = useState(false)
     const [downloadingPercent, setDownloadingPercent] = useState(0)
     let updating = false
-
-    useEffect(() => {
-        visible && dispatch({ type: 'config/controlWillUpdate' })
-    }, [visible])
 
     const codePushStatusDidChange = (status: any) => {
         switch (status) {
@@ -196,6 +188,5 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapStateToProps = ({ config }: { config: ConfigState }) => ({ config })
 
-export default connect(mapStateToProps)(updateModal)
+export default updateModal

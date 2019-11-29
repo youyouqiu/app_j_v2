@@ -30,7 +30,7 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   'location-line': {
-    width: scaleSize(1),
+    width: 1,
     height: scaleSize(40),
     backgroundColor: '#66739B',
     marginLeft: scaleSize(15),
@@ -170,7 +170,7 @@ export default StyleSheet.create({
   'backlog-content': {
     height: scaleSize(208),
     borderRadius: scaleSize(8),
-    borderWidth: scaleSize(1),
+    borderWidth: 1,
     borderColor: '#E1E1E1',
     flexDirection: 'row',
     alignItems: 'center',
@@ -197,7 +197,7 @@ export default StyleSheet.create({
     lineHeight: scaleSize(33),
   },
   'backlog-line': {
-    width: scaleSize(1),
+    width: 1,
     height: scaleSize(95),
     backgroundColor: '#EAEAEA',
   },
@@ -250,7 +250,7 @@ export default StyleSheet.create({
     paddingTop: scaleSize(6),
     paddingLeft: scaleSize(48),
     height: scaleSize(111),
-    borderLeftWidth: scaleSize(1),
+    borderLeftWidth: 1,
     borderLeftColor: '#EAEAEA',
   },
   'backlog-noData-text-1': {
@@ -303,7 +303,7 @@ export default StyleSheet.create({
   },
   'line': {
     borderBottomColor: '#EAEAEA',
-    borderBottomWidth: scaleSize(1),
+    borderBottomWidth: 1,
   },
   'entry-title': {
     // 布局

@@ -23,6 +23,10 @@ export default StyleSheet.create({
     justifyBetween: {
         justifyContent: 'space-between'
     },
+    text: {
+        color: '#868686',
+        marginTop: scaleSize(24)
+    },
     container: {
         flex: 1,
         marginTop: scaleSize(20),
@@ -52,7 +56,7 @@ export default StyleSheet.create({
         paddingHorizontal: scaleSize(40),
         paddingVertical: scaleSize(8),
         borderBottomColor: '#f3f3f3',
-        borderBottomWidth: scaleSize(1)
+        borderBottomWidth: 1
     },
     formItemInput: {
         paddingVertical: scaleSize(8),
@@ -180,7 +184,7 @@ export default StyleSheet.create({
         fontSize: scaleSize(28)
     },
     line: {
-        width: scaleSize(1),
+        width: 1,
         height: scaleSize(60),
         backgroundColor: '#d3d3d3',
         marginHorizontal: scaleSize(10)

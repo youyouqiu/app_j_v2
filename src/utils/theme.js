@@ -22,7 +22,7 @@ export default {
         defaultBorderWidth: 0,
         normalColor: '#fff',
         normalBorderColor: '#CBCBCB',
-        normalBorderWidth: scaleSize(1),
+        normalBorderWidth: 1,
         normalTitleColor: '#000000',
         btnDisabledOpacity:0
     },
@@ -31,7 +31,7 @@ export default {
         defaultHeight: scaleSize(104),
         backgroundColor: '#fff',
         textColor: '#000',
-        borderBottomWidth: scaleSize(1),
+        borderBottomWidth: 1,
         width: scaleSize(639),
         borderColor: '#EAEAEA',
         placeholderTextColor: '#CBCBCB'

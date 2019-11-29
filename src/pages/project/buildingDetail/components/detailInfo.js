@@ -4,7 +4,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {Carousel} from 'teaset';
 import {deviceWidth} from '../../../../utils/screenUtil';
-import ImageViewer from "react-native-image-zoom-viewer";
+import ImageViewer from "@new-space/react-native-image-zoom-viewer";
 import buildJson from '../buildJson'
 import {Label} from '../../../../components/new-space'
 
@@ -49,7 +49,6 @@ class DetailInfo extends React.Component {
 
     render() {
         const {onLayout, detailInfo, buildingDetail = {}} = this.props;
-        console.log('detailInfo',detailInfo);
         let {treeCategory, treeProjectSpecial, basicInfo, imageCount, images: files = []} = buildingDetail
         let buildJsonInfo = buildJson[treeCategory] || {}
         const {imageViewerVisible, imageViewerIdx} = this.state;
@@ -61,7 +60,7 @@ class DetailInfo extends React.Component {
                 <View>
                     <Carousel control style={{height: 550 * deviceWidth / 750}}>
                         {files.map((item, idx) => {
-                            images.push({url: item.images.ORIGINAL});
+                            images.push({url: item.images.ORIGINAL, props: {resizeMethod: 'resize', resizeMode: 'center'}});
                             return (
                                 <TouchableOpacity activeOpacity={1} onPress={() => this.imageViewerToggle(idx)} key={idx}>
                                     <Image style={styles.headerImage} defaultSource={defaultSource} resizeMode='cover' source={{uri: item.images.MEDIUM}}/>

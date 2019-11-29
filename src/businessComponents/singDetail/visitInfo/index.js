@@ -26,7 +26,7 @@ const visitInfoStyles = {
     },
     titleBox:{
         height:scaleSize(88),
-        borderBottomWidth:scaleSize(1),
+        borderBottomWidth:1,
         borderColor:'#EAEAEA',
         justifyContent:'space-between'
     },
@@ -94,11 +94,11 @@ export default class VisitInfo  extends Component {
                                 zhuData.phoneNumber?<Phone telPhone={zhuData.phoneNumber}/>
                                     :null
                             }
-                            
+
                         </View>
                         :null
                 }
-                
+
 
                 <View style={[visitInfoStyles.row,visitInfoStyles.contentBox]}>
                     <Text style={visitInfoStyles.label}>到访时间:</Text>
@@ -124,11 +124,11 @@ export default class VisitInfo  extends Component {
                     </View>
                 </View>
                 <View style={[visitInfoStyles.row,{flexWrap:'wrap',flex:1}]}>
-                   
+
                     {
                         fileList.map((item,key)=>{
                             return(
-                                <TouchableOpacity 
+                                <TouchableOpacity
                                     key={key}
                                     activeOpacity={0.9}
                                     onPress={()=>gotoPreview(key,fileList)}
@@ -136,7 +136,7 @@ export default class VisitInfo  extends Component {
                                     <Image style={[visitInfoStyles.img,{marginRight: ((key+1)%3)? scaleSize(16):0}]} source={{uri:item.fileUrl}} />
                                 </TouchableOpacity>
                             )
-                        }) 
+                        })
                     }
                 </View>
             </View>

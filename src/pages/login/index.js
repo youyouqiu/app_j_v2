@@ -96,10 +96,10 @@ class Login extends Component {
         return (
             <Animated.View style={[styles.content, {marginTop: this.keyboardHeight}]}>
                 <View style={[styles.content]}>
-                    <TouchableOpacity onPress={() => this.changeDev()} style={[styles.header]}>
+                    <View style={[styles.header]}>
                         <Text style={[styles.hello]}>Hello</Text>
                         <Text style={[styles.welcome]}>欢迎来到铺侦探！</Text>
-                    </TouchableOpacity>
+                    </View>
                     <ScrollableTabView
                         locked={true}
                         initialPage={0}

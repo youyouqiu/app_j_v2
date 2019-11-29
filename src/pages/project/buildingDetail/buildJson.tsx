@@ -155,7 +155,7 @@ const buildJson : BuildJson = {
                 key: 'freightElevatorSum,elevatorSum',
                 label: '电梯部数',
                 flex: 1,
-                func: (a: string, b: string) => {return a ? `货梯${a}部  ` : '' + b ? `客梯${b}部` : ''}
+                func: (a: string, b: string) => {return (a ? `货梯${a}部  ` : '') + (b ? `客梯${b}部` : '')}
             },{
                 key: 'toiletScale',
                 label: '卫生间综合覆盖率',
@@ -285,7 +285,7 @@ const buildJson : BuildJson = {
                 key: 'freightElevatorSum,elevatorSum',
                 label: '电梯部数',
                 flex: 1,
-                func: (a: string, b: string) => {return a ? `货梯${a}部  ` : '' + b ? `客梯${b}部` : ''}
+                func: (a: string, b: string) => {return (a ? `货梯${a}部  ` : '') + (b ? `客梯${b}部` : '')}
             },{
                 key: 'populations',
                 label: '附近3公里居住人数',

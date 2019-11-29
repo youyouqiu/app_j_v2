@@ -293,12 +293,26 @@ class DynamicLogging extends Component {
         return (
             <View key={index}>
                 {
-                    item.isShowNew ?
-                        <View style={styles.middle}>
-                            <View style={styles.middleLine}></View>
-                            <Text style={{color: '#CBCBCB', fontSize: scaleSize(24)}}>以上为新动态</Text>
-                            <View style={styles.middleLine}></View>
-                        </View> :
+                    item.isShowNew ? (
+                            <View style={{flexDirection:'column',justifyContent:'center'}}>
+                                <View style={styles.loggerView}>
+                                    {/*<View style={styles.leftView}>*/}
+                                    {/*    <View style={styles.shadow}></View>*/}
+                                    {/*    <View style={styles.line}></View>*/}
+                                    {/*</View>*/}
+                                    <View style={styles.rightView}>
+                                        {renderContent}
+                                    </View>
+                                </View>
+                                <View style={styles.middle}>
+                                    <View style={styles.middleLine}></View>
+                                    <Text style={{color: '#CBCBCB', fontSize: scaleSize(24)}}>以上为新动态</Text>
+
+                                    <View style={styles.middleLine}></View>
+                                </View>
+
+                            </View>
+                        ):
                         <View style={styles.loggerView}>
                             <View style={styles.leftView}>
                                 <View style={styles.shadow}></View>

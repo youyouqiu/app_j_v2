@@ -20,7 +20,7 @@ interface choiceLabelProps {
 }
 
 
-const LabelGroup = (params: choiceLabelProps) => {
+const LabelGroupDB = (params: choiceLabelProps) => {
     const {data, multiple = false, minSize = 0, maxSize = 0, flex = false, ...otherProps} = params;
     const [selectValues, setSelectValues] = useState(params.selectValues || []);
 
@@ -42,6 +42,7 @@ const LabelGroup = (params: choiceLabelProps) => {
                 _selectValues.push(key);
             }
         } else {
+            console.log('selectValues', selectValues, key);
             if (selectValues.includes(key)) {
                 if (minSize > 0) return;
                 _selectValues = []
@@ -63,16 +64,15 @@ const LabelGroup = (params: choiceLabelProps) => {
 
 
     const renderContent = () => {
-        let content = [];
-        for (let key in data) {
-            if (data.hasOwnProperty(key)) {
-                const isSelected = selectValues.includes(key);
-                const choiceLabel = (
-                    <ChoiceLabel idx={key} isSelected={isSelected}{...otherProps} data={{key, value: data[key]}} labelSelectedOnchange={labelSelectedOnchange}/>
-                );
-                content.push(flex ? flexContent(choiceLabel) : choiceLabel)
-            }
-        }
+        let content: any = [];
+        data.map((item: any) => {
+            const isSelected = selectValues.includes(item.value);
+            const choiceLabel = (
+                <ChoiceLabel idx={item.value} isSelected={isSelected}{...otherProps} data={{key: item.value, value: item.label}}
+                             labelSelectedOnchange={labelSelectedOnchange}/>
+            );
+            content.push(flex ? flexContent(choiceLabel) : choiceLabel)
+        });
         return content
     };
 
@@ -96,6 +96,6 @@ const LabelGroup = (params: choiceLabelProps) => {
     )
 };
 
-export default LabelGroup;
+export default LabelGroupDB;
 
 

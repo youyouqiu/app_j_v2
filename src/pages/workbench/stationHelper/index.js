@@ -22,7 +22,7 @@ class StationHelper extends Component {
             pageIndex: 0,
             dataList: [
                 { text: '报备', val: 0 },
-                { text: '带看', val: 0 },
+                { text: '来访', val: 0 },
                 { text: '认购', val: 0 },
                 { text: '签约', val: 0 },
                 { text: '退房', val: 0 },
@@ -103,7 +103,7 @@ class StationHelper extends Component {
     _renderItems = ({ item, index }) => {
         const progressList = [
             { text: '报备', val: item.reportCount || 0, unit: '次', colors: ['#415DA9', '#1F3070'], linearGradientWidth: this._getProgress(item.reportCount, item.reportCount), progress: item.reportCount ? 1 : 0 },
-            { text: '带看', val: item.takeLookCount || 0, unit: '次', colors: ['#6CEA7D', '#3AD047'], linearGradientWidth: this._getProgress(item.takeLookCount, item.reportCount), progress: this._getProgress(item.takeLookCount, item.reportCount) },
+            { text: '来访', val: item.takeLookCount || 0, unit: '次', colors: ['#6CEA7D', '#3AD047'], linearGradientWidth: this._getProgress(item.takeLookCount, item.reportCount), progress: this._getProgress(item.takeLookCount, item.reportCount) },
             { text: '认购', val: item.subscribeCount || 0, unit: '套', colors: ['#80CFFF', '#49A1FD'], linearGradientWidth: this._getProgress(item.subscribeCount, item.reportCount), progress: this._getProgress(item.subscribeCount, item.takeLookCount) },
             { text: '签约', val: item.signingCount || 0, unit: '套', colors: ['#FF8A6B', '#FE5139'], linearGradientWidth: this._getProgress(item.signingCount, item.reportCount), progress: this._getProgress(item.signingCount, item.subscribeCount) },
         ];
@@ -283,7 +283,7 @@ class StationHelper extends Component {
                 totalCount: totalCount || 0,
                 dataList: [
                     { text: '报备', val: reportCount },
-                    { text: '带看', val: beltLookCount },
+                    { text: '来访', val: beltLookCount },
                     { text: '认购', val: subscribeCount },
                     { text: '签约', val: signingCount },
                     { text: '退房', val: returnRoomCount },

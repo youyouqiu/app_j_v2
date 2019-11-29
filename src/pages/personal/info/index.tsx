@@ -329,7 +329,7 @@ const PersonalInfo: FunctionComponent<any> = props => {
             title={modalText[visible]}
             contentStyle={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
         >
-            <Input placeholder='请输入' value={value} onChange={(e: any) => setValue(e)} viewStyle={{ borderWidth: scaleSize(1), paddingLeft: scaleSize(22), paddingRight: scaleSize(22) }} />
+            <Input placeholder='请输入' value={value} onChange={(e: any) => setValue(e)} viewStyle={{ borderWidth: 1, paddingLeft: scaleSize(22), paddingRight: scaleSize(22) }} />
         </Modal>
         <Modal
             visible={leaveVisible}

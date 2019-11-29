@@ -11,7 +11,6 @@ interface propsTypes {
     totalCount: any
     gotoSelectInfo: any
     callPhone: any
-    tabsItem: any
     contentList: any
     config: any
     user: any
@@ -50,30 +49,9 @@ class TabsReportItem extends Component<propsTypes & NavigationScreenProps> {
     constructor(props: any) {
         super(props);
     };
-    
-    state = {
-        contentList: {} as contentListTypes,
-        validEndDay: '',
-        reportTime: '',
-        validDay: '',
-        validHour: '',
-    }
-
-    componentDidMount() {}
-
-    componentWillReceiveProps(newProps: any) {
-        if (((newProps || {}).contentList || {}).id) {
-            this.setState({
-                contentList: newProps.contentList,
-            }, () => {
-                this.tabItemComponent();
-            })
-        }
-    }
 
     // 报备数据处理
-    tabItemComponent = () => {
-        const { contentList } = this.state;
+    tabItemComponent = (contentList: any) => {
         let reportYear = moment(contentList.reportTime).format('YYYY');
         let nowReportYear = moment().format('YYYY');
         let validEndDay = '';
@@ -92,17 +70,17 @@ class TabsReportItem extends Component<propsTypes & NavigationScreenProps> {
         } else {
             reportTime = moment(contentList.reportTime).format('YYYY-MM-DD HH:mm:ss');
         }
-        this.setState({
+       return {
             validEndDay,
             reportTime,
             validDay,
             validHour,
-        })
+        }
     }
 
     render() {
-        const { contentList, validEndDay, reportTime, validDay, validHour } = this.state;
-        const {gotoSelectInfo, callPhone, user} = this.props;
+        const {gotoSelectInfo, callPhone, user, contentList} = this.props;
+        let content = this.tabItemComponent(contentList);
         let userType = ((user || {}).userInfo || {}).isResident;
         let userId = ((user || {}).userInfo || {}).id;
         let type = 1;
@@ -124,12 +102,10 @@ class TabsReportItem extends Component<propsTypes & NavigationScreenProps> {
                                 style={STYLE.topImg}
                                 source={require('../../../../images/icons/time2.png')}
                             />
-                            <Text style={STYLE.topRightFont}>{reportTime}</Text>
+                            <Text style={STYLE.topRightFont}>{content.reportTime}</Text>
                         </View>
                     </View>
-
                     <View style={STYLE.line}></View>
-
                     <View>
                         <View style={[STYLE.top, { alignItems: 'flex-start' }]}>
                             <View style={STYLE.topRight}>
@@ -151,7 +127,7 @@ class TabsReportItem extends Component<propsTypes & NavigationScreenProps> {
                                             colors={['rgba(255,138,107,1)', 'rgba(254,81,57,1)']}
                                             style={STYLE.LinearGradient}
                                         >
-                                            <Text style={{ color: 'rgba(255,255,255,1)', textAlign: 'center' }}>! 重</Text>
+                                            <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>! 重</Text>
                                         </LinearGradient>
                                         : null
                                 }
@@ -186,21 +162,19 @@ class TabsReportItem extends Component<propsTypes & NavigationScreenProps> {
                             {
                                 contentList.reportValidityTime === '永久'
                                     ? <Text style={STYLE.topRightFont}>
-                                        <Text>{validDay}</Text>有效
+                                        <Text>{content.validDay}</Text>有效
                                     </Text>
                                     : <Text style={STYLE.topRightFont}>
                                         {
-                                            validEndDay === nowValidDay
+                                            content.validEndDay === nowValidDay
                                                 ? '今日'
-                                                : validDay + ' '
+                                                : content.validDay + ' '
                                         }
-                                        <Text style={{ color: 'rgba(0,0,0,1)' }}>{validHour}</Text>前有效
+                                        <Text style={{ color: 'rgba(0,0,0,1)' }}>{content.validHour}</Text>前有效
                                     </Text>
                             }
-
                         </View>
                     </View>
-
                     {
                         userType && userId !== contentList.userId
                             ? <View>
@@ -225,7 +199,7 @@ class TabsReportItem extends Component<propsTypes & NavigationScreenProps> {
                                             style={STYLE.topImg}
                                             source={require('../../../../images/icons/phone2.png')}
                                         />
-                                        <Text style={{ fontSize: scaleSize(24), color: 'rgba(75,106,197,1)' }}>拨打电话</Text>
+                                        <Text style={{ fontSize: scaleSize(24), color: '#4B6AC5' }}>拨打电话</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

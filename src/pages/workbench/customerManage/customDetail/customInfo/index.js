@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     phoneView: {
         width: '100%',
         height: scaleSize(110),
-        borderTopWidth: scaleSize(1),
+        borderTopWidth: 1,
         borderTopColor: '#EAEAEA',
         display: 'flex',
         flexDirection: 'row',

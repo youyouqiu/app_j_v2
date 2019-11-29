@@ -5,7 +5,7 @@ import {scaleSize} from '../../utils/screenUtil'
 export default function PopEle(title, content, actions = [{text: '取消', onPress: null}, {text: '确定'}]) {
     const footer = () => {
         return actions.map((button, i) => {
-            return <TouchableOpacity onPress={button.onPress?button.onPress:null} style={[styles.btnItem, button.style, {borderRightColor: '#EAEAEA', borderRightWidth: scaleSize(1)}]}>
+            return <TouchableOpacity onPress={button.onPress?button.onPress:null} style={[styles.btnItem, button.style, {borderRightColor: '#EAEAEA', borderRightWidth: 1}]}>
                 <Text style={[{color: i === 0 ? '#4D4D4D' : '#4B6AC5'}, button.textStyle]}>{button.text}</Text>
             </TouchableOpacity>
         })
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         borderTopColor: '#CBCBCB',
-        borderTopWidth: scaleSize(1),
+        borderTopWidth: 1,
         borderBottomRightRadius: 7,
         borderBottomLeftRadius: 7
     },
@@ -53,12 +53,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     main: {
-        backgroundColor: '#fff', 
+        backgroundColor: '#fff',
         width: scaleSize(540),
         height: scaleSize(300),
-        borderRadius: 7, 
+        borderRadius: 7,
         flexDirection: 'column',
-        justifyContent: 'space-between', 
+        justifyContent: 'space-between',
         alignItems: 'center'
     },
     title: {

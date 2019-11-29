@@ -33,7 +33,7 @@ export default StyleSheet.create({
     marginHorizontal: scaleSize(24),
     paddingVertical: scaleSize(48),
     borderColor: '#EAEAEA',
-    borderTopWidth: scaleSize(1),
+    borderTopWidth: 1,
   },
   'item': {
     flex: 1,

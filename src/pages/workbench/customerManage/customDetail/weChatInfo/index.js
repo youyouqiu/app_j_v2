@@ -374,7 +374,9 @@ class WechatInfo extends Component {
             buildingTreeId: ''
         }
         try {
-            let res = await ApiCustom.wechatCusDetail(api, params)
+            let res = await ApiCustom.wechatCusDetail(api, params).catch(err=>{
+                console.log('微信客户获取失败！',err)
+            })
             if (res.code === '0') {
                 let data = res.extension || {}
                 let dataAnalysis = data.buildingLikes || []
@@ -946,7 +948,7 @@ class WechatInfo extends Component {
                                     placeholder='请输入11位手机号'
                                     keyboardType='numeric'
                                     maxLength={11}
-                                    style={{borderBottomWidth: scaleSize(1), borderBottomColor: '#EAEAEA'}}
+                                    style={{borderBottomWidth: 1, borderBottomColor: '#EAEAEA'}}
                                     onChangeText={this.changePhoneText}
                                 /> :
                                 <Input

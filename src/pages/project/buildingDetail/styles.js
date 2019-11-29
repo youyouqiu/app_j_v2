@@ -285,7 +285,7 @@ const buildingStyle = StyleSheet.create({
         flex: 1,
     },
     headerBottomItemDivision: {
-        width: scaleSize(1),
+        width: 1,
         height: scaleSize(79),
         backgroundColor: '#EAEAEA'
     },
@@ -583,7 +583,7 @@ const buildingStyle = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         paddingBottom: scaleSize(13),
-        borderBottomWidth: scaleSize(1),
+        borderBottomWidth: 1,
         borderBottomColor: '#EAEAEA'
     },
     shareSlotBuildInfo: {

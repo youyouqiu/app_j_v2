@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
         width: scaleSize(20),
         height: scaleSize(23),
         position: 'absolute',
-        right: scaleSize(1),
-        bottom: scaleSize(1)
+        right: 1,
+        bottom: 1
     },
     cm_btnDivision: {
         width: scaleSize(26),

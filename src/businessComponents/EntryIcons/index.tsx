@@ -11,7 +11,7 @@ const EntryIcons: React.FC & {
 } = ({ children }) => {
   const groups = React.Children.map(children, (child, index) => {
     const border = {
-      borderBottomWidth: scaleSize(1),
+      borderBottomWidth: 1,
       borderBottomColor: React.Children.count(children) - 1 === index ? '#FFFFFF' : '#EAEAEA',
     }
     return <View key={index} style={[styles['group'], border]}>{child}</View>

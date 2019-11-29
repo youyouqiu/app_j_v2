@@ -127,8 +127,8 @@ export default StyleSheet.create({
         fontSize: scaleSize(24),
         paddingTop: scaleSize(6),
         // paddingBottom: scaleSize(6),
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#ffe22a',
+        // borderBottomWidth: StyleSheet.hairlineWidth,
+        // borderBottomColor: '#ffe22a',
     },
     roomLockWrap: {
         width: '100%',

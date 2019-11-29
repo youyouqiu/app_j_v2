@@ -5,7 +5,7 @@ export const styles = {
         width:scaleSize(686),
         height:scaleSize(282),
         borderColor:'#CBCBCB',
-        borderWidth:scaleSize(1),
+        borderWidth:1,
         borderRadius:scaleSize(8),
         paddingLeft:scaleSize(24),
         paddingRight:scaleSize(24),
@@ -17,7 +17,7 @@ export const styles = {
         width:scaleSize(638),
         height:scaleSize(81),
         justifyContent:'space-between',
-        borderBottomWidth:scaleSize(1),
+        borderBottomWidth:1,
         borderColor:'#EAEAEA',
     },
     codeText:{
@@ -89,12 +89,12 @@ export const styles = {
     },
     name:{
         color:'#000000',
-        fontSize:scaleSize(26), 
+        fontSize:scaleSize(26),
         marginRight:scaleSize(8),
     },
     level:{
         color:'#000000',
-        fontSize:scaleSize(24), 
+        fontSize:scaleSize(24),
         marginRight:scaleSize(19),
         fontWeight:'bold'
     },

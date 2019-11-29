@@ -4,7 +4,7 @@ import { scaleSize } from '../../../utils/screenUtil'
 export default StyleSheet.create({
   'top-bar': {
     borderBottomColor: '#EAEAEA',
-    borderBottomWidth: scaleSize(1),
+    borderBottomWidth: 1,
   },
   'page-body': {
     backgroundColor: '#F8F8F8',

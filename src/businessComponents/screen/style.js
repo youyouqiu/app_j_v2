@@ -43,7 +43,7 @@ export const screenStyles = StyleSheet.create({
         sortBox: {
             height: scaleSize(88),
             borderColor: '#EAEAEA',
-            borderBottomWidth: scaleSize(1),
+            borderBottomWidth: 1,
             paddingLeft: scaleSize(32),
             display: 'flex',
             alignItems: 'center',
@@ -55,15 +55,15 @@ export const screenStyles = StyleSheet.create({
             marginRight: scaleSize(16)
         },
         selectItem: {
-            borderBottomWidth: scaleSize(1),
-            borderTopWidth: scaleSize(1),
+            borderBottomWidth: 1,
+            borderTopWidth: 1,
             borderColor: '#EAEAEA',
             paddingTop: scaleSize(30),
             paddingBottom: scaleSize(30),
             paddingLeft: scaleSize(30),
         },
         item: {
-            borderRightWidth: scaleSize(1),
+            borderRightWidth: 1,
             borderColor: '#EAEAEA',
             paddingTop: scaleSize(30),
             paddingBottom: scaleSize(30),

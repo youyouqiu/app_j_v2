@@ -1,73 +1,95 @@
 import React, { FC } from 'react'
-import { StyleSheet, Image, View, Text, ImageBackground, ImageSourcePropType, TouchableOpacity } from 'react-native'
-import { scaleSize, } from '../../utils/screenUtil'
-import Modal from 'react-native-modal'
+import { View, Modal, Image, ImageSourcePropType, TouchableOpacity, Text, StyleSheet } from 'react-native'
+import styles from './index.style'
 import { connect, MapStateToProps } from 'react-redux'
+import { scaleSize } from '@/utils/screenUtil'
+
+
+// interface StateToProps {
+//     visible: boolean,
+// }
+// interface AdvertisementProps {
+//     img?: ImageSourcePropType,
+//     onPress?: () => void,
+//     opacity?: number
+// }
+
+// const Advertisement: FC<AdvertisementProps & StateToProps> = ({
+//     opacity = .85,
+//     img = {},
+//     onPress = () => { },
+//     visible = false
+// }) => {
+//     const handleClose = () => {
+//         global.store.dispatch({ type: 'config/controlADVisible' })
+//     }
+
+//     return <Modal visible={visible} transparent={true} animationType='none'>
+//         <View style={[styles.backdrop, { backgroundColor: `rgba(0,0,0,${opacity})` }]} >
+//             {/* img */}
+//             <TouchableOpacity onPress={onPress} activeOpacity={1} style={styles.imgContainer}>
+//                 <Image source={img} style={{ height: '100%', width: '100%' }} />
+//             </TouchableOpacity>
+//             {/* close */}
+//             <View style={{ alignItems: 'center' }}>
+//                 {/* line */}
+//                 <View style={{ height: scaleSize(40), width: StyleSheet.hairlineWidth, backgroundColor: '#fff' }} ></View>
+//                 {/* icon */}
+//                 <TouchableOpacity onPress={handleClose}>
+//                     <Image source={require('../../images/icons/close2.png')} style={{ height: scaleSize(80), width: scaleSize(80), position: 'relative', bottom: scaleSize(10) }} />
+//                 </TouchableOpacity>
+//             </View>
+//         </View>
+//     </Modal >
+// }
+
+// const mapStateToProps: MapStateToProps<StateToProps, AdvertisementProps, any> = ({ config }) => {
+//     return ({
+//         visible: config.ADVisible,
+//     })
+// };
+
+// export default connect(mapStateToProps)(Advertisement)
+
 
 interface StateToProps {
-    visible?: boolean,
+    visible: boolean,
 }
-
 interface AdvertisementProps {
     img?: ImageSourcePropType,
-    onPress?: () => void
+    onPress?: () => void,
+    opacity?: number
 }
 
-const Advertisement: FC<AdvertisementProps & StateToProps> = ({
-    visible = false,
-    img = {},
-    onPress = () => { },
-    ...others
-}) => {
+class Advertisement extends React.Component {
 
-    const handleSwipeComplete = () => {
+    handleClose = () => {
         global.store.dispatch({ type: 'config/controlADVisible' })
     }
 
-    return (
-        <Modal
-            isVisible={visible}
-            onSwipeComplete={handleSwipeComplete}
-            swipeDirection={'up'}
-            style={{ margin: 0 }}
-            animationIn={'fadeInDown'}
-            animationInTiming={600}
-            backdropOpacity={0.85}
-            backdropTransitionInTiming={0}
-            backdropTransitionOutTiming={0}
-            {...others}
-        >
-            <TouchableOpacity activeOpacity={1} onPress={onPress} style={styles.layoutView}>
-                <ImageBackground source={img} style={{ height: '100%', width: '100%' }} />
-                <TouchableOpacity style={styles.XWrap} onPress={handleSwipeComplete}>
-                    <Image source={require('../../images/icons/close2.png')} style={{ height: scaleSize(60), width: scaleSize(60) }} />
-                </TouchableOpacity>
-            </TouchableOpacity>
-            <View style={styles.bodyView}>
-                <Image source={require('../../images/icons/up3.png')} style={{ height: scaleSize(100), width: scaleSize(100) }} />
-                <Text style={{ fontSize: scaleSize(28), color: '#fff', marginTop: scaleSize(33) }}>上划关闭广告</Text>
-            </View>
-        </Modal >
-    )
-}
-
-const styles = StyleSheet.create({
-    layoutView: {
-        width: '100%',
-        height: '80%',
-    },
-    bodyView: {
-        alignItems: 'center',
-        flex: 1,
-        paddingTop: scaleSize(40),
-    },
-    XWrap: {
-        position: 'absolute',
-        top: scaleSize(80),
-        right: scaleSize(30),
-        padding: scaleSize(40)
+    render() {
+        const { visible = false, opacity = .85, onPress = () => { }, img = {} } = this.props
+        return (
+            <Modal visible={visible} transparent={true} animationType='none'>
+                <View style={[styles.backdrop, { backgroundColor: `rgba(0,0,0,${opacity})` }]} >
+                    {/* img */}
+                    <TouchableOpacity onPress={onPress} activeOpacity={1} style={styles.imgContainer}>
+                        <Image source={img} style={{ height: '100%', width: '100%' }} />
+                    </TouchableOpacity>
+                    {/* close */}
+                    <View style={{ alignItems: 'center' }}>
+                        {/* line */}
+                        <View style={{ height: scaleSize(40), width: StyleSheet.hairlineWidth, backgroundColor: '#fff' }} ></View>
+                        {/* icon */}
+                        <TouchableOpacity onPress={this.handleClose}>
+                            <Image source={require('../../images/icons/close2.png')} style={{ height: scaleSize(80), width: scaleSize(80), position: 'relative', bottom: scaleSize(10) }} />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal >
+        )
     }
-})
+}
 
 const mapStateToProps: MapStateToProps<StateToProps, AdvertisementProps, any> = ({ config }) => {
     return ({

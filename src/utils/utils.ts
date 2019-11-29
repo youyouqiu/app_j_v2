@@ -177,8 +177,9 @@ export const checkArticleUrl = (url: string): string => {
     const local = 'http://192.168.100.159:5100';
     const localTest = 'http://192.168.100.159:5100';
     const test = 'https://stagging-file.puzhentan.com';
-    const production = 'https://file-v2.puzhentan.com';
-    const domainNames = [local, localTest, test, production];
+    const production1 = 'https://file.puzhentan.com';
+    const production2 = 'https://file-v2.puzhentan.com';
+    const domainNames = [local, localTest, test, production1,production2];
     let articleId = '';
     //判断是否为本公司url
     const isOwnUrl = domainNames.some((name: any) => {

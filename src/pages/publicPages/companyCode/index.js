@@ -236,7 +236,7 @@ const companyStyles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        
+
     },
     headText:{
         color:'#000',
@@ -282,7 +282,7 @@ const companyStyles = StyleSheet.create({
         height: scaleSize(72),
         borderRadius: scaleSize(44),
         borderColor: '#CBCBCB',
-        borderWidth: scaleSize(1),
+        borderWidth: 1,
         backgroundColor: '#ffffff',
         display: 'flex',
         flexDirection: 'row',

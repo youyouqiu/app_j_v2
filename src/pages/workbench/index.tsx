@@ -19,7 +19,6 @@ import adApi, {
     GetAdvertisingsConditions,
     GetAdvertisingsResponseExtensionListItem,
     QueryAdvertisingsConditions,
-    QueryAdvertisingsResponseExtensionListItem
 } from '../../services/advertising'
 // @ts-ignore
 import QuickEntry from '../../businessComponents/quickEntry'
@@ -32,9 +31,7 @@ import InitGuide from './InitGuide'
 import EntryIcons from '../../businessComponents/EntryIcons'
 import projectService from "../../services/projectService";
 import Advertisement from '../../businessComponents/advertisement'
-import EntryIcon from "../../businessComponents/EntryIcon";
 import navigationUtils from '../../utils/navigation'
-import { CONSTANT } from "@/constants";
 
 const alert = Alert.alert
 
@@ -87,7 +84,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
     pageTimer: PageTimer = new PageTimer()
 
     componentDidMount() {
-        const { navigation, dispatch, config: { noticeInfo } } = this.props
+        const { navigation, config: { noticeInfo } } = this.props
         this.didFocusListener = navigation.addListener('didFocus', this.navigationDidFocus)
         this.didBlurListener = navigation.addListener('didBlur', this.navigationDidBlur)
         if (this.props.config.isFirstUseApp) {
@@ -216,9 +213,10 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
      */
     getADOfOpen = async () => {
         //游客或定位失败时不做显示
-        if (!this.props.location.locationCityCode || this.props.config.willUpdate || this.props.guest) return
+        // if (!this.props.location.locationCityCode || this.props.config.willUpdate || this.props.guest) return
         const conditions: GetAdvertisingsConditions = {
-            cityId: this.props.location.locationCityCode,
+            // cityId: this.props.location.locationCityCode,
+            cityId:'500000',
             app: 1,
             site: 'BROKER_ON_OPEN'
         }
@@ -507,7 +505,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
                     <Shadow style={styles['header-content']}>
                         {/* 个人信息 */}
                         <View>
-                            <Text style={styles['header-left-line-1']}>欢迎你{guest ? '游客' : user.trueName ? `，${user.trueName}` : ''}！</Text>
+                            <Text style={styles['header-left-line-1']}>欢迎你{guest ? '' : user.trueName ? `，${user.trueName}` : ''}！</Text>
                             <Text style={styles['header-left-line-2']} numberOfLines={1}>
                                 {user.filialeShortName || '暂无公司'} | {user.deptName || '暂无组别'}
                             </Text>
@@ -608,6 +606,7 @@ class Workbench extends PureComponent<NavigationScreenProps & TStateProps & Disp
                     this.props.navigation.setParams({ tabBarVisible: true })
                 }}
             />
+
             {/* 开屏广告 */}
             {
                 ADOnOpen.length >= 1 &&

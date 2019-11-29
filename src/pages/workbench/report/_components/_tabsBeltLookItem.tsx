@@ -10,7 +10,6 @@ interface propsTypes {
     totalCount: any
     gotoSelectInfo: any
     callPhone: any
-    tabsItem: any
     contentList: any
     config: any
     user: any
@@ -49,31 +48,9 @@ class TabsBeltLookItem extends Component<propsTypes & NavigationScreenProps> {
     constructor(props: any) {
         super(props);
     };
-    
-    state = {
-        contentList: {} as contentListTypes,
-        visitTime: '',
-        reportTime: '',
-        day: '',
-        grade: '',
-        visitId: {},
-    }
-
-    componentDidMount() {}
-
-    componentWillReceiveProps(newProps: any) {
-        if (((newProps || {}).contentList || {}).id) {
-            this.setState({
-                contentList: newProps.contentList,
-            }, () => {
-                this.tabItemComponent();
-            })
-        }
-    }
 
     // 报备数据处理
-    tabItemComponent = () => {
-        const { contentList } = this.state;
+    tabItemComponent = (contentList: any) => {
         let visitId = {
             reportId: contentList.id || '',
             buildingId: contentList.buildingId || '',
@@ -107,18 +84,18 @@ class TabsBeltLookItem extends Component<propsTypes & NavigationScreenProps> {
             default:
                 console.log('没有default')
         }
-        this.setState({
+        return {
             visitTime,
             reportTime,
             day,
             grade,
             visitId,
-        })
+        }
     }
 
     render() {
-        const { contentList, visitTime, reportTime, day, grade, visitId } = this.state;
-        const {gotoSelectInfo, callPhone, user} = this.props;
+        const { gotoSelectInfo, callPhone, user, contentList } = this.props;
+        let content = this.tabItemComponent(contentList);
         let userType = ((user || {}).userInfo || {}).isResident;
         let userId = ((user || {}).userInfo || {}).id;
         let type = 2;
@@ -126,14 +103,14 @@ class TabsBeltLookItem extends Component<propsTypes & NavigationScreenProps> {
             <TouchableOpacity
                 activeOpacity={0.8}
                 style={STYLE.click}
-                onPress={() => {gotoSelectInfo(type, visitId, {}, contentList.visitStatus)}}
+                onPress={() => { gotoSelectInfo(type, content.visitId, {}, contentList.visitStatus) }}
             >
                 <View style={STYLE.warp}>
                     <View style={STYLE.top}>
                         <Text style={STYLE.topRightFont}>
                             单号：<Text>{contentList.reportNumber || ''}</Text>
                         </Text>
-                        <Text style={{ fontSize: scaleSize(28), color: 'rgba(254,81,57,1)' }}>
+                        <Text style={{ fontSize: scaleSize(28), color: '#FE5139' }}>
                             {
                                 contentList.visitStatus === 0
                                     ? '未确认'
@@ -157,7 +134,7 @@ class TabsBeltLookItem extends Component<propsTypes & NavigationScreenProps> {
                                         />
                                 }
                                 <Text style={STYLE.contentFont}>{contentList.customerName || ''}</Text>
-                                <Text style={[STYLE.contentFont, { marginLeft: scaleSize(8), fontSize: scaleSize(24) }]}>{grade}</Text>
+                                <Text style={[STYLE.contentFont, { marginLeft: scaleSize(8), fontSize: scaleSize(24) }]}>{content.grade}</Text>
                             </View>
                             <View style={STYLE.contentPhones}>
                                 {
@@ -188,20 +165,20 @@ class TabsBeltLookItem extends Component<propsTypes & NavigationScreenProps> {
                     <View style={STYLE.line}></View>
                     <View style={[STYLE.top, { alignItems: 'center' }]}>
                         <View>
-                            <Text style={{ fontSize: scaleSize(24), color: 'rgba(134,134,134,1)' }}>
+                            <Text style={{ fontSize: scaleSize(24), color: '#868686' }}>
                                 报备时间：
-                                <Text style={{ color: 'rgba(0,0,0,1)' }}>{reportTime}</Text>
+                                <Text style={{ color: 'rgba(0,0,0,1)' }}>{content.reportTime}</Text>
                             </Text>
-                            <Text style={{ fontSize: scaleSize(24), color: 'rgba(134,134,134,1)' }}>
+                            <Text style={{ fontSize: scaleSize(24), color: '#868686' }}>
                                 到访时间：
-                                <Text style={{ color: 'rgba(0,0,0,1)' }}>{visitTime}</Text>
+                                <Text style={{ color: 'rgba(0,0,0,1)' }}>{content.visitTime}</Text>
                             </Text>
                         </View>
                         {
                             contentList.visitStatus === 1
                                 ? <View style={STYLE.contentTimeWarp}>
-                                    <Text style={{ fontSize: scaleSize(36), color: 'rgba(254,81,57,1)' }}>{day}</Text>
-                                    <Text style={{ fontSize: scaleSize(24), color: 'rgba(134,134,134,1)' }}>保护期/天</Text>
+                                    <Text style={{ fontSize: scaleSize(36), color: '#FE5139' }}>{content.day}</Text>
+                                    <Text style={{ fontSize: scaleSize(24), color: '#868686' }}>保护期/天</Text>
                                 </View>
                                 : null
                         }
@@ -221,13 +198,13 @@ class TabsBeltLookItem extends Component<propsTypes & NavigationScreenProps> {
                                     <TouchableOpacity
                                         activeOpacity={0.8}
                                         style={[STYLE.phoneWarp, STYLE.topRight]}
-                                        onPress={() => {callPhone(contentList.userPhoneNumber || '')}}
+                                        onPress={() => { callPhone(contentList.userPhoneNumber || '') }}
                                     >
                                         <Image
                                             style={STYLE.topImg}
                                             source={require('../../../../images/icons/phone2.png')}
                                         />
-                                        <Text style={{ fontSize: scaleSize(24), color: 'rgba(75,106,197,1)' }}>拨打电话</Text>
+                                        <Text style={{ fontSize: scaleSize(24), color: '#4B6AC5' }}>拨打电话</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

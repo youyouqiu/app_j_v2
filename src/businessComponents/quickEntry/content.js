@@ -34,7 +34,7 @@ class IconItem extends Component {
                 onPress={()=>this.gotoPage(text,path)}
             >
                 <Image source={imageSource} style={styles.iconItemImg}/>
-                <Text>
+                <Text style={[styles.iconItemText]}>
                     {text}
                 </Text>
             </TouchableOpacity>
@@ -47,10 +47,10 @@ class Content  extends Component {
     constructor (props) {
         super(props)
         this.state = {
-            
+
         }
     }
-    
+
     componentDidMount () {
         Animated.parallel([
 
@@ -83,7 +83,7 @@ class Content  extends Component {
             quicks = quicks.filter((item)=>item.path !== 'addReport')
         }
 
-        return <View>
+        return <View style={[styles.main]}>
             <View style={styles.header}>
                 <Text style={styles.time}>{moment().format('HH:mm')}</Text>
                 <View style={styles.secondLine}>
@@ -103,9 +103,9 @@ class Content  extends Component {
                 <Text style={styles.bottomText}>快速入口</Text>
                 <View style={styles.line}/>
             </View>
-            <View>
+            <View style={[styles.closeBtnView]}>
                 <TouchableOpacity style={styles.bottomClose} onPress={this.closeQuickModal}>
-                    <Image style={styles.bottomCloseImg} source={require('../../images/icons/close_bold2.png')}/>
+                    <Image style={styles.bottomCloseImg} source={require('../../images/icons/close_bold3.png')}/>
                 </TouchableOpacity>
             </View>
         </View>
@@ -115,11 +115,12 @@ class Content  extends Component {
 const styles = StyleSheet.create({
     main: {
         width: '100%',
-        height: '100%'
+        height: '100%',
+        position: 'relative'
     },
     time: {
         color: '#000',
-        fontWeight: '400',
+        fontWeight: 'bold',
         fontSize: scaleSize(72),
         lineHeight: scaleSize(100)
     },
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
     date: {
         fontSize: scaleSize(28),
         fontWeight: '400',
-        color: '#000',
+        color: '#868686',
         lineHeight: scaleSize(40)
     },
     weather: {
@@ -158,9 +159,13 @@ const styles = StyleSheet.create({
         height: scaleSize(144)
     },
     iconItemImg: {
-        width: scaleSize(80),
-        height: scaleSize(80),
+        width: scaleSize(120),
+        height: scaleSize(120),
         marginBottom: scaleSize(24)
+    },
+    iconItemText: {
+        fontSize: scaleSize(28),
+        color: '#000'
     },
     bottom: {
         marginTop: scaleSize(40),
@@ -173,7 +178,7 @@ const styles = StyleSheet.create({
     },
     line: {
         width: scaleSize(243),
-        height: scaleSize(1),
+        height: 1,
         backgroundColor: '#EAEAEA'
     },
     bottomText: {
@@ -189,16 +194,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: scaleSize(60),
         height: scaleSize(80),
-        marginTop: scaleSize(100),
+        marginTop: scaleSize(74),
         marginLeft: 'auto',
         marginRight: 'auto',
     },
-    closeBtn: {
-        padding: scaleSize(30),
+    closeBtnView: {
+        bottom: '9%',
+        left: 0,
+        right: 0,
+        position: 'absolute'
     },
     bottomCloseImg: {
-        width: scaleSize(40),
-        height: scaleSize(40)
+        width: scaleSize(68),
+        height: scaleSize(68)
     }
 })
 

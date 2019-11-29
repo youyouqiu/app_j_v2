@@ -325,6 +325,9 @@ class Calculate extends PureComponent <propsTypes & NavigationScreenProps> {
                         <TouchableOpacity onPress={this._handleCount} disabled={disabled} style={[styles.btn]}>
                             <Text style={[styles.btnText]}>开始计算</Text>
                         </TouchableOpacity>
+                        <Text style={[styles.text]}>
+                            *计算结果仅供参考，具体贷款金额以银行数据为准
+                        </Text>
                     </View>
                 </SwitchViewItem>
             </SwitchView>

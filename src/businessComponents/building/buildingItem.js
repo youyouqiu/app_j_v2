@@ -11,7 +11,7 @@ const styles = {
     item: {
         padding: scaleSize(32),
         borderBottomColor: '#EAEAEA',
-        borderBottomWidth: scaleSize(1),
+        borderBottomWidth: 1,
         backgroundColor:'#fff'
     },
     projectView: {

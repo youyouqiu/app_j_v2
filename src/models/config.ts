@@ -62,8 +62,5 @@ export default <Model>{
     controlADVisible(state) {
       return { ...state, ADVisible: !state.ADVisible }
     },
-    controlWillUpdate(state) {
-      return { ...state, willUpdate: true, ADVisible: false }
-    }
   },
 }

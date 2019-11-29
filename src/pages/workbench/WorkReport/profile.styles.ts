@@ -20,7 +20,7 @@ export default StyleSheet.create({
     width: scaleSize(105),
     height: scaleSize(105),
     borderColor: '#979797',
-    borderWidth: scaleSize(1),
+    borderWidth: 1,
     borderRadius: scaleSize(60),
   },
   'left-text': {
@@ -45,7 +45,7 @@ export default StyleSheet.create({
     height: scaleSize(70),
     marginRight: scaleSize(-24),
     borderColor: '#EAEAEA',
-    borderLeftWidth: scaleSize(1),
+    borderLeftWidth: 1,
   },
   'right-row1': {
     flexDirection: 'row',
