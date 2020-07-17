@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+  <style type="text/css">
+    body, html, #allmap {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      margin: 0;
+    }
+  </style>
+  <title>地图展示</title>
+</head>
+<body>
+<span id="output" style="display: none">test</span>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=BvbGX2GsoWdpmmZAbT4YhjwVNyx0pSFI"></script>
+<script type="text/javascript">
+  const districtList = [{
+    "id": "500200",
+    "name": "江北",
+    "number": 11,
+    "longitude": 106.5804150623847,
+    "latitude": 29.612832314080265,
+    "level": "region"
+  }, {
+    "id": "500400",
+    "name": "南岸",
+    "number": 11,
+    "longitude": 106.66842977859555,
+    "latitude": 29.50268309883491,
+    "level": "region"
+  }, {
+    "id": "500100",
+    "name": "渝中",
+    "number": 16,
+    "longitude": 106.57544006681098,
+    "latitude": 29.559090182993803,
+    "level": "region"
+  }, {
+    "id": "500900",
+    "name": "北碚",
+    "number": 10,
+    "longitude": 106.40228116964546,
+    "latitude": 29.811156512938553,
+    "level": "region"
+  }, {
+    "id": "500600",
+    "name": "九龙坡",
+    "number": 56,
+    "longitude": 106.51755873943073,
+    "latitude": 29.50792771555286,
+    "level": "region"
+  }, {
+    "id": "500300",
+    "name": "渝北",
+    "number": 35,
+    "longitude": 106.6375590606026,
+    "latitude": 29.723927343006626,
+    "level": "region"
+  }, {
+    "id": "500800",
+    "name": "大渡口",
+    "number": 11,
+    "longitude": 106.48853359010742,
+    "latitude": 29.490107128556012,
+    "level": "region"
+  }, {
+    "id": "3cd58f13-d4b2-492e-9300-31247d0236e0",
+    "name": "生活点睛一龙腾苑-关詹荆芦任裴-史郎夏刘",
+    "minPrice": 0,
+    "longitude": "116.413384",
+    "latitude": "39.910925",
+    "level": "project",
+    "treeCategoryName": "车库"
+  }, {
+    "id": "3a8e7f30-23fb-489d-a98e-60526d67ba6e",
+    "name": "美丽园公寓-廉朱汤申伍邸姜明",
+    "minPrice": 0,
+    "longitude": "116.413384",
+    "latitude": "39.910925",
+    "level": "project",
+    "treeCategoryName": "公寓"
+  }, {
+    "id": "697aad17-4fc1-42a9-9de8-4c0435d44681",
+    "name": "生活点睛一龙腾苑黄阎贾伏齐沿苑巫毛廖张方",
+    "minPrice": 0,
+    "longitude": "116.413384",
+    "latitude": "39.910925",
+    "level": "project",
+    "treeCategoryName": "公寓"
+  }, {
+    "id": "23e729d8-66ae-455f-a645-ad71d133f383",
+    "name": "生活点睛一龙腾苑伍糜解边计殷车位傅万",
+    "minPrice": 0,
+    "longitude": "116.413384",
+    "latitude": "39.910925",
+    "level": "project",
+    "treeCategoryName": "公寓"
+  }, {
+    "id": "43ab8fff-4a9a-4782-afc9-bb9ea9b83df2",
+    "name": "生活点睛一龙腾苑吴和裴冉成卓",
+    "minPrice": 0,
+    "longitude": "116.413384",
+    "latitude": "39.910925",
+    "level": "project",
+    "treeCategoryName": "公寓"
+  }, {
+    "id": "d147e8da-2324-4691-956d-4399237d6218",
+    "name": "生活点睛一龙腾苑余古荆",
+    "minPrice": 0,
+    "longitude": "116.413384",
+    "latitude": "39.910925",
+    "level": "project",
+    "treeCategoryName": "公寓"
+  }, {
+    "id": "F4650506-52C7-4FB8-808F-FC0DA5C8F5FC",
+    "name": "渤能中央公园",
+    "minPrice": 32,
+    "longitude": "107.0834632993586",
+    "latitude": "29.862854640052166",
+    "level": "project",
+    "treeCategoryName": "公寓"
+  }, {
+    "id": "500700",
+    "name": "巴南",
+    "number": 7,
+    "longitude": 106.54745425696237,
+    "latitude": 29.408474739770405,
+    "level": "region"
+  }, {
+    "id": "500500",
+    "name": "沙坪坝",
+    "number": 6,
+    "longitude": 106.46446511092543,
+    "latitude": 29.547192516541124,
+    "level": "region"
+  }];
+
+  let city = {
+    name: '重庆',
+    latitude: 29.56502727600978,// 默认定位重庆
+    longitude: 106.583947244564,
+  };
+
+  // 初始化
+  const map = new BMap.Map("allmap", {minZoom: 5});
+  map.setCurrentCity(city.name);
+  map.centerAndZoom(new BMap.Point(city.longitude, city.latitude), 11);
+  // map.addControl(new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}));
+  map.addControl(new BMap.GeolocationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT}));
+
+  function getParentElement(parentNode, childName) {
+    let nodes = parentNode.childNodes;
+    for (let i = 0; i < nodes.length; i++) {
+      if (nodes[i].className === childName) {
+        return nodes[i];
+      }
+    }
+  }
+
+  // 自定义覆盖物
+  function ComplexCustomOverlay(point, info) {
+    this._point = point;
+    this._text = info.name;
+    this._level = info.level;
+    this._info = info;
+  }
+  ComplexCustomOverlay.prototype = new BMap.Overlay();
+  ComplexCustomOverlay.prototype.initialize = function (map) {
+    this._map = map;
+    const div = this._div = document.createElement("div");
+    div.setAttribute('class', `xkj-mark xkj-mark-id-${this._info.id}`);
+    div.setAttribute('xkj-type', this._level);
+    div.style.position = "absolute";
+    div.style.zIndex = BMap.Overlay.getZIndex(this._point.lat);
+    div.style.color = "white";
+    div.style.padding = "4px";
+    div.style.whiteSpace = "nowrap";
+    div.style.MozUserSelect = "none";
+    div.style.fontSize = "12px";
+
+    if (this._level === 'region') {
+      div.style.backgroundColor = "#1F3070";
+      div.style.border = "2px solid #fff";
+      div.style.height = "54px";
+      div.style.width = "54px";
+      div.style.borderRadius = '50%';
+      div.style.display = 'flex';
+      div.style.flexDirection = 'column';
+      div.style.alignItems = 'center';
+      div.style.justifyContent = 'center';
+      const span = document.createElement("span");
+      span.appendChild(document.createTextNode(this._text));
+      const number = document.createElement("span");
+      number.appendChild(document.createTextNode(this._info.number + '个'));
+      div.appendChild(span);
+      div.appendChild(number);
+    } else {
+      div.style.display = "flex";
+      div.style.flexDirection = "column";
+      div.style.alignItems = "center";
+      div.style.justifyContent = "center";
+      const textView = this._textView = document.createElement("div");
+      textView.setAttribute('class', 'xkj-text-view');
+      textView.style.display = "flex";
+      textView.style.alignItems = "center";
+      textView.style.justifyContent = "center";
+      textView.style.borderRadius = '20px';
+      textView.style.padding = '4px 15px 4px 15px';
+      textView.style.borderColor = '#fff';
+      textView.style.borderWidth = '2px';
+      textView.style.borderStyle = 'solid';
+      textView.style.backgroundColor = '#1F3070';
+      textView.style.fontSize = '12px';
+      textView.style.color = '#fff';
+      textView.style.fontWeight = 'bold';
+      const text = document.createElement("span");
+      text.style.maxWidth = '200px';
+      text.style.display = 'inline-block';
+      text.style.overflow = 'hidden';
+      text.style.textOverflow = 'ellipsis';
+      text.style.whiteSpace = 'nowrap';
+      text.appendChild(document.createTextNode(this._text));
+      const type = document.createElement("span");
+      type.appendChild(document.createTextNode(`(${this._info.treeCategoryName})`));
+      this._info.treeCategoryName && textView.appendChild(text);
+      textView.appendChild(type);
+
+      const arrow = document.createElement("div");
+      arrow.setAttribute('class', 'xkj-arrow');
+      arrow.style.borderStyle = 'solid';
+      arrow.style.borderWidth = '6px';
+      arrow.style.borderTopColor = 'rgba(255,255,255,1)';
+      arrow.style.borderRightColor = 'rgba(255,255,255,0)';
+      arrow.style.borderLeftColor = 'rgba(255,255,255,0)';
+      arrow.style.borderBottomColor = 'rgba(255,255,255,0)';
+      arrow.style.position = 'relative';
+
+      const arrow_child = this._arrow_child = document.createElement("div");
+      arrow_child.setAttribute('class', 'xkj-arrow-child');
+      arrow_child.style.position = 'absolute';
+      arrow_child.style.left = '-6px';
+      arrow_child.style.top = '-9px';
+      arrow_child.style.borderWidth = '6px';
+      arrow_child.style.borderStyle = 'solid';
+      arrow_child.style.borderTopColor = 'rgba(31,48,112,1)';
+      arrow_child.style.borderRightColor = 'rgba(255,255,255,0)';
+      arrow_child.style.borderLeftColor = 'rgba(255,255,255,0)';
+      arrow_child.style.borderBottomColor = 'rgba(255,255,255,0)';
+      arrow.appendChild(arrow_child);
+
+      div.appendChild(textView);
+      div.appendChild(arrow);
+    }
+    const _this = this;
+    div.addEventListener("touchstart", function () {
+      map.disableDragging();
+      setTimeout(() => {// 避免长按
+        map.enableDragging();
+      }, 500)
+    });
+    div.addEventListener("touchmove", function () {
+      console.log('touchmove');
+      map.enableDragging();
+    });
+
+    div.addEventListener("click", function () {
+      if (_this._level === 'region') {
+        // getBoundary(city.name + _this._info.name);
+        window.ReactNativeWebView.postMessage(JSON.stringify({type: 'clickArea', param: _this._info}));
+      } else {
+        window.ReactNativeWebView.postMessage(JSON.stringify({type: 'clickProject', param: _this._info}));
+      }
+      map.enableDragging();
+    });
+    map.getPanes().labelPane.appendChild(div);
+    return div;
+  };
+  ComplexCustomOverlay.prototype.draw = function () {
+    const _map = this._map;
+    const left = this._level === 'region' ? 25 : 67 + this._text.length * 2;
+    const pixel = _map.pointToOverlayPixel(this._point);
+    this._div.style.left = pixel.x - left + "px";
+    this._div.style.top = pixel.y - 25 + "px";
+  };
+
+  function deleteAreaCover () {
+    const arr = map.getOverlays() || [];
+    arr.forEach((i) => {
+      if (i.xkjName && i.xkjName === 'areaCover') {
+        map.removeOverlay(i);
+      }
+    });
+  }
+</script>
+<script type="text/javascript">
+  function init(districtList) {
+    try {
+      deletePoint();
+      districtList.forEach((curr) => {
+        const myCompOverlay = new ComplexCustomOverlay(new BMap.Point(curr.longitude, curr.latitude), curr);
+        map.addOverlay(myCompOverlay);
+      });
+    } catch (e) {
+    }
+  }
+  function deletePoint() {
+    const allOverlay = map.getOverlays();
+    for (let i = 0; i < allOverlay.length; i++) {
+      if (allOverlay[i].hasOwnProperty('_info')) {
+        map.removeOverlay(allOverlay[i]);
+      }
+    }
+  }
+  function onScroll() {
+    const zoomLevel = map.getZoom();
+    window.ReactNativeWebView.postMessage(JSON.stringify({type: 'zoomEnd', param: {zoomLevel: zoomLevel}}));
+  }
+  function setCity(info) {// 外部使用
+    city = info;
+    map.setCurrentCity(city.name);
+    map.centerAndZoom(new BMap.Point(city.longitude, city.latitude), 11);
+  }
+  function setZoom(zoomLevel) {// 外部使用
+    zoomLevel && map.setZoom(zoomLevel);
+  }
+  function getBoundary(area) {// 外部使用
+    if (!area) {
+      deleteAreaCover();
+      return
+    }
+    const bdary = new BMap.Boundary();
+    bdary.get(area, function(rs){
+      deleteAreaCover();
+      let count = rs.boundaries.length;
+      if (count === 0) {
+        return ;
+      }
+      let pointArray = [];
+      for (let i = 0; i < count; i++) {
+        let ply = new BMap.Polygon(rs.boundaries[i], {strokeWeight: 1, fillColor: 'rgba(212, 226, 251, 0.4)', fillColorOpacity: 0.1, strokeColor: "#1F3070", strokeOpacity: 0.8}); //建立多边形覆盖物
+        ply.xkjName= 'areaCover';
+        map.addOverlay(ply);  //添加覆盖物
+        pointArray = pointArray.concat(ply.getPath());
+      }
+      // map.setViewport(pointArray);    //调整视野
+    });
+  }
+  function setSelectElem(selectId) {// 外部使用
+    document.getElementById('output').innerText = JSON.stringify(selectId);
+    const elem = document.getElementsByClassName(`xkj-mark-id-${selectId}`)[0];
+    console.log(elem, 'elem');
+    if (!elem) return;
+    const marks = document.getElementsByClassName(`xkj-mark`);
+    const elem_type = elem.getAttribute('xkj-type');
+    for (let i = 0; i < marks.length; i++) {// 其它标记 正常颜色
+      const _type = marks[i].getAttribute('xkj-type');
+      if (_type === 'region') {
+        marks[i].style.backgroundColor = '#1F3070';
+        marks[i].style.color = '#fff';
+        marks[i].style.borderColor = '#fff';
+      } else {
+        const textView = getParentElement(marks[i], 'xkj-text-view');
+        const arrow = getParentElement(marks[i], 'xkj-arrow');
+        const arrowChild = getParentElement(arrow, 'xkj-arrow-child');
+        textView.style.backgroundColor = '#1F3070';
+        textView.style.borderColor = '#fff';
+        textView.style.color = '#fff';
+        arrowChild.style.borderTopColor = 'rgba(31,48,112,1)';
+      }
+    }
+    if (elem_type === 'region') {
+      elem.style.backgroundColor = '#fff';
+      elem.style.color = '#000';
+      elem.style.borderColor = '#d3d3d3';
+    } else {
+      const textView = getParentElement(elem, 'xkj-text-view');
+      const arrow = getParentElement(elem, 'xkj-arrow');
+      const arrowChild = getParentElement(arrow, 'xkj-arrow-child');
+      textView.style.backgroundColor = '#fff';
+      arrow.style.borderTopColor = '#d3d3d3';
+      textView.style.color = '#000';
+      textView.style.borderColor = '#d3d3d3';
+      arrowChild.style.borderTopColor = '#fff';
+    }
+  }
+
+  // init(districtList);
+  map.addEventListener('zoomend', onScroll, false);
+</script>
